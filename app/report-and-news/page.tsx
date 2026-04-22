@@ -1,71 +1,9 @@
 import Link from 'next/link'
 import { ArrowRight, Calendar, Download, Heart, TrendingUp } from 'lucide-react'
-import PageHero from '@/components/PageHero'
-import SectionFrame from '@/components/SectionFrame'
-import StorybookDecorations from '@/components/StorybookDecorations'
-
-
-const news = [
-  {
-    id: 1,
-    title: 'Успішна операція: врятовано собаку після ДТП',
-    excerpt:
-      'Завдяки швидкій реакції волонтерів та професіоналізму ветеринарів собака повністю одужує після травм.',
-    date: '15 квітня 2026',
-    category: 'Історії порятунку',
-    image:
-      'https://images.unsplash.com/photo-1576201836106-db1758fd1c97?auto=format&fit=crop&q=80&w=900',
-  },
-  {
-    id: 2,
-    title: 'Нові родини для підопічних центру',
-    excerpt:
-      'Ще кілька тварин переїхали у теплі домівки. Дякуємо кожному, хто обирає усиновлення.',
-    date: '1 квітня 2026',
-    category: 'Усиновлення',
-    image:
-      'https://images.unsplash.com/photo-1601758177266-bc599de87707?auto=format&fit=crop&q=80&w=900',
-  },
-  {
-    id: 3,
-    title: 'Новий етап програми стерилізації',
-    excerpt:
-      'Міська програма стабілізації популяції продовжує працювати гуманно та системно.',
-    date: '20 березня 2026',
-    category: 'Програми',
-    image:
-      'https://images.unsplash.com/photo-1581888227599-779811939961?auto=format&fit=crop&q=80&w=900',
-  },
-  {
-    id: 4,
-    title: 'Оновлення вольєрів у притулку',
-    excerpt:
-      'Завдяки підтримці небайдужих людей центр покращує умови для тварин, які чекають на дім.',
-    date: '1 березня 2026',
-    category: 'Інфраструктура',
-    image:
-      'https://images.unsplash.com/photo-1548199973-03cce0bbc87b?auto=format&fit=crop&q=80&w=900',
-  },
-]
-
-const reports = [
-  {
-    title: 'Фінансовий звіт за квартал',
-    date: 'Квітень 2026',
-    description: 'Надходження, витрати та потреби центру за звітний період.',
-  },
-  {
-    title: 'Звіт про діяльність центру',
-    date: 'Січень 2026',
-    description: 'Підсумки роботи, допомоги тваринам та волонтерських подій.',
-  },
-  {
-    title: 'Потреби центру',
-    date: 'Оновлюється регулярно',
-    description:
-      'Корм, медикаменти, доглядові засоби та інша актуальна допомога.',
-  },
-]
+import PageHero from '@/components/ui/PageHero'
+import SectionFrame from '@/components/ui/SectionFrame'
+import StorybookDecorations from '@/components/ui/StorybookDecorations'
+import { news, reports } from '@/lib/news'
 
 // const stats = [
 //   ['Усиновлення', '8', '80%', 'bg-orange-500'],
@@ -148,10 +86,13 @@ export default function ReportAndNewsPage() {
                       <p className="mt-3 leading-7 text-gray-600">
                         {item.excerpt}
                       </p>
-                      <button className="mt-5 inline-flex items-center gap-2 font-bold text-orange-600 transition hover:text-orange-700">
+                      <Link
+                        href={`/report-and-news/${item.id}`}
+                        className="mt-5 inline-flex items-center gap-2 font-bold text-orange-600 transition hover:text-orange-700"
+                      >
                         Читати далі
                         <ArrowRight className="h-4 w-4" />
-                      </button>
+                      </Link>
                     </div>
                   </div>
                 </article>

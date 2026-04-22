@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { supabase } from '@/lib/supabase'
 import { Send } from 'lucide-react'
-import BorderGlow from '@/components/BorderGlow'
+import BorderGlow from '@/components/ui/BorderGlow'
 
 export default function SignInPage() {
   const [email, setEmail] = useState('')

@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import Link from 'next/link'
 import { motion } from 'motion/react'
 import {
   ChevronRight,
@@ -13,7 +14,7 @@ import {
 } from 'lucide-react'
 import Hero from '@/components/Hero'
 import AnimalCatalog from '@/components/HeroAnimals'
-import ServicesOverview from '@/components/ServicesOverview'
+import CityProgram from '@/components/city-program/city-program'
 import TrustValues from '@/components/TrustValues'
 
 const wishlist = [
@@ -32,7 +33,7 @@ export default function HomePage() {
         <Hero />
       </section>
 
-      <ServicesOverview />
+      <CityProgram />
 
       <section>
         <AnimalCatalog />
@@ -119,12 +120,12 @@ export default function HomePage() {
             Разом ми можемо врятувати більше життів.
           </p>
           <div className="flex flex-col justify-center gap-4 sm:flex-row">
-            <a
-              href="/dogs"
+            <Link
+              href="/animals"
               className="inline-flex items-center justify-center gap-2 rounded-lg bg-white px-8 py-4 text-[#ea580c] transition-colors hover:bg-gray-50"
             >
               Знайти найкращого друга
-            </a>
+            </Link>
             <a
               href="#help"
               className="inline-flex items-center justify-center gap-2 rounded-lg border-2 border-white bg-transparent px-8 py-4 text-white transition-colors hover:bg-white/10"

@@ -8,9 +8,9 @@ import {
   Phone,
   Users,
 } from 'lucide-react'
-import PageHero from '@/components/PageHero'
-import SectionFrame from '@/components/SectionFrame'
-import StorybookDecorations from '@/components/StorybookDecorations'
+import PageHero from '@/components/ui/PageHero'
+import SectionFrame from '@/components/ui/SectionFrame'
+import StorybookDecorations from '@/components/ui/StorybookDecorations'
 
 
 const helpWays = [

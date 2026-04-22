@@ -5,7 +5,7 @@ import {
   Shield,
   Stethoscope,
 } from 'lucide-react'
-import BlocksMain from '@/components/blocks_main'
+import CityProgramBlocks from '@/components/city-program/city-programs-blocks'
 
 const services = [
   {
@@ -30,11 +30,11 @@ const services = [
   },
 ]
 
-export default function ServicesOverview() {
+export default function CityProgram() {
   return (
     <section id="services" className="bg-white py-24">
       <div className="mx-auto grid max-w-7xl items-center gap-14 px-4 sm:px-6 lg:grid-cols-[0.95fr_1.05fr] lg:px-8">
-        <BlocksMain />
+        <CityProgramBlocks />
 
         <div>
           <p className="mb-3 text-sm font-extrabold tracking-wider text-primary uppercase">

@@ -2,6 +2,7 @@ import useEmblaCarousel from 'embla-carousel-react'
 import { ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react'
 import AnimalCard from '@/components/AnimalCard'
 import { MOCK_ANIMALS } from '@/mockData'
+import Link from "next/link";
 
 export default function AnimalCatalog() {
   const [emblaRef, emblaApi] = useEmblaCarousel({
@@ -20,22 +21,22 @@ export default function AnimalCatalog() {
               Вони чекають на вас
             </h2>
             <p className="text-lg leading-8 text-gray-500">
-              Познайомтеся з собаками, які шукають люблячу родину. Кожен має
-              свою історію і заслуговує на спокійний дім.
+              Познайомтеся з собаками, які шукають люблячу родину.
+              Кожен має свою історію і заслуговує на спокійний дім.
             </p>
           </div>
 
-          <a
-            href="/dogs"
+          <Link
+            href="/animals"
             className="inline-flex w-full items-center justify-center gap-2 rounded-2xl border border-gray-100 bg-white px-7 py-3.5 font-bold text-text-main transition-all hover:border-primary hover:text-primary sm:w-auto"
           >
             До всіх тварин
             <ArrowRight className="h-4 w-4" />
-          </a>
+          </Link>
         </div>
 
         <div className="relative">
-          <div className="animal-carousel min-w-0 md:px-14">
+          <div className="animal-carousel min-w-0">
             <div ref={emblaRef} className="overflow-hidden p-2">
               <div className="-m-2 flex p-2 md:gap-6">
                 {MOCK_ANIMALS.map((animal, index) => (
@@ -50,11 +51,11 @@ export default function AnimalCatalog() {
             </div>
           </div>
 
-          <div className="mt-4 flex justify-center gap-3 md:pointer-events-none md:absolute md:inset-y-0 md:right-0 md:left-0 md:mt-0 md:items-center md:justify-between">
+          <div className="pointer-events-none absolute inset-y-0 right-2 left-2 z-20 flex items-center justify-between">
             <button
               type="button"
               aria-label="Прокрутити назад"
-              className="pointer-events-auto inline-flex h-11 w-11 items-center justify-center rounded-xl border border-gray-100 bg-white text-text-main transition-all hover:border-primary hover:text-primary"
+              className="pointer-events-auto opacity-55 hover:opacity-100 hover:cursor-pointer inline-flex h-12 w-12 items-center justify-center rounded-full border border-primary bg-white/92 text-text-main shadow-[0_18px_45px_-24px_rgba(31,41,55,0.7)] backdrop-blur transition-all hover:border-primary hover:bg-white hover:text-primary"
               onClick={() => emblaApi?.scrollPrev()}
             >
               <ChevronLeft className="h-5 w-5" />
@@ -62,7 +63,7 @@ export default function AnimalCatalog() {
             <button
               type="button"
               aria-label="Прокрутити вперед"
-              className="pointer-events-auto inline-flex h-11 w-11 items-center justify-center rounded-xl border border-gray-100 bg-white text-text-main transition-all hover:border-primary hover:text-primary"
+              className="pointer-events-auto opacity-55 hover:opacity-100 hover:cursor-pointer inline-flex h-12 w-12 items-center justify-center rounded-full border border-primary bg-white/92 text-text-main shadow-[0_18px_45px_-24px_rgba(31,41,55,0.7)] backdrop-blur transition-all hover:border-primary hover:bg-white hover:text-primary"
               onClick={() => emblaApi?.scrollNext()}
             >
               <ChevronRight className="h-5 w-5" />

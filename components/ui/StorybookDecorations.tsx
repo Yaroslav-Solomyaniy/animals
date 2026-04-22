@@ -55,7 +55,7 @@ const decorations: Array<{
     className: 'right-[9%] top-[88%] h-11 w-11 rotate-[-12deg]',
     iconClassName: 'text-secondary',
   },
-]
+] 
 
 export default function StorybookDecorations() {
   return (

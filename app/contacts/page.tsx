@@ -14,10 +14,10 @@ import {
   Stethoscope,
 } from 'lucide-react'
 
-import BorderGlow from '@/components/BorderGlow'
-import PageHero from '@/components/PageHero'
-import SectionFrame from '@/components/SectionFrame'
-import StorybookDecorations from '@/components/StorybookDecorations'
+import BorderGlow from '@/components/ui/BorderGlow'
+import PageHero from '@/components/ui/PageHero'
+import SectionFrame from '@/components/ui/SectionFrame'
+import StorybookDecorations from '@/components/ui/StorybookDecorations'
 
 
 const contactCards = [

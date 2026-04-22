@@ -9,7 +9,7 @@ export default function Header() {
 
   const navLinks = [
     { name: 'Головна', href: '/' },
-    { name: 'Тварини', href: '/animals' },
+    { name: 'Книга хвостиків', href: '/animals' },
     { name: 'Послуги', href: '/services' },
     { name: 'Як можна допомогти', href: '/help-for-us' },
     { name: 'Звіти та новини', href: '/report-and-news' },
