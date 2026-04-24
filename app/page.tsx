@@ -40,7 +40,7 @@ export default function HomePage() {
       </section>
 
       <section id="contacts" className="bg-neutral-base pb-24">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-[calc(80rem+4rem)] px-4 sm:px-6 lg:px-8">
           <div className="grid gap-4 lg:grid-cols-[0.72fr_1.28fr]">
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-1">
               <a
@@ -137,7 +137,7 @@ export default function HomePage() {
       </section>
 
       <section id="help" className="bg-white py-24">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-[calc(80rem+4rem)] px-4 sm:px-6 lg:px-8">
           <h2 className="mb-20 text-center text-4xl font-extrabold text-text-main md:text-5xl">
             Як ви можете нам допомогти
           </h2>

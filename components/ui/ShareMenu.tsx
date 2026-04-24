@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react'
 import { Check, Copy, Facebook, Link2, Send, Share2, X } from 'lucide-react'
+import { Button, IconButton } from '@/components/ui/Button'
 
 type ShareMenuProps = {
   path: string
@@ -47,7 +48,7 @@ export default function ShareMenu({
   path,
   title,
   text,
-  label = 'Поділитись',
+  label = 'Поділитися',
   variant = 'button',
   className = '',
 }: ShareMenuProps) {
@@ -125,27 +126,18 @@ export default function ShareMenu({
 
   return (
     <div ref={rootRef} className={`relative z-[80] h-full ${className}`}>
-      <button
+      <Button
         type="button"
         onClick={() => setIsOpen((current) => !current)}
-        className={
-          variant === 'icon'
-            ? 'flex h-full min-h-12 w-full min-w-12 items-center justify-center rounded-xl border-2 border-primary bg-white text-primary shadow-[0_16px_45px_rgba(242,116,56,0.14)] transition hover:bg-primary hover:text-white active:scale-[0.98] sm:w-14'
-            : 'group relative inline-flex h-full min-h-12 w-full items-center justify-center gap-2 overflow-hidden rounded-xl border-2 border-primary bg-white px-5 py-3 font-bold text-primary shadow-[0_16px_45px_rgba(242,116,56,0.14)] transition active:scale-[0.98]'
-        }
+        variant="outline"
+        size={variant === 'icon' ? 'icon' : 'md'}
+        className={variant === 'icon' ? 'h-full min-h-12 w-full min-w-12 rounded-xl sm:w-14' : 'h-full w-full'}
         aria-expanded={isOpen}
         aria-label={label}
       >
-        {variant === 'button' && (
-          <span className="absolute inset-y-0 left-0 w-0 bg-primary transition-all duration-300 ease-out group-hover:w-full" />
-        )}
-        <Share2 className="relative z-10 h-4 w-4 transition group-hover:text-white" />
-        {variant === 'button' && (
-          <span className="relative z-10 transition group-hover:text-white">
-            {label}
-          </span>
-        )}
-      </button>
+        <Share2 className="h-4 w-4" />
+        {variant === 'button' && <span>{label}</span>}
+      </Button>
 
       {isOpen && (
         <div className="absolute right-0 top-[calc(100%+10px)] z-[90] w-[min(260px,calc(100vw-32px))] overflow-hidden rounded-3xl border border-orange-100 bg-white p-4 shadow-[0_26px_80px_rgba(15,23,42,0.18)]">
@@ -161,39 +153,40 @@ export default function ShareMenu({
               const Icon = target.icon
 
               return (
-                <button
+                <IconButton
                   key={target.id}
                   type="button"
-                  className="flex aspect-square items-center justify-center rounded-2xl border border-gray-100 bg-gray-50 text-primary transition hover:-translate-y-0.5 hover:border-orange-200 hover:bg-orange-50 hover:shadow-soft"
+                  variant="outline"
+                  className="aspect-square rounded-2xl"
                   onClick={() => openShareTarget(target.buildUrl)}
-                  aria-label={target.label}
-                  title={target.label}
+                  label={target.label}
                 >
                   <Icon className="h-5 w-5" />
-                </button>
+                </IconButton>
               )
             })}
 
-            <button
+            <IconButton
               type="button"
               onClick={copyUrl}
-              className="flex aspect-square items-center justify-center rounded-2xl border border-gray-100 bg-gray-50 text-primary transition hover:-translate-y-0.5 hover:border-orange-200 hover:bg-orange-50 hover:shadow-soft"
-              aria-label={copied ? 'Посилання скопійовано' : 'Скопіювати посилання'}
+              variant="outline"
+              className="aspect-square rounded-2xl"
+              label={copied ? 'Посилання скопійовано' : 'Скопіювати посилання'}
               title={copied ? 'Скопійовано' : 'Скопіювати'}
             >
               {copied ? <Check className="h-5 w-5" /> : <Copy className="h-5 w-5" />}
-            </button>
+            </IconButton>
 
             {canNativeShare && (
-              <button
+              <IconButton
                 type="button"
                 onClick={nativeShare}
-                className="flex aspect-square items-center justify-center rounded-2xl border border-primary bg-primary text-white transition hover:-translate-y-0.5 hover:bg-orange-600 hover:shadow-primary"
-                aria-label="Системне меню"
-                title="Системне меню"
+                variant="primary"
+                className="aspect-square rounded-2xl"
+                label="Системне меню"
               >
                 <Share2 className="h-5 w-5" />
-              </button>
+              </IconButton>
             )}
           </div>
 

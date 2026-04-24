@@ -1,103 +1,169 @@
 'use client'
 
-import { useState } from 'react'
-import { Globe, Menu, X } from 'lucide-react'
-import { motion, AnimatePresence } from 'motion/react'
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
+import { useEffect, useState } from 'react'
+import { Menu, X } from 'lucide-react'
+import { AnimatePresence, motion } from 'motion/react'
+import { Button } from '@/components/ui/Button'
+import { cn } from '@/lib/utils'
+
+const navLinks = [
+  { name: 'Головна', href: '/' },
+  { name: 'Книга хвостиків', href: '/animals' },
+  { name: 'Послуги', href: '/services' },
+  { name: 'Як можна допомогти', href: '/help-for-us' },
+  { name: 'Звіти та новини', href: '/report-and-news' },
+  { name: 'Контакти', href: '/contacts' },
+]
 
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false)
+  const [isCompact, setIsCompact] = useState(false)
+  const pathname = usePathname()
 
-  const navLinks = [
-    { name: 'Головна', href: '/' },
-    { name: 'Книга хвостиків', href: '/animals' },
-    { name: 'Послуги', href: '/services' },
-    { name: 'Як можна допомогти', href: '/help-for-us' },
-    { name: 'Звіти та новини', href: '/report-and-news' },
-    { name: 'Контакти', href: '/contacts' },
-  ]
+  useEffect(() => {
+    const updateHeader = () => setIsCompact(window.scrollY > 48)
+
+    updateHeader()
+    window.addEventListener('scroll', updateHeader, { passive: true })
+
+    return () => window.removeEventListener('scroll', updateHeader)
+  }, [])
 
   return (
-    <header className="sticky top-0 z-50 bg-white border-b border-gray-100">
-      <nav>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-20">
-            {/* Desktop Navigation */}
-            <div className="hidden md:flex items-center gap-10">
-              {navLinks.map((link) => (
-                <a
-                  key={link.name}
+    <header className="sticky top-0 z-50 px-0 py-0">
+      <motion.nav
+        initial={false}
+        animate={{
+          width: isCompact ? 'min(92vw, 1248px)' : '100%',
+          marginTop: isCompact ? 12 : 0,
+          borderTopLeftRadius: isCompact ? 999 : 0,
+          borderTopRightRadius: isCompact ? 999 : 0,
+          borderBottomLeftRadius: isCompact ? 999 : 0,
+          borderBottomRightRadius: isCompact ? 999 : 0,
+          boxShadow: isCompact
+            ? '0 18px 60px rgba(15,23,42,0.12)'
+            : '0 0 0 rgba(15,23,42,0)',
+        }}
+        transition={{
+          duration: 0.26,
+          ease: [0.22, 1, 0.36, 1],
+        }}
+        className={cn(
+          'mx-auto overflow-hidden border bg-white/68 backdrop-blur-2xl will-change-[width,border-radius,box-shadow,margin-top] [box-shadow:inset_0_1px_0_rgba(255,255,255,0.75)]',
+          isCompact
+            ? 'border-orange-100'
+            : 'border-x-0 border-t-0 border-gray-100'
+        )}
+      >
+        <div
+          className={cn(
+            'mx-auto flex items-center justify-between gap-4 px-4 transition-[height,max-width] duration-700 ease-out sm:px-6 lg:px-8',
+            isCompact
+              ? 'h-16 max-w-[calc(76rem+2rem)]'
+              : 'h-20 max-w-[calc(80rem+4rem)]'
+          )}
+        >
+
+          <div className="hidden items-center gap-1 lg:flex">
+            {navLinks.map((link) => {
+              const isActive =
+                link.href === '/'
+                  ? pathname === link.href
+                  : pathname === link.href || pathname.startsWith(`${link.href}/`)
+
+              return (
+                <Link
+                  key={link.href}
                   href={link.href}
-                  className={`text-[15px] font-semibold transition-colors ${
-                    link.name === 'Adopt'
-                      ? 'text-primary'
-                      : 'text-gray-500 hover:text-primary'
-                  }`}
+                  className={cn(
+                    'rounded-xl px-3.5 py-2.5 text-sm font-semibold transition-all xl:px-4',
+                    isActive
+                      ? 'bg-orange-50 text-primary'
+                      : 'text-gray-600 hover:bg-orange-50 hover:text-primary'
+                  )}
                 >
-                  {link.name}
-                </a>
-              ))}
-            </div>
+                  <span className="whitespace-nowrap">{link.name}</span>
+                </Link>
+              )
+            })}
+          </div>
 
-            {/* Right Actions */}
-            <div className="hidden md:flex items-center gap-4">
-              <span className="text-xs font-bold bg-gray-100 px-3 py-1.5 rounded-full text-gray-500">
-                UA/EN
-              </span>
-              <button className="border-2 border-primary text-primary px-6 py-2.5 rounded-xl font-bold text-[15px] hover:bg-primary hover:text-white transition-all transform active:scale-95">
-                Підтримати
-              </button>
-            </div>
+          <div className="hidden items-center gap-3 lg:flex">
+            <Link
+              href="/help-for-us"
+              className={cn(
+                'inline-flex items-center justify-center rounded-xl bg-primary text-sm font-bold text-white shadow-[0_16px_40px_rgba(242,116,56,0.22)] transition hover:bg-orange-600',
+                isCompact ? 'min-h-10 px-4 py-2' : 'min-h-11 px-5 py-2.5'
+              )}
+            >
+              Підтримати
+            </Link>
+          </div>
 
-            {/* Mobile Menu Button */}
-            <div className="md:hidden">
-              <button
-                onClick={() => setIsOpen(!isOpen)}
-                className="p-2 rounded-lg text-gray-600 hover:bg-gray-100 transition-colors"
-              >
-                {isOpen ? (
-                  <X className="w-6 h-6" />
-                ) : (
-                  <Menu className="w-6 h-6" />
-                )}
-              </button>
-            </div>
+          <div className="lg:hidden">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setIsOpen(!isOpen)}
+              className="rounded-xl text-gray-700 hover:bg-orange-50 hover:text-primary"
+              aria-label={isOpen ? 'Закрити меню' : 'Відкрити меню'}
+            >
+              {isOpen ? (
+                <X className="h-6 w-6" />
+              ) : (
+                <Menu className="h-6 w-6" />
+              )}
+            </Button>
           </div>
         </div>
 
-        {/* Mobile Menu */}
         <AnimatePresence>
           {isOpen && (
             <motion.div
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
-              className="md:hidden bg-white border-b border-gray-100 overflow-hidden"
+              className="overflow-hidden border-t border-orange-100 bg-white lg:hidden"
             >
-              <div className="px-4 pt-2 pb-6 space-y-2">
-                {navLinks.map((link) => (
-                  <a
-                    key={link.name}
-                    href={link.href}
+              <div className="space-y-2 px-4 pb-6 pt-3">
+                {navLinks.map((link) => {
+                  const isActive =
+                    link.href === '/'
+                      ? pathname === link.href
+                      : pathname === link.href || pathname.startsWith(`${link.href}/`)
+
+                  return (
+                    <Link
+                      key={link.href}
+                      href={link.href}
+                      onClick={() => setIsOpen(false)}
+                      className={cn(
+                        'block rounded-2xl px-4 py-3 text-base font-semibold transition-all',
+                        isActive
+                          ? 'border border-orange-200 bg-orange-50 text-primary'
+                          : 'text-gray-600 hover:bg-orange-50 hover:text-primary'
+                      )}
+                    >
+                      {link.name}
+                    </Link>
+                  )
+                })}
+                <div className="pt-4">
+                  <Link
+                    href="/help-for-us"
                     onClick={() => setIsOpen(false)}
-                    className="block px-4 py-3 text-lg font-semibold text-gray-600 hover:text-primary hover:bg-gray-50 rounded-xl transition-all"
+                    className="inline-flex min-h-14 w-full items-center justify-center rounded-xl bg-primary px-5 py-3.5 text-base font-bold text-white shadow-primary transition hover:bg-orange-600"
                   >
-                    {link.name}
-                  </a>
-                ))}
-                <div className="pt-4 flex flex-col gap-3">
-                  <button className="flex items-center justify-center gap-2 py-3 text-lg font-bold text-gray-600">
-                    <Globe className="w-5 h-5" />
-                    <span>UA / EN</span>
-                  </button>
-                  <button className="w-full py-4 rounded-xl bg-primary text-white font-bold text-lg shadow-lg shadow-primary/20">
-                    Donate Now
-                  </button>
+                    Підтримати
+                  </Link>
                 </div>
               </div>
             </motion.div>
           )}
         </AnimatePresence>
-      </nav>
+      </motion.nav>
     </header>
   )
 }

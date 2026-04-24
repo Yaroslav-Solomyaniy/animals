@@ -18,6 +18,8 @@ import BorderGlow from '@/components/ui/BorderGlow'
 import PageHero from '@/components/ui/PageHero'
 import SectionFrame from '@/components/ui/SectionFrame'
 import StorybookDecorations from '@/components/ui/StorybookDecorations'
+import { Button } from '@/components/ui/Button'
+import { Input, Select, Textarea } from '@/components/ui/FormControls'
 
 
 const contactCards = [
@@ -249,32 +251,30 @@ export default function ContactsPage() {
                   <span className="text-sm font-semibold text-gray-700">
                     Телефон
                   </span>
-                  <input
+                  <Input
                     type="tel"
                     placeholder="+38 (0__) ___-__-__"
-                    className="w-full rounded-2xl border border-gray-100 bg-gray-50 px-4 py-4 font-medium outline-none transition focus:border-orange-300 focus:bg-white"
                   />
                 </label>
                 <label className="space-y-2">
                   <span className="text-sm font-semibold text-gray-700">
                     Email
                   </span>
-                  <input
+                  <Input
                     type="email"
                     placeholder="name@example.com"
-                    className="w-full rounded-2xl border border-gray-100 bg-gray-50 px-4 py-4 font-medium outline-none transition focus:border-orange-300 focus:bg-white"
                   />
                 </label>
                 <label className="space-y-2">
                   <span className="text-sm font-semibold text-gray-700">
                     Тема
                   </span>
-                  <select className="w-full rounded-2xl border border-gray-100 bg-gray-50 px-4 py-4 font-medium outline-none transition focus:border-orange-300 focus:bg-white">
+                  <Select>
                     <option>Усиновлення</option>
                     <option>Волонтерська прогулянка</option>
                     <option>Комерційні послуги</option>
                     <option>Інше питання</option>
-                  </select>
+                  </Select>
                 </label>
               </div>
 

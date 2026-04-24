@@ -178,7 +178,7 @@ export default function AnimalsPage() {
                 </div>
             </PageHero>
 
-            <section className="relative z-20 mx-auto -mt-10 max-w-7xl px-4 pb-12 sm:px-6 lg:px-8">
+            <section className="relative z-20 mx-auto -mt-10 max-w-[calc(80rem+4rem)] px-4 pb-12 sm:px-6 lg:px-8">
                 <SectionFrame className="rounded-[28px] border-gray-100 p-4 sm:p-5">
                     <div className="relative flex flex-col gap-4">
                         <div className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_250px]">

@@ -79,7 +79,7 @@ export default function Hero() {
             <div
                 className="absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.46),rgba(249,250,251,0.32))]"/>
 
-            <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <div className="relative mx-auto max-w-[calc(80rem+4rem)] px-4 sm:px-6 lg:px-8">
                 <div className="items-center lg:grid lg:grid-cols-2 lg:gap-16">
                     <motion.div
                         initial={{opacity: 0, x: -30}}

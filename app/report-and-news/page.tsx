@@ -179,7 +179,7 @@ export default function ReportAndNewsPage() {
       </section>
 
       <section className="px-4 py-16 sm:px-6 lg:px-8">
-        <SectionFrame className="mx-auto max-w-4xl rounded-[32px] p-8 text-center">
+        <SectionFrame className="mx-auto max-w-7xl rounded-[32px] p-8 text-center">
           <Heart className="mx-auto mb-5 h-10 w-10 text-orange-500" />
           <h2 className="text-3xl font-black text-gray-950">
             Станьте частиною нашої історії

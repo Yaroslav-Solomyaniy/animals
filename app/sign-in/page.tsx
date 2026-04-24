@@ -1,27 +1,36 @@
 'use client'
 
 import { useState } from 'react'
-import { supabase } from '@/lib/supabase'
 import { Send } from 'lucide-react'
+import { Input } from '@/components/ui/FormControls'
 import BorderGlow from '@/components/ui/BorderGlow'
+import {useRouter} from "next/navigation";
+import { getSupabaseBrowserClient } from "@/lib/supabase/client";
+
+const supabase = getSupabaseBrowserClient()
 
 export default function SignInPage() {
+  const router = useRouter()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [errorMessage, setErrorMessage] = useState('')
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    setErrorMessage('')
 
-    const { data, error } = await supabase.auth.signInWithPassword({
+    const { error } = await supabase.auth.signInWithPassword({
       email,
       password,
     })
 
     if (error) {
-      console.error(error)
-    } else {
-      console.log(data)
+      setErrorMessage(error.message)
+      return
     }
+
+    router.push('/admin')
+    router.refresh()
   }
 
   return (
@@ -55,13 +64,13 @@ export default function SignInPage() {
                 <span className="text-sm font-semibold text-gray-700">
                   Email
                 </span>
-                  <input
+                  <Input
                       type="email"
                       required
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="Welcome@chistota.ck.ua"
-                      className="w-full rounded-2xl border border-gray-100 bg-gray-50 px-4 py-4 font-medium outline-none transition focus:border-orange-300 focus:bg-white mt-1"
+                      className="mt-1"
                   />
                 </label>
 
@@ -80,6 +89,12 @@ export default function SignInPage() {
                   />
                 </label>
               </div>
+
+              {errorMessage ? (
+                <div className="mt-4 rounded-2xl border border-orange-200 bg-white px-4 py-3 text-sm font-semibold text-primary">
+                  {errorMessage}
+                </div>
+              ) : null}
 
               {/* BUTTON */}
               <button

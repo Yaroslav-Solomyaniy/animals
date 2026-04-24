@@ -14,6 +14,7 @@ import type { LucideIcon } from 'lucide-react'
 import SectionFrame from '@/components/ui/SectionFrame'
 import StorybookDecorations from '@/components/ui/StorybookDecorations'
 import { MOCK_ANIMALS } from '@/mockData'
+import { Input, Select, Textarea } from '@/components/ui/FormControls'
 
 const TREAT_AMOUNTS = [50, 100, 250, 500]
 const GENERAL_AMOUNTS = [200, 500, 1000, 1500]
@@ -36,7 +37,7 @@ export default async function DonatePage({ searchParams }: DonatePageProps) {
     <main className="storybook-bg min-h-screen text-text-main">
       <StorybookDecorations />
 
-      <section className="relative z-10 mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8 lg:py-14">
+      <section className="relative z-10 mx-auto max-w-[calc(80rem+4rem)] px-4 py-10 sm:px-6 lg:px-8 lg:py-14">
         <Link
           href="/animals"
           className="mb-6 inline-flex w-fit items-center gap-2 rounded-full bg-white/80 px-4 py-2 text-sm font-extrabold text-gray-500 shadow-soft backdrop-blur transition-colors hover:text-primary"
@@ -145,11 +146,11 @@ export default async function DonatePage({ searchParams }: DonatePageProps) {
                   <span className="mb-2 block text-sm font-bold text-gray-500">
                     Валюта
                   </span>
-                  <select className="h-14 w-full rounded-2xl border border-gray-100 bg-white px-5 text-base font-bold text-text-main shadow-sm outline-none transition-all focus:border-primary focus:ring-4 focus:ring-primary/10">
+                  <Select className="h-14 bg-white px-5 text-base font-bold">
                     <option>UAH</option>
                     <option>EUR</option>
                     <option>USD</option>
-                  </select>
+                  </Select>
                 </label>
               </div>
 
@@ -157,14 +158,14 @@ export default async function DonatePage({ searchParams }: DonatePageProps) {
                 <span className="mb-2 block text-sm font-bold text-gray-500">
                   Коментар
                 </span>
-                <textarea
+                <Textarea
                   rows={3}
                   defaultValue={
                     animal
                       ? `Смаколик для ${animal.name}`
                       : 'Підтримка центру допомоги тваринам'
                   }
-                  className="w-full resize-none rounded-2xl border border-gray-100 bg-white px-5 py-4 text-sm font-bold leading-6 text-text-main shadow-sm outline-none transition-all placeholder:text-gray-300 focus:border-primary focus:ring-4 focus:ring-primary/10"
+                  className="bg-white px-5 py-4 text-sm font-bold leading-6"
                 />
               </label>
 

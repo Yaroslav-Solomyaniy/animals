@@ -100,7 +100,7 @@ export default function Stack({ items, className, cardClassName }: StackProps) {
       {orderedItems.map((item, index) => {
         const isTop = index === 0
         const rotations = [-20, 0, 20, 40]
-        const xOffsets = [0, 60, 120, 180]
+        const xOffsets = [0, 50, 100, 150]
         const yOffsets = [50, 0, -50, -70]
         const rotate = rotations[index] ?? 65
         const x = xOffsets[index] ?? 54

@@ -33,7 +33,7 @@ const services = [
 export default function CityProgram() {
   return (
     <section id="services" className="bg-white py-24">
-      <div className="mx-auto grid max-w-7xl items-center gap-14 px-4 sm:px-6 lg:grid-cols-[0.95fr_1.05fr] lg:px-8">
+      <div className="mx-auto grid max-w-[calc(80rem+4rem)] items-center gap-14 px-4 sm:px-6 lg:grid-cols-[0.95fr_1.05fr] lg:px-8">
         <CityProgramBlocks />
 
         <div>

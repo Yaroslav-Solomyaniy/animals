@@ -221,7 +221,7 @@ export default function ServicesPage() {
                 }
             >
                 <Stack
-                    className="lg:min-h-93"
+                    className="max-lg:mt-8 max-lg:max-w-[360px] sm:max-lg:max-w-[430px] lg:min-h-93 lg:-translate-x-36 xl:-translate-x-52 2xl:-translate-x-44"
                     items={heroSteps.map((step) => {
                         const Icon = step.icon
                         return {

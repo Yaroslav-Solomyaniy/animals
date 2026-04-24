@@ -128,7 +128,7 @@ export default function ImageLightbox({
                 alt={activeImage.alt}
                 className="max-h-[92vh] max-w-[92vw] rounded-2xl object-contain shadow-[0_30px_120px_rgba(0,0,0,0.48)]"
               />
-              {hasManyImages && (
+              {hasManyImages && activeIndex !== null && (
                 <span className="absolute bottom-4 left-1/2 -translate-x-1/2 rounded-full bg-gray-950/70 px-4 py-2 text-sm font-black text-white backdrop-blur">
                   {activeIndex + 1} / {images.length}
                 </span>

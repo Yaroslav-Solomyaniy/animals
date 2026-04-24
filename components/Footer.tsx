@@ -14,7 +14,7 @@ export default function Footer() {
 
   return (
     <footer className="bg-text-main text-white pt-16 sm:pt-20 lg:pt-24 pb-10">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-[calc(80rem+4rem)] px-4 sm:px-6 lg:px-8">
         {/* GRID */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-16 mb-16">
           {/* LOGO + TEXT */}

@@ -14,7 +14,7 @@ export default function AnimalCatalog() {
 
   return (
     <section id="adopt" className="bg-neutral-base py-24 pb-12">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-[calc(80rem+4rem)] px-4 sm:px-6 lg:px-8">
         <div className="mb-10 flex flex-col items-start justify-between gap-6 md:flex-row md:items-start">
           <div className="max-w-2xl">
             <h2 className="mb-4 text-4xl font-extrabold text-text-main md:text-5xl">

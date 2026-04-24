@@ -81,7 +81,7 @@ export default function TrustValues() {
 
   return (
     <section className="bg-white py-28">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-[calc(80rem+4rem)] px-4 sm:px-6 lg:px-8">
         <div className="mb-12 max-w-3xl">
           <p className="mb-4 text-sm font-extrabold tracking-wider text-primary uppercase">
             Відкрита допомога

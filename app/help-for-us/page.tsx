@@ -34,6 +34,29 @@ const helpWays = [
   },
 ]
 
+const heroGalleryItems = [
+  {
+    image:
+      'https://images.unsplash.com/photo-1601758125946-6ec2ef64daf8?auto=format&fit=crop&q=80&w=900',
+    text: 'Корм\nщодня',
+  },
+  {
+    image:
+      'https://images.unsplash.com/photo-1583512603805-3cc6b41f3edb?auto=format&fit=crop&q=80&w=900',
+    text: 'Лікування\nі догляд',
+  },
+  {
+    image:
+      'https://images.unsplash.com/photo-1601758177266-bc599de87707?auto=format&fit=crop&q=80&w=900',
+    text: 'Прогулянки\nта увага',
+  },
+  {
+    image:
+      'https://images.unsplash.com/photo-1548199973-03cce0bbc87b?auto=format&fit=crop&q=80&w=900',
+    text: 'Дім для\nтварин',
+  },
+]
+
 const donationOptions = [
   { amount: 100, description: 'корм або смаколики для підопічних' },
   { amount: 500, description: 'вакцинація та базовий догляд' },
@@ -86,25 +109,52 @@ export default function HelpForUsPage() {
         description="Ваш внесок допомагає центру щодня годувати, лікувати, вигулювати та соціалізувати тварин, які чекають на безпечне життя."
         icon={Heart}
       >
-        <div className="grid gap-4 rounded-[24px] bg-white p-2 md:grid-cols-3">
-          {helpWays.map((way) => {
-            const Icon = way.icon
-            return (
+        <div className="overflow-hidden rounded-[32px] border border-orange-100 bg-white p-3 shadow-[0_28px_80px_rgba(15,23,42,0.08)]">
+          <div className="grid gap-3 rounded-[26px] border border-orange-100 bg-orange-50/70 p-3 sm:grid-cols-2">
+            {heroGalleryItems.map((item, index) => (
               <article
-                key={way.title}
-                className="rounded-[20px] border border-gray-100 bg-gray-50 p-5 text-center"
+                key={item.text}
+                className={[
+                  'group relative min-h-40 overflow-hidden rounded-[22px] bg-white shadow-soft transition hover:-translate-y-0.5 hover:shadow-[0_18px_45px_rgba(242,116,56,0.16)]',
+                  index === 0 ? 'sm:row-span-2 sm:min-h-80' : '',
+                ].join(' ')}
               >
-                <span
-                  className={`mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-2xl border ${way.tone}`}
-                >
-                  <Icon className="h-6 w-6" />
-                </span>
-                <h2 className="text-base font-black text-gray-950">
-                  {way.title}
-                </h2>
+                <img
+                  src={item.image}
+                  alt={item.text.replace('\n', ' ')}
+                  className="absolute inset-0 h-full w-full object-cover transition duration-500 group-hover:scale-105"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-gray-950/70 via-gray-950/20 to-transparent" />
+                <p className="absolute bottom-4 left-4 whitespace-pre-line text-2xl font-black leading-tight text-white drop-shadow">
+                  {item.text}
+                </p>
               </article>
-            )
-          })}
+            ))}
+          </div>
+
+          <div className="grid gap-3 pt-3 md:grid-cols-3">
+            {helpWays.map((way) => {
+              const Icon = way.icon
+              return (
+                <article
+                  key={way.title}
+                  className="group rounded-[20px] border border-gray-100 bg-gray-50 p-4 transition hover:-translate-y-0.5 hover:border-orange-200 hover:bg-white hover:shadow-[0_18px_45px_rgba(242,116,56,0.12)]"
+                >
+                  <span
+                    className={`mb-3 flex h-11 w-11 items-center justify-center rounded-2xl border ${way.tone}`}
+                  >
+                    <Icon className="h-5 w-5" />
+                  </span>
+                  <h2 className="text-base font-black text-gray-950">
+                    {way.title}
+                  </h2>
+                  <p className="mt-2 line-clamp-3 text-sm leading-6 text-gray-600">
+                    {way.text}
+                  </p>
+                </article>
+              )
+            })}
+          </div>
         </div>
       </PageHero>
 
