@@ -1,8 +1,8 @@
 'use client'
 
-import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import type { AuthChangeEvent, Session } from '@supabase/supabase-js'
+import { LinkButton } from '@/components/ui/Button'
 import { getSupabaseBrowserClient } from '@/lib/supabase/client'
 
 const supabase = getSupabaseBrowserClient()
@@ -53,9 +53,9 @@ export function AdminAuthGate({ children }: { children: React.ReactNode }) {
           Для роботи з адмінкою потрібна активна сесія Supabase.
         </p>
         <div className="mt-6">
-          <Link href="/sign-in" className="btn-primary inline-flex">
+          <LinkButton href="/sign-in">
             Перейти до входу
-          </Link>
+          </LinkButton>
         </div>
       </div>
     )

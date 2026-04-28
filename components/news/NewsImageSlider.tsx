@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { ArrowLeft, ArrowRight } from 'lucide-react'
+import { IconButton } from '@/components/ui/Button'
 import ImageLightbox from './ImageLightbox'
 
 type NewsImageSliderProps = {
@@ -62,28 +63,32 @@ export default function NewsImageSlider({
                 className={`absolute inset-x-4 bottom-4 z-20 flex items-center justify-between gap-3 ${controlsClassName}`}
               >
                 <div className="flex items-center gap-2">
-                  <button
+                  <IconButton
                     type="button"
                     onClick={(event) => {
                       event.stopPropagation()
                       goPrev()
                     }}
-                    className="flex h-11 w-11 items-center justify-center rounded-full border border-white/40 bg-white/88 text-gray-950 shadow-soft backdrop-blur transition hover:bg-primary hover:text-white"
+                    label="РџРѕРїРµСЂРµРґРЅС” С„РѕС‚Рѕ"
+                    variant="light"
+                    className="h-11 w-11 backdrop-blur"
                     aria-label="Попереднє фото"
                   >
                     <ArrowLeft className="h-4 w-4" />
-                  </button>
-                  <button
+                  </IconButton>
+                  <IconButton
                     type="button"
                     onClick={(event) => {
                       event.stopPropagation()
                       goNext()
                     }}
-                    className="flex h-11 w-11 items-center justify-center rounded-full border border-white/40 bg-white/88 text-gray-950 shadow-soft backdrop-blur transition hover:bg-primary hover:text-white"
+                    label="РќР°СЃС‚СѓРїРЅРµ С„РѕС‚Рѕ"
+                    variant="light"
+                    className="h-11 w-11 backdrop-blur"
                     aria-label="Наступне фото"
                   >
                     <ArrowRight className="h-4 w-4" />
-                  </button>
+                  </IconButton>
                 </div>
 
                 {showCounter && (

@@ -242,15 +242,16 @@ export function NewsForm({
             {blockActions.map((action) => {
               const Icon = action.icon
               return (
-                <button
+                <Button
                   key={action.type}
                   type="button"
                   onClick={() => addBlock(action.type)}
-                  className="inline-flex min-h-10 items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-extrabold text-slate-700 shadow-sm transition hover:border-orange-200 hover:bg-orange-50 hover:text-primary"
+                  variant="outline"
+                  size="sm"
                 >
                   <Icon className="h-4 w-4" />
                   {action.label}
-                </button>
+                </Button>
               )
             })}
           </div>
@@ -540,7 +541,7 @@ function EntityForm({
       {status === 'saving' ? <div className="text-sm font-semibold text-primary">Збереження...</div> : null}
       {children}
       <div className="sticky bottom-4 z-20 flex justify-end">
-        <Button type="submit" className="border-primary bg-primary text-white shadow-[0_16px_40px_rgba(242,116,56,0.18)] hover:bg-orange-600">
+        <Button type="submit">
           <Save className="h-4 w-4" />
           {submitLabel}
         </Button>
@@ -592,34 +593,32 @@ function IconTool({
   danger?: boolean
 }) {
   return (
-    <button
+    <Button
       type="button"
       title={label}
       aria-label={label}
       disabled={disabled}
       onClick={onClick}
-      className={cn(
-        'flex h-10 w-10 items-center justify-center rounded-xl border text-slate-600 transition disabled:cursor-not-allowed disabled:opacity-35',
-        danger
-          ? 'border-rose-200 bg-rose-50 hover:border-rose-400 hover:text-rose-700'
-          : 'border-slate-200 bg-white hover:border-orange-200 hover:text-primary'
-      )}
+      variant={danger ? 'danger' : 'outline'}
+      size="icon"
+      className="h-10 w-10"
     >
       {children}
-    </button>
+    </Button>
   )
 }
 
 function SmallAddButton({ children, onClick }: { children: React.ReactNode; onClick: () => void }) {
   return (
-    <button
+    <Button
       type="button"
       onClick={onClick}
-      className="inline-flex min-h-10 items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-extrabold text-slate-700 shadow-sm transition hover:border-orange-200 hover:bg-orange-50 hover:text-primary"
+      variant="outline"
+      size="sm"
     >
       <Plus className="h-4 w-4" />
       {children}
-    </button>
+    </Button>
   )
 }
 

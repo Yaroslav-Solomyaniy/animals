@@ -35,11 +35,93 @@
 }
 
 .btn-primary {
-  @apply bg-primary text-white px-7 py-3 rounded-xl font-bold transition-all shadow-primary hover:shadow-lg hover:shadow-primary/30 active:scale-[0.98];
+  @apply relative isolate overflow-hidden inline-flex items-center justify-center gap-2 rounded-xl border border-primary/35 bg-primary px-7 py-3 font-extrabold text-white shadow-[0_14px_34px_rgba(242,116,56,0.12)] transition-[transform,border-color,background-color,color,box-shadow] duration-200 ease-out hover:-translate-y-0.5 hover:border-primary hover:bg-primary hover:shadow-[0_18px_45px_rgba(242,116,56,0.2)] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20 active:translate-y-0 active:scale-[0.98];
+  --button-fill: rgba(255, 255, 255, 0.18);
+  --button-hover-text: #fff;
 }
 
 .btn-outline {
-  @apply border border-gray-200 px-6 py-3 rounded-xl font-semibold bg-white text-gray-600 transition-all hover:border-primary hover:text-primary active:scale-[0.98];
+  @apply relative isolate overflow-hidden inline-flex items-center justify-center gap-2 rounded-xl border border-primary/35 bg-white px-6 py-3 font-extrabold text-primary shadow-[0_14px_34px_rgba(242,116,56,0.12)] transition-[transform,border-color,background-color,color,box-shadow] duration-200 ease-out hover:-translate-y-0.5 hover:border-primary hover:bg-white hover:text-white hover:shadow-[0_18px_45px_rgba(242,116,56,0.2)] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20 active:translate-y-0 active:scale-[0.98];
+  --button-fill: #f27438;
+  --button-hover-text: #fff;
+}
+
+:where(.btn-animated, .btn-primary, .btn-outline)::before,
+:where(.btn-animated, .btn-primary, .btn-outline)::after {
+  content: '';
+  position: absolute;
+  inset-inline: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+:where(.btn-animated, .btn-primary, .btn-outline) > * {
+  position: relative;
+  z-index: 10;
+}
+
+:is(.btn-animated, .btn-primary, .btn-outline) * {
+  color: inherit;
+}
+
+:where(.btn-animated, .btn-primary, .btn-outline)::before {
+  top: auto;
+  bottom: 0;
+  height: 100%;
+  background: var(--button-fill);
+  transform: scaleY(0);
+  transform-origin: bottom;
+  transition: transform 320ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+:where(.btn-animated, .btn-primary, .btn-outline)::after {
+  inset: 0;
+  background: linear-gradient(
+    115deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.22) 46%,
+    rgba(255, 255, 255, 0.44) 50%,
+    rgba(255, 255, 255, 0.22) 54%,
+    transparent 100%
+  );
+  opacity: 0;
+  transform: translateX(-130%);
+  transition:
+    opacity 180ms ease,
+    transform 520ms ease;
+}
+
+:where(.btn-animated, .btn-primary, .btn-outline):hover::before,
+:where(.btn-animated, .btn-primary, .btn-outline):focus-visible::before {
+  transform: scaleY(1);
+}
+
+:where(.btn-animated, .btn-primary, .btn-outline):hover,
+:where(.btn-animated, .btn-primary, .btn-outline):focus-visible {
+  color: var(--button-hover-text);
+}
+
+:where(.btn-animated-primary, .btn-primary)::before {
+  transform: scaleY(1);
+  opacity: 0;
+  transition: opacity 200ms ease;
+}
+
+:where(.btn-animated-primary, .btn-primary):hover::before,
+:where(.btn-animated-primary, .btn-primary):focus-visible::before {
+  opacity: 1;
+}
+
+:where(.btn-animated, .btn-primary, .btn-outline):hover::after,
+:where(.btn-animated, .btn-primary, .btn-outline):focus-visible::after {
+  opacity: 1;
+  transform: translateX(130%);
+}
+
+:where(.btn-animated, .btn-primary, .btn-outline):disabled::before,
+:where(.btn-animated, .btn-primary, .btn-outline):disabled::after {
+  opacity: 0;
+  transform: scaleY(0);
 }
 
 .glass-card {
@@ -211,6 +293,8 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  :where(.btn-animated, .btn-primary, .btn-outline)::before,
+  :where(.btn-animated, .btn-primary, .btn-outline)::after,
   .storybook-bg,
   .storybook-float,
   .storybook-wiggle,
@@ -218,6 +302,11 @@
   .storybook-spark,
   .storybook-card:hover .storybook-card-icon {
     animation: none;
+  }
+
+  :where(.btn-animated, .btn-primary, .btn-outline)::before,
+  :where(.btn-animated, .btn-primary, .btn-outline)::after {
+    transition-duration: 0ms;
   }
 }
 

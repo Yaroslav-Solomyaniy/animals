@@ -4,6 +4,7 @@ import type { ReactNode } from 'react'
 import { useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { ArrowLeft, ArrowRight, X } from 'lucide-react'
+import { IconButton } from '@/components/ui/Button'
 
 export type LightboxImageItem = {
   src: string
@@ -83,39 +84,45 @@ export default function ImageLightbox({
             aria-modal="true"
             onClick={close}
           >
-            <button
+            <IconButton
               type="button"
+              label="Р—Р°РєСЂРёС‚Рё РїРµСЂРµРіР»СЏРґ С„РѕС‚Рѕ"
+              variant="ghost"
               onClick={close}
-              className="absolute right-4 top-4 z-[10001] flex h-12 w-12 items-center justify-center rounded-full border border-white/20 bg-white/12 text-white backdrop-blur transition hover:bg-white hover:text-gray-950"
+              className="absolute right-4 top-4 z-[10001] border-white/30 bg-white/12 text-white backdrop-blur hover:bg-white hover:text-gray-950"
               aria-label="Закрити перегляд фото"
             >
               <X className="h-5 w-5" />
-            </button>
+            </IconButton>
 
             {hasManyImages && (
               <>
-                <button
+                <IconButton
                   type="button"
+                  label="РџРѕРїРµСЂРµРґРЅС” С„РѕС‚Рѕ"
+                  variant="ghost"
                   onClick={(event) => {
                     event.stopPropagation()
                     goPrev()
                   }}
-                  className="absolute left-4 top-1/2 z-[10001] flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full border border-white/20 bg-white/12 text-white backdrop-blur transition hover:bg-white hover:text-gray-950"
+                  className="absolute left-4 top-1/2 z-[10001] -translate-y-1/2 border-white/30 bg-white/12 text-white backdrop-blur hover:bg-white hover:text-gray-950"
                   aria-label="Попереднє фото"
                 >
                   <ArrowLeft className="h-5 w-5" />
-                </button>
-                <button
+                </IconButton>
+                <IconButton
                   type="button"
+                  label="РќР°СЃС‚СѓРїРЅРµ С„РѕС‚Рѕ"
+                  variant="ghost"
                   onClick={(event) => {
                     event.stopPropagation()
                     goNext()
                   }}
-                  className="absolute right-4 top-1/2 z-[10001] flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full border border-white/20 bg-white/12 text-white backdrop-blur transition hover:bg-white hover:text-gray-950"
+                  className="absolute right-4 top-1/2 z-[10001] -translate-y-1/2 border-white/30 bg-white/12 text-white backdrop-blur hover:bg-white hover:text-gray-950"
                   aria-label="Наступне фото"
                 >
                   <ArrowRight className="h-5 w-5" />
-                </button>
+                </IconButton>
               </>
             )}
 

@@ -1,6 +1,7 @@
 import {ArrowRight, HeartHandshake, ShieldCheck, Stethoscope,} from 'lucide-react'
 import {motion} from 'motion/react'
 import SectionFrame from '@/components/ui/SectionFrame'
+import { LinkButton } from '@/components/ui/Button'
 import type {MasonryItem} from './ui/Masonry'
 import Masonry from './ui/Masonry'
 
@@ -113,10 +114,10 @@ export default function Hero() {
                             className="relative mt-16 lg:mt-0"
                         >
                             <div className="flex flex-col gap-4 pt-2 sm:flex-row">
-                                <button className="btn-primary">Знайти вірного друга</button>
-                                <button className="btn-outline flex items-center justify-center gap-2">
+                                <LinkButton href="/animals">Знайти вірного друга</LinkButton>
+                                <LinkButton href="/services" variant="outline">
                                     Наші послуги <ArrowRight className="ml-1 h-4 w-4"/>
-                                </button>
+                                </LinkButton>
                             </div>
                         </motion.div>
                     </motion.div>

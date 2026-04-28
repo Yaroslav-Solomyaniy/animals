@@ -1,6 +1,5 @@
 'use client'
 
-import Link from 'next/link'
 import {
     Activity,
     ArrowRight,
@@ -22,6 +21,7 @@ import PageHero from '@/components/ui/PageHero'
 import SectionFrame from '@/components/ui/SectionFrame'
 import Stack from '@/components/ui/Stack'
 import StorybookDecorations from '@/components/ui/StorybookDecorations'
+import { LinkButton } from '@/components/ui/Button'
 import {WobbleCard} from '@/components/ui/wobble-card'
 
 
@@ -203,18 +203,18 @@ export default function ServicesPage() {
                 icon={BadgeCheck}
                 actions={
                     <>
-                        <Link
+                        <LinkButton
                             href="/contacts"
-                            className="inline-flex items-center justify-center gap-2 rounded-2xl bg-orange-500 px-6 py-4 font-bold text-white transition hover:bg-orange-600"
+                            size="lg"
                         >
                             Записатися на послугу
                             <ArrowRight className="h-5 w-5"/>
-                        </Link>
+                        </LinkButton>
                         <a
                             href="tel:+380932966097"
-                            className="inline-flex items-center justify-center gap-2 rounded-2xl border-2 border-orange-100 bg-white px-6 py-4 font-bold text-gray-950 transition hover:border-orange-300"
+                            className="btn-animated inline-flex min-h-14 items-center justify-center gap-2 rounded-xl border border-primary/35 bg-white px-7 py-3.5 text-base font-extrabold text-primary shadow-[0_14px_34px_rgba(242,116,56,0.12)] transition-[transform,border-color,background-color,color,box-shadow] duration-200 ease-out [--button-fill:#f27438] [--button-hover-text:#fff] hover:-translate-y-0.5 hover:border-primary hover:bg-white hover:shadow-[0_18px_45px_rgba(242,116,56,0.2)] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20 active:translate-y-0 active:scale-[0.98]"
                         >
-                            <Phone className="h-5 w-5 text-orange-500"/>
+                            <Phone className="h-5 w-5"/>
                             +38 (093) 296-60-97
                         </a>
                     </>
@@ -358,18 +358,20 @@ export default function ServicesPage() {
                     <div className="mt-8 flex flex-col justify-center gap-4 sm:flex-row">
                         <a
                             href="tel:+380932966097"
-                            className="inline-flex items-center justify-center gap-2 rounded-2xl bg-white px-8 py-4 font-bold text-orange-600 transition hover:bg-orange-50"
+                            className="btn-animated inline-flex min-h-14 items-center justify-center gap-2 rounded-xl border border-white/60 bg-white px-7 py-3.5 text-base font-extrabold text-primary shadow-[0_14px_34px_rgba(242,116,56,0.12)] transition-[transform,border-color,background-color,color,box-shadow] duration-200 ease-out [--button-fill:#f27438] [--button-hover-text:#fff] hover:-translate-y-0.5 hover:border-white hover:bg-white hover:shadow-[0_18px_45px_rgba(242,116,56,0.2)] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-white/25 active:translate-y-0 active:scale-[0.98]"
                         >
                             <Phone className="h-5 w-5"/>
                             Зателефонувати зараз
                         </a>
-                        <Link
+                        <LinkButton
                             href="/contacts"
-                            className="inline-flex items-center justify-center gap-2 rounded-2xl border-2 border-white px-8 py-4 font-bold text-white transition hover:bg-white/10"
+                            variant="ghost"
+                            size="lg"
+                            className="border-white/70 text-white [--button-fill:#fff] [--button-hover-text:#f27438] hover:border-white"
                         >
                             Написати повідомлення
                             <ArrowRight className="h-5 w-5"/>
-                        </Link>
+                        </LinkButton>
                     </div>
                 </div>
             </section>
@@ -400,13 +402,14 @@ export default function ServicesPage() {
                                     словами і допомагаємо власнику зрозуміти, що саме потрібно
                                     тварині.
                                 </p>
-                                <Link
+                                <LinkButton
                                     href="/contacts"
-                                    className="mt-7 inline-flex items-center gap-2 rounded-2xl bg-gray-950 px-6 py-3 font-bold text-white transition hover:bg-orange-600"
+                                    variant="dark"
+                                    className="mt-7"
                                 >
                                     Уточнити послугу
                                     <ArrowRight className="h-4 w-4"/>
-                                </Link>
+                                </LinkButton>
                             </div>
 
                             <div className="grid gap-4 md:grid-cols-2">

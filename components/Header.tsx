@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { Menu, X } from 'lucide-react'
 import { AnimatePresence, motion } from 'motion/react'
-import { Button } from '@/components/ui/Button'
+import { Button, LinkButton } from '@/components/ui/Button'
 import { cn } from '@/lib/utils'
 
 const navLinks = [
@@ -91,15 +91,12 @@ export default function Header() {
           </div>
 
           <div className="hidden items-center gap-3 lg:flex">
-            <Link
+            <LinkButton
               href="/help-for-us"
-              className={cn(
-                'inline-flex items-center justify-center rounded-xl bg-primary text-sm font-bold text-white shadow-[0_16px_40px_rgba(242,116,56,0.22)] transition hover:bg-orange-600',
-                isCompact ? 'min-h-10 px-4 py-2' : 'min-h-11 px-5 py-2.5'
-              )}
+              size={isCompact ? 'sm' : 'md'}
             >
               Підтримати
-            </Link>
+            </LinkButton>
           </div>
 
           <div className="lg:hidden">
@@ -151,13 +148,14 @@ export default function Header() {
                   )
                 })}
                 <div className="pt-4">
-                  <Link
+                  <LinkButton
                     href="/help-for-us"
                     onClick={() => setIsOpen(false)}
-                    className="inline-flex min-h-14 w-full items-center justify-center rounded-xl bg-primary px-5 py-3.5 text-base font-bold text-white shadow-primary transition hover:bg-orange-600"
+                    size="lg"
+                    className="w-full"
                   >
                     Підтримати
-                  </Link>
+                  </LinkButton>
                 </div>
               </div>
             </motion.div>

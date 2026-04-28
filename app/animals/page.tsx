@@ -18,6 +18,7 @@ import AnimalCard from '@/components/AnimalCard'
 import PageHero from '@/components/ui/PageHero'
 import SectionFrame from '@/components/ui/SectionFrame'
 import StorybookDecorations from '@/components/ui/StorybookDecorations'
+import { Button } from '@/components/ui/Button'
 import {MOCK_ANIMALS} from '@/mockData'
 import type {Animal} from '@/types'
 
@@ -266,14 +267,16 @@ export default function AnimalsPage() {
                     </div>
 
                     {activeFiltersCount > 0 && (
-                        <button
+                        <Button
                             type="button"
                             onClick={resetFilters}
-                            className="inline-flex h-11 w-full  items-center justify-center gap-2 rounded-2xl border border-primary bg-white px-5 text-sm font-bold text-gray-500 transition-all hover:border-primary hover:bg-primary transition:0.7s hover:text-white  sm:w-auto hover:cursor-pointer"
+                            variant="outline"
+                            size="sm"
+                            className="h-11 w-full sm:w-auto"
                         >
                             <PawPrint className="h-4 w-4"/>
                             Скинути фільтри ({activeFiltersCount})
-                        </button>
+                        </Button>
                     )}
                 </div>
 
@@ -352,18 +355,14 @@ function FilterButton({
     children: React.ReactNode
 }) {
     return (
-        <button
+        <Button
             type="button"
             onClick={onClick}
-            className={[
-                'min-h-10 rounded-xl border px-3.5 py-2 text-sm font-bold transition-all',
-                isActive
-                    ? 'border-primary bg-primary text-white shadow-primary'
-                    : 'border-gray-100 bg-gray-50 text-gray-500 hover:border-primary hover:bg-white hover:text-primary',
-            ].join(' ')}
+            variant={isActive ? 'primary' : 'outline'}
+            size="sm"
         >
             {children}
-        </button>
+        </Button>
     )
 }
 
@@ -380,41 +379,42 @@ function Pagination({
 
     return (
         <nav className="mt-10 flex flex-wrap items-center justify-center gap-2">
-            <button
+            <Button
                 type="button"
                 disabled={currentPage === 1}
                 onClick={() => onChange(currentPage - 1)}
-                className="inline-flex h-11 items-center gap-2 rounded-xl border border-gray-100 bg-white px-4 text-sm font-bold text-gray-500 transition-all hover:border-primary hover:text-primary disabled:cursor-not-allowed disabled:opacity-40"
+                variant="outline"
+                size="sm"
+                className="h-11"
             >
                 <ArrowLeft className="h-4 w-4"/>
                 Назад
-            </button>
+            </Button>
 
             {pages.map((page) => (
-                <button
+                <Button
                     key={page}
                     type="button"
                     onClick={() => onChange(page)}
-                    className={[
-                        'h-11 w-11 rounded-xl border text-sm font-extrabold transition-all',
-                        currentPage === page
-                            ? 'border-primary bg-primary text-white shadow-primary'
-                            : 'border-gray-100 bg-white text-gray-500 hover:border-primary hover:text-primary',
-                    ].join(' ')}
+                    variant={currentPage === page ? 'primary' : 'outline'}
+                    size="icon"
+                    className="h-11 w-11"
                 >
                     {page}
-                </button>
+                </Button>
             ))}
 
-            <button
+            <Button
                 type="button"
                 disabled={currentPage === totalPages}
                 onClick={() => onChange(currentPage + 1)}
-                className="inline-flex h-11 items-center gap-2 rounded-xl border border-gray-100 bg-white px-4 text-sm font-bold text-gray-500 transition-all hover:border-primary hover:text-primary disabled:cursor-not-allowed disabled:opacity-40"
+                variant="outline"
+                size="sm"
+                className="h-11"
             >
                 Далі
                 <ArrowRight className="h-4 w-4"/>
-            </button>
+            </Button>
         </nav>
     )
 }
@@ -432,9 +432,9 @@ function EmptyState({onReset}: { onReset: () => void }) {
             <p className="mx-auto mt-2 max-w-xl text-gray-500">
                 Спробуйте змінити розмір, стать або статус готовності.
             </p>
-            <button type="button" onClick={onReset} className="btn-primary mt-6">
+            <Button type="button" onClick={onReset} className="mt-6">
                 Показати всіх
-            </button>
+            </Button>
         </SectionFrame>
     )
 }

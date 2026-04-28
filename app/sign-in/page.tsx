@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { Send } from 'lucide-react'
 import { Input } from '@/components/ui/FormControls'
+import { Button } from '@/components/ui/Button'
 import BorderGlow from '@/components/ui/BorderGlow'
 import {useRouter} from "next/navigation";
 import { getSupabaseBrowserClient } from "@/lib/supabase/client";
@@ -97,13 +98,14 @@ export default function SignInPage() {
               ) : null}
 
               {/* BUTTON */}
-              <button
+              <Button
                   type="submit"
-                  className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-orange-500 px-6 py-4 font-bold text-white transition hover:bg-orange-600"
+                  size="lg"
+                  className="mt-6 w-full"
               >
                 Увійти
                 <Send className="h-4 w-4" />
-              </button>
+              </Button>
             </form>
           </BorderGlow>
         </div>

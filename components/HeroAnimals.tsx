@@ -2,7 +2,7 @@ import useEmblaCarousel from 'embla-carousel-react'
 import { ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react'
 import AnimalCard from '@/components/AnimalCard'
 import { MOCK_ANIMALS } from '@/mockData'
-import Link from "next/link";
+import { IconButton, LinkButton } from '@/components/ui/Button'
 
 export default function AnimalCatalog() {
   const [emblaRef, emblaApi] = useEmblaCarousel({
@@ -26,13 +26,14 @@ export default function AnimalCatalog() {
             </p>
           </div>
 
-          <Link
+          <LinkButton
             href="/animals"
-            className="inline-flex w-full items-center justify-center gap-2 rounded-2xl border border-gray-100 bg-white px-7 py-3.5 font-bold text-text-main transition-all hover:border-primary hover:text-primary sm:w-auto"
+            variant="outline"
+            className="w-full sm:w-auto"
           >
             До всіх тварин
             <ArrowRight className="h-4 w-4" />
-          </Link>
+          </LinkButton>
         </div>
 
         <div className="relative">
@@ -52,22 +53,26 @@ export default function AnimalCatalog() {
           </div>
 
           <div className="pointer-events-none absolute inset-y-0 right-2 left-2 z-20 flex items-center justify-between">
-            <button
+            <IconButton
               type="button"
               aria-label="Прокрутити назад"
-              className="pointer-events-auto opacity-55 hover:opacity-100 hover:cursor-pointer inline-flex h-12 w-12 items-center justify-center rounded-full border border-primary bg-white/92 text-text-main shadow-[0_18px_45px_-24px_rgba(31,41,55,0.7)] backdrop-blur transition-all hover:border-primary hover:bg-white hover:text-primary"
+              label="РџСЂРѕРєСЂСѓС‚РёС‚Рё РЅР°Р·Р°Рґ"
+              variant="light"
+              className="pointer-events-auto opacity-70 backdrop-blur hover:opacity-100"
               onClick={() => emblaApi?.scrollPrev()}
             >
               <ChevronLeft className="h-5 w-5" />
-            </button>
-            <button
+            </IconButton>
+            <IconButton
               type="button"
               aria-label="Прокрутити вперед"
-              className="pointer-events-auto opacity-55 hover:opacity-100 hover:cursor-pointer inline-flex h-12 w-12 items-center justify-center rounded-full border border-primary bg-white/92 text-text-main shadow-[0_18px_45px_-24px_rgba(31,41,55,0.7)] backdrop-blur transition-all hover:border-primary hover:bg-white hover:text-primary"
+              label="РџСЂРѕРєСЂСѓС‚РёС‚Рё РІРїРµСЂРµРґ"
+              variant="light"
+              className="pointer-events-auto opacity-70 backdrop-blur hover:opacity-100"
               onClick={() => emblaApi?.scrollNext()}
             >
               <ChevronRight className="h-5 w-5" />
-            </button>
+            </IconButton>
           </div>
         </div>
       </div>

@@ -13,6 +13,7 @@ import {
 } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import { motion } from 'motion/react'
+import { LinkButton } from '@/components/ui/Button'
 import type { Animal } from '@/types'
 
 type AnimalCardProps = {
@@ -106,21 +107,24 @@ export default function AnimalCard({
         </div>
 
         <div className="mt-auto flex gap-2 pt-5">
-          <Link
+          <LinkButton
             href={primaryHref}
-            className="inline-flex h-12 flex-1 items-center justify-center gap-2 rounded-2xl bg-text-main px-4 text-sm font-extrabold text-white transition-colors hover:bg-primary"
+            variant="dark"
+            className="h-12 flex-1 text-sm"
           >
             Деталі
             <ArrowRight className="h-4 w-4" />
-          </Link>
-          <Link
+          </LinkButton>
+          <LinkButton
             href={treatHref}
-            className="inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-orange-50 text-primary transition-colors hover:bg-primary hover:text-white"
+            variant="outline"
+            size="icon"
+            className="h-12 w-12 shrink-0"
             aria-label={`Дати смаколик для ${animal.name}`}
             title="Дати смаколик"
           >
             <PawPrint className="h-5 w-5" />
-          </Link>
+          </LinkButton>
         </div>
       </div>
     </motion.article>

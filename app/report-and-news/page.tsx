@@ -1,8 +1,8 @@
-import Link from 'next/link'
 import { ArrowRight, Calendar, Download, Heart, TrendingUp } from 'lucide-react'
 import PageHero from '@/components/ui/PageHero'
 import SectionFrame from '@/components/ui/SectionFrame'
 import StorybookDecorations from '@/components/ui/StorybookDecorations'
+import { Button, LinkButton } from '@/components/ui/Button'
 import { news, reports } from '@/lib/news'
 
 // const stats = [
@@ -86,13 +86,15 @@ export default function ReportAndNewsPage() {
                       <p className="mt-3 leading-7 text-gray-600">
                         {item.excerpt}
                       </p>
-                      <Link
+                      <LinkButton
                         href={`/report-and-news/${item.id}`}
-                        className="mt-5 inline-flex items-center gap-2 font-bold text-orange-600 transition hover:text-orange-700"
+                        variant="outline"
+                        size="sm"
+                        className="mt-5"
                       >
                         Читати далі
                         <ArrowRight className="h-4 w-4" />
-                      </Link>
+                      </LinkButton>
                     </div>
                   </div>
                 </article>
@@ -122,10 +124,10 @@ export default function ReportAndNewsPage() {
                       <span className="text-xs font-semibold uppercase tracking-[0.12em] text-gray-400">
                         {report.date}
                       </span>
-                      <button className="inline-flex items-center gap-1.5 text-sm font-bold text-orange-600">
+                      <Button type="button" variant="ghost" size="sm">
                         <Download className="h-4 w-4" />
                         Завантажити
-                      </button>
+                      </Button>
                     </div>
                   </div>
                 ))}
@@ -189,18 +191,19 @@ export default function ReportAndNewsPage() {
             спільної історії порятунку.
           </p>
           <div className="mt-8 flex flex-col justify-center gap-4 sm:flex-row">
-            <Link
+            <LinkButton
               href="/"
-              className="inline-flex items-center justify-center rounded-2xl bg-orange-500 px-6 py-3 font-bold text-white transition hover:bg-orange-600"
+              size="md"
             >
               Усиновити тварину
-            </Link>
-            <Link
+            </LinkButton>
+            <LinkButton
               href="/help-for-us"
-              className="inline-flex items-center justify-center rounded-2xl border-2 border-gray-200 bg-white px-6 py-3 font-bold text-gray-950 transition hover:border-orange-300"
+              variant="outline"
+              size="md"
             >
               Підтримати притулок
-            </Link>
+            </LinkButton>
           </div>
         </SectionFrame>
       </section>

@@ -1,4 +1,3 @@
-import Link from 'next/link'
 import {
   ArrowLeft,
   BadgeCheck,
@@ -13,6 +12,7 @@ import {
 import type { LucideIcon } from 'lucide-react'
 import SectionFrame from '@/components/ui/SectionFrame'
 import StorybookDecorations from '@/components/ui/StorybookDecorations'
+import { Button, LinkButton } from '@/components/ui/Button'
 import { MOCK_ANIMALS } from '@/mockData'
 import { Input, Select, Textarea } from '@/components/ui/FormControls'
 
@@ -38,13 +38,15 @@ export default async function DonatePage({ searchParams }: DonatePageProps) {
       <StorybookDecorations />
 
       <section className="relative z-10 mx-auto max-w-[calc(80rem+4rem)] px-4 py-10 sm:px-6 lg:px-8 lg:py-14">
-        <Link
+        <LinkButton
           href="/animals"
-          className="mb-6 inline-flex w-fit items-center gap-2 rounded-full bg-white/80 px-4 py-2 text-sm font-extrabold text-gray-500 shadow-soft backdrop-blur transition-colors hover:text-primary"
+          variant="light"
+          size="sm"
+          className="mb-6 w-fit backdrop-blur"
         >
           <ArrowLeft className="h-4 w-4" />
           До каталогу
-        </Link>
+        </LinkButton>
 
         <SectionFrame className="overflow-hidden rounded-[28px] p-0">
           <div className="grid min-h-[680px] lg:grid-cols-[0.92fr_1.08fr]">
@@ -114,18 +116,14 @@ export default async function DonatePage({ searchParams }: DonatePageProps) {
 
               <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
                 {amounts.map((amount, index) => (
-                  <button
+                  <Button
                     key={amount}
                     type="button"
-                    className={[
-                      'h-16 rounded-2xl border text-lg font-extrabold shadow-sm transition-all hover:-translate-y-0.5 hover:border-primary hover:shadow-primary',
-                      index === 1
-                        ? 'border-primary bg-primary text-white'
-                        : 'border-gray-100 bg-white text-text-main hover:text-primary',
-                    ].join(' ')}
+                    variant={index === 1 ? 'primary' : 'outline'}
+                    className="h-16 text-lg"
                   >
                     {amount} грн
-                  </button>
+                  </Button>
                 ))}
               </div>
 
@@ -170,20 +168,23 @@ export default async function DonatePage({ searchParams }: DonatePageProps) {
               </label>
 
               <div className="mt-6 grid gap-3 sm:grid-cols-[minmax(0,1fr)_180px]">
-                <button
+                <Button
                   type="button"
-                  className="inline-flex h-14 items-center justify-center gap-3 rounded-2xl bg-primary px-7 text-base font-extrabold text-white shadow-primary transition-all hover:bg-secondary hover:shadow-lg"
+                  size="lg"
+                  className="h-14 text-base"
                 >
                   <CreditCard className="h-5 w-5" />
                   Оплатити
-                </button>
-                <button
+                </Button>
+                <Button
                   type="button"
-                  className="inline-flex h-14 items-center justify-center gap-3 rounded-2xl border border-gray-100 bg-white px-7 text-base font-extrabold text-gray-600 transition-all hover:border-primary hover:text-primary"
+                  variant="outline"
+                  size="lg"
+                  className="h-14 text-base"
                 >
                   <Banknote className="h-5 w-5" />
                   Реквізити
-                </button>
+                </Button>
               </div>
 
               <div className="mt-auto pt-7">

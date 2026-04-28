@@ -19,7 +19,7 @@ import PageHero from '@/components/ui/PageHero'
 import SectionFrame from '@/components/ui/SectionFrame'
 import StorybookDecorations from '@/components/ui/StorybookDecorations'
 import { Button } from '@/components/ui/Button'
-import { Input, Select, Textarea } from '@/components/ui/FormControls'
+import { Input, Select } from '@/components/ui/FormControls'
 
 
 const contactCards = [
@@ -99,34 +99,34 @@ export default function ContactsPage() {
           </p>
           <a
             href="tel:+380932966097"
-            className="mt-7 flex items-center justify-between gap-4 rounded-2xl bg-white px-5 py-4 text-gray-950 transition hover:bg-orange-50"
+            className="btn-animated group mt-7 flex items-center justify-between gap-4 rounded-xl border border-white/50 bg-white px-5 py-4 text-gray-950 shadow-[0_14px_34px_rgba(242,116,56,0.12)] transition-[transform,border-color,background-color,color,box-shadow] duration-200 ease-out [--button-fill:#f27438] [--button-hover-text:#fff] hover:-translate-y-0.5 hover:border-white hover:bg-white hover:shadow-[0_18px_45px_rgba(242,116,56,0.2)] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-white/25 active:translate-y-0 active:scale-[0.98]"
           >
             <span className="flex items-center gap-4">
-              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-orange-100 text-orange-600">
+              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-orange-100 text-orange-600 transition-colors group-hover:bg-white/20 group-hover:text-white">
                 <Phone className="h-5 w-5" />
               </span>
               <span>
-                <span className="block text-sm font-semibold text-gray-500">
+                <span className="block text-sm font-semibold text-gray-500 transition-colors group-hover:text-white/75">
                   Зателефонувати
                 </span>
-                <span className="text-lg font-black sm:text-xl">
+                <span className="text-lg font-black transition-colors group-hover:text-white sm:text-xl">
                   +38 (093) 296-60-97
                 </span>
               </span>
             </span>
-            <ArrowRight className="h-5 w-5 text-orange-500" />
+            <ArrowRight className="h-5 w-5 text-orange-500 transition-colors group-hover:text-white" />
           </a>
           <div className="mt-4 grid grid-cols-2 gap-3 text-sm font-semibold">
             <a
               href="mailto:info@animalcare.ck.ua"
-              className="rounded-2xl border border-white/10 bg-white/8 px-4 py-3 text-white/80 transition hover:border-orange-300/50 hover:bg-white/12 hover:text-white"
+              className="btn-animated rounded-xl border border-white/15 bg-white/8 px-4 py-3 text-white/80 transition-[transform,border-color,background-color,color,box-shadow] duration-200 ease-out [--button-fill:#f27438] [--button-hover-text:#fff] hover:-translate-y-0.5 hover:border-white/40 hover:bg-white/8 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-white/20 active:translate-y-0 active:scale-[0.98]"
             >
               <Mail className="mb-2 h-4 w-4 text-orange-300" />
               Написати
             </a>
             <a
               href="/services"
-              className="rounded-2xl border border-white/10 bg-white/8 px-4 py-3 text-white/80 transition hover:border-sky-300/50 hover:bg-white/12 hover:text-white"
+              className="btn-animated rounded-xl border border-white/15 bg-white/8 px-4 py-3 text-white/80 transition-[transform,border-color,background-color,color,box-shadow] duration-200 ease-out [--button-fill:#f27438] [--button-hover-text:#fff] hover:-translate-y-0.5 hover:border-white/40 hover:bg-white/8 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-white/20 active:translate-y-0 active:scale-[0.98]"
             >
               <Stethoscope className="mb-2 h-4 w-4 text-sky-300" />
               Послуги
@@ -288,13 +288,14 @@ export default function ContactsPage() {
                   className="w-full resize-none rounded-2xl border border-gray-100 bg-gray-50 px-4 py-4 font-medium outline-none transition focus:border-orange-300 focus:bg-white"
                 />
               </label>
-              <button
+              <Button
                 type="button"
-                className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-orange-500 px-6 py-4 font-bold text-white transition hover:bg-orange-600 sm:w-auto"
+                size="lg"
+                className="mt-6 w-full sm:w-auto"
               >
                 Надіслати повідомлення
                 <Send className="h-4 w-4" />
-              </button>
+              </Button>
             </form>
           </BorderGlow>
         </SectionFrame>

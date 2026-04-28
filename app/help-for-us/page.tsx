@@ -1,4 +1,3 @@
-import Link from 'next/link'
 import {
   CheckCircle2,
   Clock,
@@ -11,6 +10,7 @@ import {
 import PageHero from '@/components/ui/PageHero'
 import SectionFrame from '@/components/ui/SectionFrame'
 import StorybookDecorations from '@/components/ui/StorybookDecorations'
+import { Button, LinkButton, buttonClassName } from '@/components/ui/Button'
 
 
 const helpWays = [
@@ -201,9 +201,10 @@ export default function HelpForUsPage() {
 
             <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
               {donationOptions.map((option) => (
-                <button
+                <Button
                   key={option.amount}
-                  className="rounded-[24px] border-2 border-white bg-white p-6 text-center transition hover:border-orange-300 hover:bg-orange-50"
+                  variant="outline"
+                  className="h-auto flex-col p-6 text-center"
                 >
                   <span className="block text-3xl font-black text-gray-950">
                     {option.amount} грн
@@ -211,7 +212,7 @@ export default function HelpForUsPage() {
                   <span className="mt-3 block text-sm leading-6 text-gray-600">
                     {option.description}
                   </span>
-                </button>
+                </Button>
               ))}
             </div>
 
@@ -301,12 +302,13 @@ export default function HelpForUsPage() {
                   </li>
                 ))}
               </ol>
-              <Link
+              <LinkButton
                 href="/contacts"
-                className="mt-8 inline-flex w-full items-center justify-center rounded-2xl bg-orange-500 px-6 py-4 font-bold text-white transition hover:bg-orange-600"
+                size="lg"
+                className="mt-8 w-full"
               >
                 Перейти до контактів
-              </Link>
+              </LinkButton>
             </div>
           </SectionFrame>
 
@@ -354,17 +356,18 @@ export default function HelpForUsPage() {
           <div className="mt-8 flex flex-col justify-center gap-4 sm:flex-row">
             <a
               href="tel:+380932966097"
-              className="inline-flex items-center justify-center gap-2 rounded-2xl bg-orange-500 px-8 py-4 font-bold text-white transition hover:bg-orange-600"
+              className={buttonClassName({ size: 'lg' })}
             >
               <Phone className="h-5 w-5" />
               Зателефонувати
             </a>
-            <Link
+            <LinkButton
               href="/contacts"
-              className="inline-flex items-center justify-center rounded-2xl border-2 border-gray-200 bg-white px-8 py-4 font-bold text-gray-950 transition hover:border-orange-300"
+              variant="outline"
+              size="lg"
             >
               Контакти
-            </Link>
+            </LinkButton>
           </div>
         </SectionFrame>
       </section>

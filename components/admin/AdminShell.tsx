@@ -14,6 +14,7 @@ import {
 } from 'lucide-react'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
+import { LinkButton } from '@/components/ui/Button'
 import { cn } from '@/lib/utils'
 
 const adminNavigation = [
@@ -108,12 +109,13 @@ export default function AdminShell({ children }: { children: ReactNode }) {
                 </h1>
               </div>
 
-              <Link
+              <LinkButton
                 href="/"
-                className="inline-flex min-h-11 items-center justify-center rounded-xl border border-slate-200 bg-white px-5 py-2.5 text-sm font-extrabold text-slate-700 shadow-sm transition hover:border-orange-200 hover:bg-orange-50 hover:text-primary"
+                variant="outline"
+                size="sm"
               >
                 На сайт
-              </Link>
+              </LinkButton>
             </div>
 
             <nav className="flex flex-wrap gap-2 xl:hidden">
@@ -156,12 +158,14 @@ export default function AdminShell({ children }: { children: ReactNode }) {
 
 function QuickLink({ href, label }: { href: string; label: string }) {
   return (
-    <Link
+    <LinkButton
       href={href}
-      className="flex items-center gap-2 rounded-lg px-2 py-1.5 text-sm font-semibold text-slate-600 transition hover:bg-white hover:text-primary"
+      variant="outline"
+      size="sm"
+      className="w-full justify-start rounded-lg shadow-none"
     >
       <FilePlus2 className="h-4 w-4" />
       {label}
-    </Link>
+    </LinkButton>
   )
 }

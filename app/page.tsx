@@ -1,7 +1,6 @@
 'use client'
 
 import { useState } from 'react'
-import Link from 'next/link'
 import { motion } from 'motion/react'
 import {
   ChevronRight,
@@ -16,6 +15,7 @@ import Hero from '@/components/Hero'
 import AnimalCatalog from '@/components/HeroAnimals'
 import CityProgram from '@/components/city-program/city-program'
 import TrustValues from '@/components/TrustValues'
+import { Button, LinkButton } from '@/components/ui/Button'
 
 const wishlist = [
   { item: 'Puppy food (10kg)', needed: 5 },
@@ -120,15 +120,16 @@ export default function HomePage() {
             Разом ми можемо врятувати більше життів.
           </p>
           <div className="flex flex-col justify-center gap-4 sm:flex-row">
-            <Link
+            <LinkButton
               href="/animals"
-              className="inline-flex items-center justify-center gap-2 rounded-lg bg-white px-8 py-4 text-[#ea580c] transition-colors hover:bg-gray-50"
+              variant="light"
+              size="lg"
             >
               Знайти найкращого друга
-            </Link>
+            </LinkButton>
             <a
               href="#help"
-              className="inline-flex items-center justify-center gap-2 rounded-lg border-2 border-white bg-transparent px-8 py-4 text-white transition-colors hover:bg-white/10"
+              className="btn-outline border-white/60 bg-transparent px-8 py-4 text-white hover:bg-white/10 hover:text-white"
             >
               Підтримати притулок
             </a>
@@ -177,9 +178,9 @@ export default function HomePage() {
                 ))}
               </div>
 
-              <button className="btn-primary mt-auto flex w-full items-center justify-center gap-2 text-sm">
+              <Button className="mt-auto w-full text-sm">
                 Переглянути всі пункти <ChevronRight className="h-4 w-4" />
-              </button>
+              </Button>
             </motion.div>
 
             <motion.div
@@ -199,17 +200,15 @@ export default function HomePage() {
 
               <div className="mb-4 grid grid-cols-3 gap-2">
                 {['200', '500', '1000'].map((amount) => (
-                  <button
+                  <Button
                     key={amount}
                     onClick={() => setDonationAmount(amount)}
-                    className={`rounded-xl py-2 text-sm font-bold transition-all ${
-                      donationAmount === amount
-                        ? 'bg-white text-primary'
-                        : 'bg-white/10 text-white hover:bg-white/20'
-                    }`}
+                    variant={donationAmount === amount ? 'light' : 'ghost'}
+                    size="sm"
+                    className="min-h-10 border-white/30 bg-white/10 py-2 text-sm text-white hover:bg-white/20 hover:text-white"
                   >
                     ₴{amount}
-                  </button>
+                  </Button>
                 ))}
               </div>
 
@@ -224,9 +223,9 @@ export default function HomePage() {
                 />
               </div>
 
-              <button className="mt-auto w-full rounded-xl bg-white py-4 text-center text-sm font-bold tracking-wider text-primary uppercase transition-colors hover:bg-white/90">
+              <Button variant="light" className="mt-auto w-full text-sm uppercase">
                 Надіслати допомогу
-              </button>
+              </Button>
             </motion.div>
 
             <motion.div
@@ -268,9 +267,9 @@ export default function HomePage() {
                 </div>
               </form>
 
-              <button className="mt-auto w-full rounded-xl bg-gray-100 py-4 text-sm font-bold text-gray-500 transition-colors hover:bg-primary hover:text-white">
+              <Button variant="outline" className="mt-auto w-full">
                 Залишити заявку
-              </button>
+              </Button>
             </motion.div>
           </div>
         </div>

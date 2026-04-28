@@ -5,6 +5,7 @@ import {
   Shield,
   Stethoscope,
 } from 'lucide-react'
+import { LinkButton } from '@/components/ui/Button'
 import CityProgramBlocks from '@/components/city-program/city-programs-blocks'
 
 const services = [
@@ -82,13 +83,14 @@ export default function CityProgram() {
             Гуманне ставлення до тварин - це ознака цивілізованого міста.
           </p>
 
-          <a
+          <LinkButton
             href="/services"
-            className="mt-7 inline-flex items-center gap-2 font-extrabold text-primary transition-colors hover:text-secondary"
+            variant="outline"
+            className="mt-7"
           >
             Детальніше про всі послуги які надає центр
             <ArrowRight className="h-4 w-4" />
-          </a>
+          </LinkButton>
         </div>
       </div>
     </section>
