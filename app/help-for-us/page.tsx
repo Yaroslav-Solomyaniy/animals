@@ -10,7 +10,7 @@ import {
 import PageHero from '@/components/ui/PageHero'
 import SectionFrame from '@/components/ui/SectionFrame'
 import StorybookDecorations from '@/components/ui/StorybookDecorations'
-import { Button, LinkButton, buttonClassName } from '@/components/ui/Button'
+import { Button, LinkButton } from '@/components/ui/Button'
 
 
 const helpWays = [
@@ -354,13 +354,13 @@ export default function HelpForUsPage() {
             найкориснішим саме зараз.
           </p>
           <div className="mt-8 flex flex-col justify-center gap-4 sm:flex-row">
-            <a
+            <LinkButton
               href="tel:+380932966097"
-              className={buttonClassName({ size: 'lg' })}
+              size="lg"
             >
               <Phone className="h-5 w-5" />
               Зателефонувати
-            </a>
+            </LinkButton>
             <LinkButton
               href="/contacts"
               variant="outline"

@@ -20,6 +20,7 @@ import SectionFrame from "@/components/ui/SectionFrame";
 import {InfoCard} from "@/app/animals/[id]/_components/InfoCards";
 import Link from "next/link";
 import ShareMenu from '@/components/ui/ShareMenu'
+import { LinkButton } from '@/components/ui/Button'
 
 type AnimalProfileClientProps = {
   animal: Animal
@@ -88,13 +89,7 @@ export default function AnimalProfileClient({
   return (
     <main className="min-h-screen pb-10 pt-12 text-[#111827] sm:pt-16 md:pb-14 md:pt-20">
       <div className="mx-auto mb-5 max-w-[calc(80rem+4rem)] px-4 sm:px-6 lg:px-8">
-        <Link
-          href="/animals"
-          className="btn-outline group relative inline-flex items-center gap-2 overflow-hidden !border-primary !text-primary before:absolute before:inset-0 before:origin-left before:scale-x-0 before:bg-primary before:transition-transform before:duration-300 before:ease-out hover:!text-white hover:before:scale-x-100"
-        >
-          <ArrowLeft className="relative z-10 h-4 w-4 transition-colors" />
-          <span className="relative z-10">Повернутись назад</span>
-        </Link>
+        <LinkButton href="/animals" variant="outline"><ArrowLeft className="h-4 w-4" />Повернутись назад</LinkButton>
       </div>
 
       <section className="px-4 sm:px-6 lg:px-8">
@@ -200,19 +195,9 @@ export default function AnimalProfileClient({
 
             <section className="mt-8 grid gap-3">
               <div className="grid gap-3 sm:grid-cols-[1fr_1fr_auto]">
-              <Link
-                href={`/donate?animalId=${animal.id}&gift=treat`}
-                className="btn-outline inline-flex flex-1 items-center justify-center gap-2 border-orange-200 bg-orange-50 text-orange-600 text-center hover:bg-orange-100"
-              >
-                <PawPrint className="h-5 w-5" />
-                Дати смаколика
-              </Link>
-              <Link
-                href="/contacts"
-                className="btn-outline inline-flex flex-1 items-center justify-center gap-2 border-gray-300 bg-gray-50 text-gray-700 text-center hover:bg-white"
-              >
-                Поставити запитання <MessageCircleQuestionMark className="h-6 w-6" />
-              </Link>
+              <LinkButton href={`/donate?animalId=${animal.id}&gift=treat`} variant="outline" className="flex-1 text-center"><PawPrint className="h-5 w-5" />
+                Дати смаколика</LinkButton>
+              <LinkButton href="/contacts" variant="secondary" className="flex-1 text-center">Поставити запитання <MessageCircleQuestionMark className="h-6 w-6" /></LinkButton>
                 <ShareMenu
                   path={`/animals/${animal.id}`}
                   title={`${animal.name} шукає дім`}
@@ -222,13 +207,8 @@ export default function AnimalProfileClient({
                   className="w-full sm:w-auto"
                 />
               </div>
-              <Link
-                href="/contacts"
-                className="btn-primary inline-flex w-full items-center justify-center gap-2 text-center"
-              >
-                <Heart className="h-5 w-5 fill-white/20" />
-                Стати вірним другом
-              </Link>
+              <LinkButton href="/contacts" className="w-full text-center"><Heart className="h-5 w-5 fill-white/20" />
+                Стати вірним другом</LinkButton>
             </section>
           </section>
         </div>
@@ -246,12 +226,7 @@ export default function AnimalProfileClient({
                 Познайомтесь ще з кількома хвостиками
               </h2>
             </div>
-            <Link
-              href="/animals"
-              className="btn-outline group relative inline-flex items-center justify-center overflow-hidden !border-primary !text-primary before:absolute before:inset-0 before:origin-left before:scale-x-0 before:bg-primary before:transition-transform before:duration-300 before:ease-out hover:!text-white hover:before:scale-x-100"
-            >
-              <span className="relative z-10">Весь каталог</span>
-            </Link>
+            <LinkButton href="/animals" variant="outline">Весь каталог</LinkButton>
           </div>
 
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">

@@ -15,6 +15,7 @@ import StorybookDecorations from '@/components/ui/StorybookDecorations'
 import ShareMenu from '@/components/ui/ShareMenu'
 import { LightboxImage } from '@/components/news/ImageLightbox'
 import NewsImageSlider from '@/components/news/NewsImageSlider'
+import { LinkButton } from '@/components/ui/Button'
 import { MOCK_ANIMALS } from '@/mockData'
 import type { NewsContentBlock } from '@/lib/news'
 import { getNewsById, getRelatedNews, news } from '@/lib/news'
@@ -156,13 +157,10 @@ export default async function NewsDetailsPage({ params }: NewsPageProps) {
                 Кожна підтримка допомагає лікувати, годувати й знаходити дім
                 для тварин.
               </p>
-              <Link
-                href="/help-for-us"
-                className="mt-5 inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-xl bg-primary px-5 py-3 font-extrabold text-white shadow-[0_18px_45px_rgba(242,116,56,0.22)] transition hover:-translate-y-0.5 hover:bg-orange-600 hover:shadow-[0_22px_55px_rgba(242,116,56,0.32)]"
-              >
+              <LinkButton href="/help-for-us" className="mt-5 w-full">
                 Підтримати
                 <ArrowRight className="h-4 w-4" />
-              </Link>
+              </LinkButton>
             </div>
 
             <div className="rounded-[28px] border border-white/10 bg-gray-950 p-5 text-white shadow-[0_24px_70px_rgba(15,23,42,0.18)] transition hover:border-primary/60 hover:shadow-[0_24px_70px_rgba(242,116,56,0.20)]">
@@ -197,13 +195,14 @@ export default async function NewsDetailsPage({ params }: NewsPageProps) {
                 ))}
               </div>
 
-              <Link
+              <LinkButton
                 href="/report-and-news"
-                className="mt-5 inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-xl border border-white/15 bg-white/[0.06] px-4 py-2.5 text-sm font-extrabold text-white transition hover:-translate-y-0.5 hover:border-primary hover:bg-primary hover:shadow-[0_18px_45px_rgba(242,116,56,0.22)]"
+                variant="ghost"
+                className="mt-5 w-full border-white/15 bg-white/[0.06] text-white focus-visible:ring-white/20"
               >
                 Усі новини
                 <ArrowRight className="h-4 w-4" />
-              </Link>
+              </LinkButton>
             </div>
           </aside>
         </div>
@@ -216,16 +215,10 @@ export default async function NewsDetailsPage({ params }: NewsPageProps) {
 
 function BackLink() {
   return (
-    <Link
-      href="/report-and-news"
-      className="group relative inline-flex items-center justify-center gap-2 overflow-hidden rounded-xl border border-primary/30 bg-white/90 px-4 py-2.5 text-sm font-extrabold text-primary shadow-[0_16px_45px_rgba(242,116,56,0.12)] backdrop-blur transition hover:border-primary active:scale-[0.98]"
-    >
-      <span className="absolute inset-y-0 left-0 w-0 bg-primary transition-all duration-300 ease-out group-hover:w-full" />
-      <ArrowLeft className="relative z-10 h-4 w-4 transition group-hover:text-white" />
-      <span className="relative z-10 transition group-hover:text-white">
-        До новин
-      </span>
-    </Link>
+    <LinkButton href="/report-and-news" variant="outline" className="bg-white/90 backdrop-blur">
+      <ArrowLeft className="h-4 w-4" />
+      До новин
+    </LinkButton>
   )
 }
 
@@ -374,17 +367,14 @@ function NewsBlock({ block }: { block: NewsContentBlock }) {
       return (
         <div className="flex flex-col gap-3 rounded-[28px] border border-orange-100 bg-orange-50/70 p-4 shadow-soft transition hover:border-orange-200 hover:shadow-[0_20px_55px_rgba(242,116,56,0.14)] sm:flex-row">
           {block.buttons.map((button) => (
-            <Link
+            <LinkButton
               key={`${button.href}-${button.label}`}
               href={button.href}
-              className={
-                button.variant === 'outline'
-                  ? 'btn-outline inline-flex flex-1 items-center justify-center text-center'
-                  : 'btn-primary inline-flex flex-1 items-center justify-center text-center'
-              }
+              variant={button.variant === 'outline' ? 'outline' : 'primary'}
+              className="flex-1 text-center"
             >
               {button.label}
-            </Link>
+            </LinkButton>
           ))}
         </div>
       )

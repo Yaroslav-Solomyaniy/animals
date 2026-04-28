@@ -18,7 +18,7 @@ import BorderGlow from '@/components/ui/BorderGlow'
 import PageHero from '@/components/ui/PageHero'
 import SectionFrame from '@/components/ui/SectionFrame'
 import StorybookDecorations from '@/components/ui/StorybookDecorations'
-import { Button } from '@/components/ui/Button'
+import { Button, LinkButton } from '@/components/ui/Button'
 import { Input, Select } from '@/components/ui/FormControls'
 
 
@@ -86,51 +86,59 @@ export default function ContactsPage() {
         description="Ми поруч, якщо ви хочете усиновити тварину, записатися на волонтерську прогулянку, підтримати центр або дізнатися про послуги для домашніх улюбленців."
         icon={MessageCircle}
       >
-        <div className="orange-neon overflow-hidden rounded-[24px] bg-gray-950 p-6 text-white sm:p-8">
-          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-orange-300">
+        <div className="rounded-[28px] border border-orange-100 bg-white p-6 shadow-[0_22px_70px_rgba(15,23,42,0.08)] sm:p-8">
+          <span className="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-orange-50 text-primary">
+            <Phone className="h-6 w-6" />
+          </span>
+          <p className="text-sm font-extrabold uppercase tracking-[0.18em] text-primary">
             Швидкий зв’язок
           </p>
-          <h2 className="mt-4 text-3xl font-black tracking-tight sm:text-4xl">
+          <h2 className="mt-3 text-3xl font-black tracking-tight text-gray-950 sm:text-4xl">
             Найпростіше - подзвонити
           </h2>
-          <p className="mt-4 leading-7 text-white/70">
-            Узгодьте візит, прогулянку, питання щодо послуг або допомоги одним
-            дзвінком.
+          <p className="mt-4 leading-7 text-gray-600">
+            Узгодьте візит, прогулянку, питання щодо послуг або допомоги одним дзвінком.
           </p>
-          <a
+          <LinkButton
             href="tel:+380932966097"
-            className="btn-animated group mt-7 flex items-center justify-between gap-4 rounded-xl border border-white/50 bg-white px-5 py-4 text-gray-950 shadow-[0_14px_34px_rgba(242,116,56,0.12)] transition-[transform,border-color,background-color,color,box-shadow] duration-200 ease-out [--button-fill:#f27438] [--button-hover-text:#fff] hover:-translate-y-0.5 hover:border-white hover:bg-white hover:shadow-[0_18px_45px_rgba(242,116,56,0.2)] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-white/25 active:translate-y-0 active:scale-[0.98]"
+            variant="primary"
+            size="lg"
+            className="group mt-7 w-full justify-between"
           >
-            <span className="flex items-center gap-4">
-              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-orange-100 text-orange-600 transition-colors group-hover:bg-white/20 group-hover:text-white">
+            <span className="flex items-center gap-3">
+              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-white/18 text-white transition-colors duration-300 group-hover:bg-white/25">
                 <Phone className="h-5 w-5" />
               </span>
               <span>
-                <span className="block text-sm font-semibold text-gray-500 transition-colors group-hover:text-white/75">
+                <span className="hidden text-sm font-semibold text-white/75">
                   Зателефонувати
                 </span>
-                <span className="text-lg font-black transition-colors group-hover:text-white sm:text-xl">
+                <span className="text-sm font-black text-white sm:text-base">
                   +38 (093) 296-60-97
                 </span>
               </span>
             </span>
-            <ArrowRight className="h-5 w-5 text-orange-500 transition-colors group-hover:text-white" />
-          </a>
+            <ArrowRight className="h-5 w-5 text-white" />
+          </LinkButton>
           <div className="mt-4 grid grid-cols-2 gap-3 text-sm font-semibold">
-            <a
+            <LinkButton
               href="mailto:info@animalcare.ck.ua"
-              className="btn-animated rounded-xl border border-white/15 bg-white/8 px-4 py-3 text-white/80 transition-[transform,border-color,background-color,color,box-shadow] duration-200 ease-out [--button-fill:#f27438] [--button-hover-text:#fff] hover:-translate-y-0.5 hover:border-white/40 hover:bg-white/8 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-white/20 active:translate-y-0 active:scale-[0.98]"
+              variant="outline"
+              size="md"
+              className="justify-start px-4 text-left"
             >
               <Mail className="mb-2 h-4 w-4 text-orange-300" />
               Написати
-            </a>
-            <a
+            </LinkButton>
+            <LinkButton
               href="/services"
-              className="btn-animated rounded-xl border border-white/15 bg-white/8 px-4 py-3 text-white/80 transition-[transform,border-color,background-color,color,box-shadow] duration-200 ease-out [--button-fill:#f27438] [--button-hover-text:#fff] hover:-translate-y-0.5 hover:border-white/40 hover:bg-white/8 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-white/20 active:translate-y-0 active:scale-[0.98]"
+              variant="secondary"
+              size="md"
+              className="justify-start px-4 text-left"
             >
               <Stethoscope className="mb-2 h-4 w-4 text-sky-300" />
               Послуги
-            </a>
+            </LinkButton>
           </div>
         </div>
       </PageHero>
@@ -140,10 +148,9 @@ export default function ContactsPage() {
           {contactCards.map((card) => {
             const Icon = card.icon
             return (
-              <a
+              <article
                 key={card.title}
-                href={card.href}
-                className="group rounded-[28px] border border-gray-100 bg-white p-6 transition hover:-translate-y-1 hover:border-orange-200 hover:shadow-[0_18px_60px_rgba(15,23,42,0.08)]"
+                className="flex flex-col rounded-[28px] border border-gray-100 bg-white p-6 text-left shadow-sm transition hover:-translate-y-0.5 hover:border-orange-200 hover:shadow-[0_18px_55px_rgba(15,23,42,0.08)]"
               >
                 <span
                   className={`mb-5 flex h-12 w-12 items-center justify-center rounded-2xl ${card.tone}`}
@@ -159,7 +166,15 @@ export default function ContactsPage() {
                 <p className="mt-3 text-base leading-7 text-gray-600">
                   {card.text}
                 </p>
-              </a>
+                <LinkButton
+                  href={card.href}
+                  variant="secondary"
+                  className="mt-auto w-full justify-between"
+                >
+                  {card.label}
+                  <ArrowRight className="h-4 w-4" />
+                </LinkButton>
+              </article>
             )
           })}
         </SectionFrame>
@@ -317,11 +332,12 @@ export default function ContactsPage() {
               </p>
             </div>
             <div className="mt-8 grid gap-3">
-              <a
+              <LinkButton
                 href="https://www.instagram.com/dog_help_cherkassy/"
                 target="_blank"
                 rel="noreferrer"
-                className="group flex items-center justify-between rounded-2xl border border-rose-100 bg-rose-50/70 px-4 py-4 font-semibold text-gray-900 transition hover:border-rose-200 hover:bg-rose-100"
+                variant="light"
+                className="group justify-between rounded-2xl border-rose-100 bg-rose-50/70 px-4 text-gray-900"
               >
                 <span className="flex items-center gap-3">
                   <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-white text-rose-600">
@@ -330,12 +346,13 @@ export default function ContactsPage() {
                   Instagram
                 </span>
                 <ArrowRight className="h-4 w-4 text-rose-500 transition group-hover:translate-x-1" />
-              </a>
-              <a
+              </LinkButton>
+              <LinkButton
                 href="https://www.facebook.com/profile.php?id=61561672820969"
                 target="_blank"
                 rel="noreferrer"
-                className="group flex items-center justify-between rounded-2xl border border-sky-100 bg-sky-50/70 px-4 py-4 font-semibold text-gray-900 transition hover:border-sky-200 hover:bg-sky-100"
+                variant="light"
+                className="group justify-between rounded-2xl border-sky-100 bg-sky-50/70 px-4 text-gray-900"
               >
                 <span className="flex items-center gap-3">
                   <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-white text-sky-600">
@@ -344,12 +361,13 @@ export default function ContactsPage() {
                   Facebook
                 </span>
                 <ArrowRight className="h-4 w-4 text-sky-500 transition group-hover:translate-x-1" />
-              </a>
-              <a
+              </LinkButton>
+              <LinkButton
                 href="https://chistota.ck.ua"
                 target="_blank"
                 rel="noreferrer"
-                className="group flex items-center justify-between rounded-2xl border border-emerald-100 bg-emerald-50/70 px-4 py-4 font-semibold text-gray-900 transition hover:border-emerald-200 hover:bg-emerald-100"
+                variant="light"
+                className="group justify-between rounded-2xl border-emerald-100 bg-emerald-50/70 px-4 text-gray-900"
               >
                 <span className="flex items-center gap-3">
                   <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-white text-emerald-600">
@@ -358,7 +376,7 @@ export default function ContactsPage() {
                   Черкаська служба чистоти
                 </span>
                 <ArrowRight className="h-4 w-4 text-emerald-500 transition group-hover:translate-x-1" />
-              </a>
+              </LinkButton>
             </div>
           </div>
 

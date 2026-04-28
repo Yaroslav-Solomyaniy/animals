@@ -1,9 +1,9 @@
-import Link from 'next/link'
 import { PawPrint } from 'lucide-react'
 import { AdminAuthGate } from '@/components/admin/AdminAuthGate'
 import AdminNotice from '@/components/admin/AdminNotice'
 import AdminPageHeader from '@/components/admin/AdminPageHeader'
 import { AdminTable, AdminTableRow } from '@/components/admin/AdminTable'
+import { LinkButton } from '@/components/ui/Button'
 import { createClient } from '@/lib/supabase/server'
 import type { AnimalRow } from '@/lib/admin-types'
 
@@ -18,7 +18,7 @@ export default async function AdminAnimalsPage() {
         eyebrow="Тварини"
         title="Каталог тварин"
         description="Табличний список записів з окремою сторінкою створення і окремою сторінкою редагування."
-        actions={<Link href="/admin/animals/new" className="inline-flex min-h-11 items-center rounded-xl bg-primary px-5 py-2.5 text-sm font-extrabold text-white shadow-sm transition hover:bg-orange-600">Додати тварину</Link>}
+        actions={<LinkButton href="/admin/animals/new">Додати тварину</LinkButton>}
       />
       {error ? <AdminNotice>{error.message}</AdminNotice> : null}
       <div className="mt-6">
@@ -39,7 +39,7 @@ export default async function AdminAnimalsPage() {
                 <span key="species" className="font-semibold text-slate-700">{animal.species}</span>,
                 <span key="status" className="font-semibold text-slate-700">{animal.status}</span>,
                 <span key="updated" className="text-slate-500">{animal.updated_at ? new Date(animal.updated_at).toLocaleString() : '—'}</span>,
-                <div key="action"><Link href={`/admin/animals/${animal.id}`} className="inline-flex rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-extrabold text-slate-700 transition hover:border-orange-200 hover:bg-orange-50 hover:text-primary">Редагувати</Link></div>,
+                <div key="action"><LinkButton href={`/admin/animals/${animal.id}`} variant="outline" size="sm">Редагувати</LinkButton></div>,
               ]}
             />
           ))}

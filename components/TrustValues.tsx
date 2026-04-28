@@ -7,6 +7,7 @@ import {
   Users,
 } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
+import { LinkButton } from '@/components/ui/Button'
 import { WobbleCard } from '@/components/ui/wobble-card'
 
 const cardColors = {
@@ -117,13 +118,13 @@ export default function TrustValues() {
               </p>
             </div>
 
-            <a
+            <LinkButton
               href="/donate"
-              className="relative z-10 mt-10 inline-flex w-fit items-center gap-2 rounded-2xl border border-primary bg-primary px-6 py-3.5 font-extrabold text-white transition-colors hover:bg-white hover:text-primary focus-visible:bg-white focus-visible:text-primary focus-visible:outline-none"
+              className="relative z-10 mt-10 w-fit"
             >
               Підтримати центр
               <ArrowRight className="h-4 w-4" />
-            </a>
+            </LinkButton>
           </WobbleCard>
 
           <WobbleCard

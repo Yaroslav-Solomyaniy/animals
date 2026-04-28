@@ -138,21 +138,6 @@ export default function ReportAndNewsPage() {
             {/*  <h3 className="text-xl font-black text-gray-950">*/}
             {/*    Підписатися на новини*/}
             {/*  </h3>*/}
-            {/*  <p className="mt-3 text-sm leading-6 text-gray-600">*/}
-            {/*    Отримуйте важливі оновлення та історії порятунку на пошту.*/}
-            {/*  </p>*/}
-            {/*  <div className="mt-5 space-y-3">*/}
-            {/*    <input*/}
-            {/*      type="email"*/}
-            {/*      placeholder="Ваш email"*/}
-            {/*      className="w-full rounded-2xl border border-orange-100 bg-white px-4 py-3 font-medium outline-none transition focus:border-orange-300"*/}
-            {/*    />*/}
-            {/*    <button className="w-full rounded-2xl bg-orange-500 px-4 py-3 font-bold text-white transition hover:bg-orange-600">*/}
-            {/*      Підписатися*/}
-            {/*    </button>*/}
-            {/*  </div>*/}
-            {/* </div>*/}
-
             {/* <div className="rounded-[28px] border border-gray-100 bg-white p-6">*/}
             {/*  <h3 className="text-xl font-black text-gray-950">*/}
             {/*    Статистика місяця*/}

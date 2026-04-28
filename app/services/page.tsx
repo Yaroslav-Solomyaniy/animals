@@ -210,13 +210,14 @@ export default function ServicesPage() {
                             Записатися на послугу
                             <ArrowRight className="h-5 w-5"/>
                         </LinkButton>
-                        <a
+                        <LinkButton
                             href="tel:+380932966097"
-                            className="btn-animated inline-flex min-h-14 items-center justify-center gap-2 rounded-xl border border-primary/35 bg-white px-7 py-3.5 text-base font-extrabold text-primary shadow-[0_14px_34px_rgba(242,116,56,0.12)] transition-[transform,border-color,background-color,color,box-shadow] duration-200 ease-out [--button-fill:#f27438] [--button-hover-text:#fff] hover:-translate-y-0.5 hover:border-primary hover:bg-white hover:shadow-[0_18px_45px_rgba(242,116,56,0.2)] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20 active:translate-y-0 active:scale-[0.98]"
+                            variant="outline"
+                            size="lg"
                         >
                             <Phone className="h-5 w-5"/>
                             +38 (093) 296-60-97
-                        </a>
+                        </LinkButton>
                     </>
                 }
             >
@@ -346,32 +347,37 @@ export default function ServicesPage() {
                 </motion.div>
             </section>
 
-            <section className="bg-linear-to-br from-orange-500 to-orange-600 px-4 py-16 sm:px-6 lg:px-8">
-                <div className="mx-auto max-w-4xl text-center">
-                    <h2 className="text-3xl font-black text-white sm:text-4xl">
-                        Потрібна ветеринарна послуга?
-                    </h2>
-                    <p className="mt-4 text-lg leading-8 text-white/90">
-                        Зв’яжіться з нами, опишіть симптоми або потрібну процедуру, і ми
-                        підкажемо зручний формат запису.
-                    </p>
-                    <div className="mt-8 flex flex-col justify-center gap-4 sm:flex-row">
-                        <a
-                            href="tel:+380932966097"
-                            className="btn-animated inline-flex min-h-14 items-center justify-center gap-2 rounded-xl border border-white/60 bg-white px-7 py-3.5 text-base font-extrabold text-primary shadow-[0_14px_34px_rgba(242,116,56,0.12)] transition-[transform,border-color,background-color,color,box-shadow] duration-200 ease-out [--button-fill:#f27438] [--button-hover-text:#fff] hover:-translate-y-0.5 hover:border-white hover:bg-white hover:shadow-[0_18px_45px_rgba(242,116,56,0.2)] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-white/25 active:translate-y-0 active:scale-[0.98]"
-                        >
-                            <Phone className="h-5 w-5"/>
-                            Зателефонувати зараз
-                        </a>
-                        <LinkButton
-                            href="/contacts"
-                            variant="ghost"
-                            size="lg"
-                            className="border-white/70 text-white [--button-fill:#fff] [--button-hover-text:#f27438] hover:border-white"
-                        >
-                            Написати повідомлення
+            <section className="bg-gray-950 px-4 py-16 text-white sm:px-6 lg:px-8">
+                <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[1fr_380px] lg:items-center">
+                    <div className="max-w-3xl">
+                        <p className="mb-4 text-sm font-extrabold uppercase tracking-[0.18em] text-orange-200">
+                            Запис на послугу
+                        </p>
+                        <h2 className="max-w-2xl text-4xl font-black tracking-tight sm:text-5xl">
+                            Потрібна ветеринарна послуга?
+                        </h2>
+                        <p className="mt-5 max-w-2xl text-lg leading-8 text-white/72">
+                            Зателефонуйте або напишіть нам. Ми уточнимо симптоми, підкажемо потрібну процедуру і запропонуємо зручний час.
+                        </p>
+                    </div>
+
+                    <div className="rounded-[28px] border border-white/12 bg-white/8 p-4 shadow-[0_24px_80px_rgba(0,0,0,0.28)] backdrop-blur">
+                        <div className="flex flex-col gap-3 rounded-[22px] bg-white p-4 text-gray-950">
+                        <LinkButton href="tel:+380932966097" size="lg" className="w-full justify-between">
+                            <span className="inline-flex items-center gap-2">
+                                <Phone className="h-5 w-5"/>
+                                Зателефонувати
+                            </span>
                             <ArrowRight className="h-5 w-5"/>
                         </LinkButton>
+                        <LinkButton href="/contacts" variant="dark" size="lg" className="w-full justify-between">
+                            Написати повідомлення
+                            <MessageCircle className="h-5 w-5"/>
+                        </LinkButton>
+                        </div>
+                        <p className="px-3 pt-4 text-sm font-semibold leading-6 text-white/68">
+                            Якщо ситуація термінова, краще одразу телефонувати.
+                        </p>
                     </div>
                 </div>
             </section>
@@ -404,7 +410,7 @@ export default function ServicesPage() {
                                 </p>
                                 <LinkButton
                                     href="/contacts"
-                                    variant="dark"
+                                    variant="primary"
                                     className="mt-7"
                                 >
                                     Уточнити послугу

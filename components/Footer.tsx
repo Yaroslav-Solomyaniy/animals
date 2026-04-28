@@ -8,6 +8,7 @@ import {
   MapPin,
   Phone,
 } from 'lucide-react'
+import { LinkButton } from '@/components/ui/Button'
 
 export default function Footer() {
   const year = new Date().getFullYear()
@@ -39,30 +40,36 @@ export default function Footer() {
             </p>
 
             <div className="flex gap-3 mt-6">
-              <a
+              <LinkButton
                 href="https://www.instagram.com/dog_help_cherkassy/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group w-11 h-11 rounded-xl bg-white/5 flex items-center justify-center hover:bg-primary transition-colors duration-200"
+                variant="ghost"
+                size="icon"
+                className="h-11 w-11 rounded-xl bg-white/5 text-gray-400"
               >
-                <Instagram className="w-5 h-5 text-gray-400 group-hover:text-white transition-colors duration-200" />
-              </a>
-              <a
+                <Instagram className="w-5 h-5" />
+              </LinkButton>
+              <LinkButton
                 href="https://www.facebook.com/profile.php?id=61561672820969"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group w-11 h-11 rounded-xl bg-white/5 flex items-center justify-center hover:bg-primary transition-colors duration-200"
+                variant="ghost"
+                size="icon"
+                className="h-11 w-11 rounded-xl bg-white/5 text-gray-400"
               >
-                <Facebook className="w-5 h-5 text-gray-400 group-hover:text-white transition-colors duration-200" />
-              </a>
-              <a
+                <Facebook className="w-5 h-5" />
+              </LinkButton>
+              <LinkButton
                 href="https://chistota.ck.ua"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group w-11 h-11 rounded-xl bg-white/5 flex items-center justify-center hover:bg-primary transition-colors duration-200"
+                variant="ghost"
+                size="icon"
+                className="h-11 w-11 rounded-xl bg-white/5 text-gray-400"
               >
-                <Globe className="w-5 h-5 text-gray-400 group-hover:text-white transition-colors duration-200" />
-              </a>
+                <Globe className="w-5 h-5" />
+              </LinkButton>
             </div>
           </div>
 
@@ -142,15 +149,15 @@ export default function Footer() {
 
           {/* LINKS */}
           <div className="flex justify-center md:justify-end flex-wrap gap-4 text-sm text-gray-500">
-            <a href="#" className="hover:text-white">
+            <LinkButton href="#" variant="ghost" size="sm" className="h-auto px-0 py-0 text-gray-500 shadow-none hover:shadow-none">
               Privacy Policy
-            </a>
-            <a href="#" className="hover:text-white">
+            </LinkButton>
+            <LinkButton href="#" variant="ghost" size="sm" className="h-auto px-0 py-0 text-gray-500 shadow-none hover:shadow-none">
               Terms
-            </a>
-            <a href="#" className="hover:text-white">
+            </LinkButton>
+            <LinkButton href="#" variant="ghost" size="sm" className="h-auto px-0 py-0 text-gray-500 shadow-none hover:shadow-none">
               Public Offer
-            </a>
+            </LinkButton>
           </div>
         </div>
       </div>

@@ -109,7 +109,7 @@ export default function AnimalCard({
         <div className="mt-auto flex gap-2 pt-5">
           <LinkButton
             href={primaryHref}
-            variant="dark"
+            variant="primary"
             className="h-12 flex-1 text-sm"
           >
             Деталі
