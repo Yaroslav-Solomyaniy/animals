@@ -43,12 +43,6 @@ const sizeOptions: Array<{ label: string; value: SizeFilter }> = [
     {label: 'Великий', value: 'Великий'},
 ]
 
-const careOptions: Array<{ label: string; value: CareFilter }> = [
-    {label: 'Усі', value: 'all'},
-    {label: 'Готові додому', value: 'ready'},
-    {label: 'Потребують уваги', value: 'special'},
-]
-
 const sortOptions: Array<{ label: string; value: SortOption }> = [
     {label: 'Рекомендовані', value: 'recommended'},
     {label: 'За іменем', value: 'name'},
@@ -179,7 +173,7 @@ export default function AnimalsPage() {
                 </div>
             </PageHero>
 
-            <section className="relative z-20 mx-auto -mt-10 max-w-[calc(80rem+4rem)] px-4 pb-12 sm:px-6 lg:px-8">
+            <section className="relative z-20 mx-auto -mt-10 max-w-336 px-4 pb-12 sm:px-6 lg:px-8">
                 <SectionFrame className="rounded-[28px] border-gray-100 p-4 sm:p-5">
                     <div className="relative flex flex-col gap-4">
                         <div className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_250px]">
@@ -215,7 +209,7 @@ export default function AnimalsPage() {
                             </label>
                         </div>
 
-                        <div className="grid gap-4 lg:grid-cols-3">
+                        <div className="grid gap-4 lg:grid-cols-2">
                             <FilterGroup label="Стать" icon={Dog}>
                                 {genderOptions.map((option) => (
                                     <FilterButton
@@ -234,18 +228,6 @@ export default function AnimalsPage() {
                                         key={option.value}
                                         isActive={sizeFilter === option.value}
                                         onClick={() => setSizeFilter(option.value)}
-                                    >
-                                        {option.label}
-                                    </FilterButton>
-                                ))}
-                            </FilterGroup>
-
-                            <FilterGroup label="Готовність" icon={Sparkles}>
-                                {careOptions.map((option) => (
-                                    <FilterButton
-                                        key={option.value}
-                                        isActive={careFilter === option.value}
-                                        onClick={() => setCareFilter(option.value)}
                                     >
                                         {option.label}
                                     </FilterButton>

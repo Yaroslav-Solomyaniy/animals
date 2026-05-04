@@ -10,7 +10,8 @@ import {
 import PageHero from '@/components/ui/PageHero'
 import SectionFrame from '@/components/ui/SectionFrame'
 import StorybookDecorations from '@/components/ui/StorybookDecorations'
-import { Button, LinkButton, buttonClassName } from '@/components/ui/Button'
+import { Button, LinkButton } from '@/components/ui/Button'
+import helpDogsImage from '@/public/DogHelp.png'
 
 
 const helpWays = [
@@ -110,50 +111,18 @@ export default function HelpForUsPage() {
         icon={Heart}
       >
         <div className="overflow-hidden rounded-[32px] border border-orange-100 bg-white p-3 shadow-[0_28px_80px_rgba(15,23,42,0.08)]">
-          <div className="grid gap-3 rounded-[26px] border border-orange-100 bg-orange-50/70 p-3 sm:grid-cols-2">
-            {heroGalleryItems.map((item, index) => (
-              <article
-                key={item.text}
-                className={[
-                  'group relative min-h-40 overflow-hidden rounded-[22px] bg-white shadow-soft transition hover:-translate-y-0.5 hover:shadow-[0_18px_45px_rgba(242,116,56,0.16)]',
-                  index === 0 ? 'sm:row-span-2 sm:min-h-80' : '',
-                ].join(' ')}
-              >
-                <img
-                  src={item.image}
-                  alt={item.text.replace('\n', ' ')}
-                  className="absolute inset-0 h-full w-full object-cover transition duration-500 group-hover:scale-105"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-gray-950/70 via-gray-950/20 to-transparent" />
-                <p className="absolute bottom-4 left-4 whitespace-pre-line text-2xl font-black leading-tight text-white drop-shadow">
-                  {item.text}
-                </p>
-              </article>
-            ))}
-          </div>
-
-          <div className="grid gap-3 pt-3 md:grid-cols-3">
-            {helpWays.map((way) => {
-              const Icon = way.icon
-              return (
-                <article
-                  key={way.title}
-                  className="group rounded-[20px] border border-gray-100 bg-gray-50 p-4 transition hover:-translate-y-0.5 hover:border-orange-200 hover:bg-white hover:shadow-[0_18px_45px_rgba(242,116,56,0.12)]"
-                >
-                  <span
-                    className={`mb-3 flex h-11 w-11 items-center justify-center rounded-2xl border ${way.tone}`}
-                  >
-                    <Icon className="h-5 w-5" />
-                  </span>
-                  <h2 className="text-base font-black text-gray-950">
-                    {way.title}
-                  </h2>
-                  <p className="mt-2 line-clamp-3 text-sm leading-6 text-gray-600">
-                    {way.text}
-                  </p>
-                </article>
-              )
-            })}
+          <div className="relative min-h-[420px] overflow-hidden rounded-[26px] border border-orange-100 bg-gray-950">
+            <img
+              src={helpDogsImage.src}
+              alt={heroGalleryItems.map((item) => item.text.replace('\n', ' ')).join(', ')}
+              className="absolute inset-0 h-full w-full object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-gray-950/70 via-gray-950/10 to-transparent" />
+            <div className="absolute right-5 bottom-5 left-5">
+              <p className="max-w-sm text-3xl font-black leading-tight text-white drop-shadow">
+                Вони потребують, ми допомагаємо
+              </p>
+            </div>
           </div>
         </div>
       </PageHero>
@@ -354,13 +323,13 @@ export default function HelpForUsPage() {
             найкориснішим саме зараз.
           </p>
           <div className="mt-8 flex flex-col justify-center gap-4 sm:flex-row">
-            <a
+            <LinkButton
               href="tel:+380932966097"
-              className={buttonClassName({ size: 'lg' })}
+              size="lg"
             >
               <Phone className="h-5 w-5" />
               Зателефонувати
-            </a>
+            </LinkButton>
             <LinkButton
               href="/contacts"
               variant="outline"

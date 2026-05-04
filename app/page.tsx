@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import Link from 'next/link'
 import { motion } from 'motion/react'
 import {
   ChevronRight,
@@ -43,22 +44,23 @@ export default function HomePage() {
         <div className="mx-auto max-w-[calc(80rem+4rem)] px-4 sm:px-6 lg:px-8">
           <div className="grid gap-4 lg:grid-cols-[0.72fr_1.28fr]">
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-1">
-              <a
+              <LinkButton
                 href="tel:+380932966097"
-                className="flex items-center gap-4 rounded-3xl border border-gray-100 bg-white p-5 text-text-main transition-colors hover:border-primary/30"
+                variant="light"
+                className="h-auto min-h-[88px] justify-start rounded-3xl border-gray-100 bg-white p-5 text-left text-text-main sm:min-h-[96px]"
               >
-                <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-orange-50 text-primary">
+                <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-orange-50 text-primary">
                   <Phone className="h-5 w-5" />
                 </span>
-                <span>
+                <span className="min-w-0">
                   <span className="block text-xs font-bold text-gray-400">
                     Телефон
                   </span>
-                  <span className="block font-extrabold">
+                  <span className="mt-1 block text-base font-extrabold leading-tight">
                     +38 (093) 296-60-97
                   </span>
                 </span>
-              </a>
+              </LinkButton>
 
               <div className="flex items-center gap-4 rounded-3xl border border-gray-100 bg-white p-5 text-text-main">
                 <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#F1FFF8] text-secondary">
@@ -75,9 +77,9 @@ export default function HomePage() {
               </div>
             </div>
 
-            <a
+            <Link
               href="/services"
-              className="group relative overflow-hidden rounded-4xl border border-primary/20 bg-linear-to-br from-[#fff7ed] via-white to-[#ecfeff] p-7 text-text-main transition-all hover:-translate-y-1 hover:border-primary/40 md:p-8"
+              className="group relative overflow-hidden rounded-4xl border border-primary/20 bg-linear-to-br from-[#fff7ed] via-white to-[#ecfeff] p-7 text-left text-text-main shadow-sm transition duration-300 hover:-translate-y-0.5 hover:border-primary/35 hover:shadow-[0_18px_55px_rgba(15,23,42,0.08)] md:p-8"
             >
               <span className="absolute -top-12 right-8 h-28 w-28 rounded-full bg-primary/15 blur-2xl transition-transform group-hover:scale-125" />
               <span className="absolute -bottom-16 left-1/3 h-32 w-32 rounded-full bg-sky-300/20 blur-2xl transition-transform group-hover:scale-125" />
@@ -103,36 +105,79 @@ export default function HomePage() {
                   </span>
                 </span>
               </span>
-            </a>
+            </Link>
           </div>
         </div>
       </section>
 
       <TrustValues />
 
-      <section className="bg-linear-to-br from-[#f97316] to-[#ea580c] py-20">
-        <div className="max-w-4xl mx-auto px-4 text-center sm:px-6 lg:px-8">
-          <h2 className="mb-6 text-3xl font-bold text-white sm:text-4xl">
-            Готові змінити чиєсь життя?
-          </h2>
-          <p className="mb-8 text-xl text-white/90">
-            Кожна допомога важлива — чи то усиновлення, волонтерство або донат.
-            Разом ми можемо врятувати більше життів.
-          </p>
-          <div className="flex flex-col justify-center gap-4 sm:flex-row">
-            <LinkButton
-              href="/animals"
-              variant="light"
-              size="lg"
-            >
-              Знайти найкращого друга
-            </LinkButton>
-            <a
-              href="#help"
-              className="btn-outline border-white/60 bg-transparent px-8 py-4 text-white hover:bg-white/10 hover:text-white"
-            >
-              Підтримати притулок
-            </a>
+      <section className="relative overflow-hidden bg-[linear-gradient(135deg,#1f6f50_0%,#12685f_56%,#f97316_150%)] px-4 py-20 text-white sm:px-6 lg:px-8">
+        <span
+          aria-hidden="true"
+          className="absolute inset-y-0 right-0 hidden w-[46%] bg-white/8 [clip-path:polygon(18%_0,100%_0,100%_100%,0_100%)] lg:block"
+        />
+
+        <div className="relative mx-auto grid max-w-7xl gap-10 lg:grid-cols-[1fr_420px] lg:items-center">
+          <div className="max-w-3xl">
+            <p className="mb-6 inline-flex h-12 items-center gap-2 rounded-full border border-white/18 bg-white/10 px-5 text-sm font-extrabold uppercase tracking-[0.16em] text-orange-100 shadow-[0_12px_36px_rgba(0,0,0,0.12)]">
+              <Heart className="h-4 w-4 text-orange-200" />
+              Один крок
+            </p>
+            <h2 className="max-w-3xl text-4xl font-black leading-tight sm:text-5xl lg:text-6xl">
+              Готові змінити чиєсь життя?
+            </h2>
+            <p className="mt-6 max-w-2xl text-lg leading-8 text-white/78">
+              Оберіть просту дію: познайомитись із тваринами, підтримати центр
+              або залишити заявку на допомогу.
+            </p>
+
+            <div className="mt-8 flex flex-wrap gap-3">
+              {['Знайомство', 'Підтримка', 'Заявка'].map((step) => (
+                <span
+                  key={step}
+                  className="rounded-full border border-white/16 bg-white/10 px-4 py-2 text-sm font-extrabold text-white/86"
+                >
+                  {step}
+                </span>
+              ))}
+            </div>
+          </div>
+
+          <div className="rounded-[28px] border border-white/16 bg-white p-5 text-gray-950 shadow-[0_28px_90px_rgba(15,23,42,0.24)]">
+            <div className="mb-5 flex items-center justify-between gap-4">
+              <p className="text-sm font-extrabold uppercase tracking-[0.16em] text-primary">
+                Почати зараз
+              </p>
+              <span className="rounded-full bg-orange-50 px-3 py-1 text-xs font-black text-primary">
+                2 хвилини
+              </span>
+            </div>
+
+            <div className="flex flex-col gap-3">
+              <LinkButton
+                href="/animals"
+                size="lg"
+                className="w-full justify-between rounded-2xl"
+              >
+                Знайти друга
+                <ChevronRight className="h-5 w-5" />
+              </LinkButton>
+              <LinkButton
+                href="#help"
+                variant="dark"
+                size="lg"
+                className="w-full justify-between rounded-2xl"
+              >
+                Як допомогти
+                <Heart className="h-5 w-5" />
+              </LinkButton>
+            </div>
+
+            <p className="mt-5 rounded-2xl bg-[#F1FFF8] px-4 py-4 text-sm font-bold leading-6 text-secondary">
+              Усиновлення, волонтерство і донати працюють разом, коли кожен
+              крок зрозумілий.
+            </p>
           </div>
         </div>
       </section>
