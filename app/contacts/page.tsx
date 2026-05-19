@@ -144,7 +144,7 @@ export default function ContactsPage() {
       </PageHero>
 
       <section className="px-4 pb-10 sm:px-6 lg:px-8">
-        <SectionFrame className="mx-auto grid max-w-7xl gap-4 p-4 sm:p-6 md:grid-cols-3 lg:p-8">
+        <SectionFrame className="mx-auto grid max-w-336 gap-4 p-4 sm:p-6 md:grid-cols-3 lg:p-8">
           {contactCards.map((card) => {
             const Icon = card.icon
             return (
@@ -174,7 +174,7 @@ export default function ContactsPage() {
       </section>
 
       <section className="px-4 py-12 sm:px-6 lg:px-8">
-        <SectionFrame className="mx-auto grid max-w-7xl gap-8 p-4 sm:p-6 lg:grid-cols-[0.95fr_1.05fr] lg:p-8">
+        <SectionFrame className="mx-auto grid max-w-336 gap-8 p-4 sm:p-6 lg:grid-cols-[0.95fr_1.05fr] lg:p-8">
           <div className="space-y-4">
             {reasons.map((reason) => {
               const Icon = reason.icon
@@ -310,7 +310,7 @@ export default function ContactsPage() {
       </section>
 
       <section className="px-4 pb-20 pt-6 sm:px-6 lg:px-8">
-        <SectionFrame className="mx-auto grid max-w-7xl gap-8 p-4 sm:p-6 lg:grid-cols-[1fr_1.25fr] lg:p-8">
+        <SectionFrame className="mx-auto grid max-w-336 gap-8 p-4 sm:p-6 lg:grid-cols-[1fr_1.25fr] lg:p-8">
           <div className="rounded-4xl border border-gray-100 bg-white p-6 sm:p-8">
             <div className="max-w-md">
               <p className="text-sm font-semibold uppercase tracking-[0.18em] text-orange-600">

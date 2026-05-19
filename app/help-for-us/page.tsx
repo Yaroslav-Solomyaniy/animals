@@ -128,7 +128,7 @@ export default function HelpForUsPage() {
       </PageHero>
 
       <section className="px-4 py-16 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-7xl">
+        <div className="mx-auto max-w-336">
           <SectionFrame className="p-4 sm:p-6 lg:p-8">
             <div className="grid gap-6 md:grid-cols-3">
               {helpWays.map((way) => {
@@ -316,7 +316,7 @@ export default function HelpForUsPage() {
       </section>
 
       <section className="px-4 py-16 sm:px-6 lg:px-8">
-        <SectionFrame className="mx-auto max-w-7xl p-6 text-center sm:p-8 lg:p-10">
+        <SectionFrame className="mx-auto max-w-336 p-6 text-center sm:p-8 lg:p-10">
           <h2 className="text-3xl font-black text-gray-950">Маєте питання?</h2>
           <p className="mt-4 text-lg leading-8 text-gray-600">
             Зв’яжіться з нами, і ми підкажемо, який формат допомоги буде

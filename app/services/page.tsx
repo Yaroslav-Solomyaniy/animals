@@ -260,7 +260,7 @@ export default function ServicesPage() {
             </PageHero>
 
             <section className="px-4 py-16 sm:px-6 lg:px-8">
-                <SectionFrame className="mx-auto max-w-7xl p-4 sm:p-6 lg:p-8">
+                <SectionFrame className="mx-auto max-w-336 p-4 sm:p-6 lg:p-8">
                     <div className="mb-10 border-b border-orange-100/70 pb-6">
                         <p className="text-sm font-semibold uppercase tracking-[0.18em] text-orange-600">
                             Напрямки роботи
@@ -324,7 +324,7 @@ export default function ServicesPage() {
                     whileInView={{opacity: 1, y: 0}}
                     viewport={{once: true, margin: '-80px'}}
                     transition={{duration: 0.5}}
-                    className="orange-neon mx-auto max-w-7xl rounded-[36px] bg-gray-950 p-6 text-white sm:p-8 lg:p-10"
+                    className="orange-neon mx-auto max-w-336 rounded-[36px] bg-gray-950 p-6 text-white sm:p-8 lg:p-10"
                 >
                     <div className="grid gap-8 lg:grid-cols-[0.8fr_1.2fr] lg:items-center">
                         <div>
@@ -364,7 +364,7 @@ export default function ServicesPage() {
                 <div className="absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-white/45 to-transparent" />
                 <div className="absolute inset-x-0 bottom-0 h-px bg-linear-to-r from-transparent via-orange-200/70 to-transparent" />
 
-                <div className="relative mx-auto max-w-7xl">
+                <div className="relative mx-auto max-w-336">
                     <div className="grid gap-10 lg:grid-cols-[1fr_420px] lg:items-center">
                         <div className="max-w-3xl">
                             <p className="mb-5 inline-flex items-center gap-2 rounded-full border border-white/18 bg-white/10 px-4 py-2 text-sm font-extrabold uppercase tracking-[0.18em] text-orange-100 shadow-[0_12px_36px_rgba(0,0,0,0.12)]">
@@ -427,7 +427,7 @@ export default function ServicesPage() {
             </section>
 
             <section className="px-4 py-18 sm:px-6 lg:px-8">
-                <div className="mx-auto max-w-7xl overflow-hidden rounded-[40px] border border-orange-200/70 bg-[linear-gradient(135deg,#fff7ed_0%,#ffffff_42%,#ecfeff_100%)] p-5 shadow-[0_30px_110px_rgba(249,115,22,0.13)] sm:p-6 lg:p-8">
+                <div className="mx-auto max-w-336 overflow-hidden rounded-[40px] border border-orange-200/70 bg-[linear-gradient(135deg,#fff7ed_0%,#ffffff_42%,#ecfeff_100%)] p-5 shadow-[0_30px_110px_rgba(249,115,22,0.13)] sm:p-6 lg:p-8">
                     <div className="grid gap-8 lg:grid-cols-[0.82fr_1.18fr] lg:items-start">
                         <div className="p-2 sm:p-4 lg:p-6">
                             <span className="mb-6 inline-flex items-center gap-2 rounded-full border border-orange-100 bg-white px-4 py-2 text-sm font-extrabold text-orange-700 shadow-sm">

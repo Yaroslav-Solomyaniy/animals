@@ -1,9 +1,12 @@
-import {ArrowRight, HeartHandshake, ShieldCheck, Stethoscope,} from 'lucide-react'
+'use client'
+import {HeartHandshake, ShieldCheck, Stethoscope, MapPin} from 'lucide-react'
 import {motion} from 'motion/react'
 import SectionFrame from '@/components/ui/SectionFrame'
-import { LinkButton } from '@/components/ui/Button'
+import {LinkButton} from '@/components/ui/Button'
 import type {MasonryItem} from './ui/Masonry'
 import Masonry from './ui/Masonry'
+import {WobbleCard} from "@/components/ui/wobble-card";
+import {color_blue, color_rose, color_violet} from "@/contstants/colors";
 
 const dogItems: Array<MasonryItem> = [
     {
@@ -59,28 +62,37 @@ const dogItems: Array<MasonryItem> = [
 const heroStats = [
     {
         icon: HeartHandshake,
-        value: '3+ роки',
-        label: 'поруч із тваринами Черкас',
+        title: 'Поруч у складний момент',
+        description:
+            'Допомагаємо тваринам, які залишились без підтримки, отримати турботу, увагу та шанс на спокійне майбутнє.',
+        color: color_blue,
+        beamSize: 60,
     },
     {
         icon: Stethoscope,
-        value: 'Щодня',
-        label: 'догляд, лікування і харчування',
+        title: 'Турбота кожного дня',
+        description:
+            'Від харчування та прогулянок до лікування й реабілітації — ми дбаємо про тварин щодня.',
+        color: color_rose,
+        beamSize: 60,
     },
     {
         icon: ShieldCheck,
-        value: 'Міська програма',
-        label: 'гуманна допомога безпритульним',
+        title: 'Місце безпеки та довіри',
+        description:
+            'Ми прагнемо створити у Черкасах середовище, де допомога тваринам є природною частиною відповідального суспільства.',
+        color: color_violet,
+        beamSize: 60,
     },
 ]
 
-export default function Hero() {
+export default function Welcome() {
     return (
         <section className="relative flex min-h-[calc(100vh-80px)] items-center overflow-hidden py-16 md:py-20">
             <div
                 className="absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.46),rgba(249,250,251,0.32))]"/>
 
-            <div className="relative mx-auto max-w-[calc(80rem+4rem)] px-4 sm:px-6 lg:px-8">
+            <div className="relative mx-auto max-w-336 px-4 sm:px-6 lg:px-8">
                 <div className="items-center lg:grid lg:grid-cols-2 lg:gap-16">
                     <motion.div
                         initial={{opacity: 0, x: -30}}
@@ -89,23 +101,28 @@ export default function Hero() {
                         className="max-w-2xl space-y-6"
                     >
                         <div
-                            className="inline-flex max-w-full items-center gap-2 rounded-full bg-green-50 px-3 py-1 text-xs font-bold tracking-wider text-secondary uppercase">
-                            <span className="h-2 w-2 shrink-0 animate-pulse rounded-full bg-secondary"></span>
-                            <span className="truncate">
-                Центр працює за підтримки КП Черкаська служба чистоти
-              </span>
+                            className="inline-flex max-w-full items-center gap-2 rounded-full bg-green-50 p-3 border py-1 text-xs font-bold tracking-wider text-secondary">
+                            <span className="h-3 w-3 shrink-0 animate-pulse rounded-full bg-secondary"></span>
+                            <a href={'https://chistota.ck.ua'} target={"_blank"} className="text-sm ">За підтримки КП "Черкаська служба чистоти" ЧМР</a>
                         </div>
-
                         <h1 className="text-4xl leading-tight font-extrabold text-text-main md:text-5xl lg:text-6xl">
-                            Безпечне місце для {' '}
-                            <span className="text-primary">кожної тварини</span>
+                            <span className="text-primary">Центр надання допомоги тваринам</span>
                         </h1>
+                        <p className="max-w-xl text-base leading-8 text-gray-500 md:text-lg">
+                            Діяльність нашого центру розповсюджується на всю територію м.Черкаси, але за можливості ми намагаємось надати прихисток тваринам з різних куточків нашої країни.
+                        </p>
+
+                        <p className="max-w-xl text-base leading-8 text-primary font-bold md:text-lg">
+                            Щодня ми допомагаємо хвостатим повернути довіру до людей.
+                            Не кожна тварина має дім. Але кожна заслуговує його знайти.
+                        </p>
 
                         <p className="max-w-xl text-base leading-8 text-gray-500 md:text-lg">
                             Ми рятуємо, лікуємо та знаходимо нові домівки для тварин, які
                             потребують допомоги. Кожна тварина заслуговує на любов, турботу та
-                            безпечне майбутнє.
+                            безпечне майбутнє в нашому місті.
                         </p>
+
 
                         <motion.div
                             initial={{opacity: 0, x: 100}}
@@ -115,11 +132,10 @@ export default function Hero() {
                         >
                             <div className="flex flex-col gap-4 pt-2 sm:flex-row">
                                 <LinkButton href="/animals">Знайти вірного друга</LinkButton>
-                                <LinkButton href="/services" variant="outline">
-                                    Наші послуги <ArrowRight className="ml-1 h-4 w-4"/>
-                                </LinkButton>
+                                <LinkButton href="/services" variant="outline">Переглянути перелік послуг</LinkButton>
                             </div>
                         </motion.div>
+
                     </motion.div>
 
                     <motion.div
@@ -128,8 +144,8 @@ export default function Hero() {
                         transition={{duration: 0.7, delay: 0.15, ease: 'easeOut'}}
                         className="relative mt-16 lg:mt-0"
                     >
-                        <SectionFrame className="h-[600px] overflow-hidden rounded-[32px] border-gray-100 p-4">
-                            <div className="relative h-full overflow-hidden rounded-[24px] bg-secondary/10">
+                        <SectionFrame className="h-150 overflow-hidden rounded-4xl border-gray-100 p-4">
+                            <div className="relative h-full overflow-hidden rounded-3xl bg-secondary/10">
                                 <Masonry
                                     items={dogItems}
                                     columns={3}
@@ -149,25 +165,33 @@ export default function Hero() {
                     initial={{opacity: 0, y: 15}}
                     animate={{opacity: 1, y: 0}}
                     transition={{duration: 0.55, delay: 0.35, ease: 'easeOut'}}
-                    className="mt-14 grid gap-3 border-t border-gray-100 pt-6 sm:grid-cols-3 lg:mt-16"
+                    className="mt-20 grid gap-5 border-t border-gray-100 pt-6 sm:grid-cols-3 lg:mt-16"
                 >
                     {heroStats.map((stat) => {
                         const Icon = stat.icon
 
                         return (
-                            <SectionFrame key={stat.value}
-                                          className="flex items-center gap-4 rounded-2xl bg-white/80 p-4">
-                                <div
-                                    className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-orange-50 text-primary">
-                                    <Icon className="h-5 w-5"/>
-                                </div>
-                                <div>
-                                    <p className="font-extrabold text-text-main">{stat.value}</p>
-                                    <p className="text-sm leading-6 text-gray-500">
-                                        {stat.label}
-                                    </p>
-                                </div>
-                            </SectionFrame>
+                                <WobbleCard
+                                    key={stat.description}
+                                    containerClassName={`border-gray-200 ${stat.color.bg}`}
+                                    className="flex h-full flex-col justify-between p-3 sm:p-4"
+                                    beamColorFrom={stat.color.beamFrom}
+                                    beamColorTo={stat.color.beamTo}
+                                    beamDelay={1}
+                                    beamSize={stat.beamSize}
+                                >
+                                    <div className="relative z-10">
+                                        <Icon className={`mb-4 h-6 w-6 ${stat.color.icon}`}/>
+                                        <h3
+                                            className={`text-[16px] uppercase leading-tight font-extrabold ${stat.color.title}`}
+                                        >
+                                            {stat.title}
+                                        </h3>
+                                        <p className="mt-1 text-[14px]  leading-8 text-gray-600">
+                                            {stat.description}
+                                        </p>
+                                    </div>
+                                </WobbleCard>
                         )
                     })}
                 </motion.div>

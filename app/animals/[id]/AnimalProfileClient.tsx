@@ -87,7 +87,7 @@ export default function AnimalProfileClient({
 
   return (
     <main className="min-h-screen pb-10 pt-12 text-[#111827] sm:pt-16 md:pb-14 md:pt-20">
-      <div className="mx-auto mb-5 max-w-[calc(80rem+4rem)] px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto mb-5 max-w-336 px-4 sm:px-6 lg:px-8">
         <Link
           href="/animals"
           className="btn-outline group relative inline-flex items-center gap-2 overflow-hidden !border-primary !text-primary before:absolute before:inset-0 before:origin-left before:scale-x-0 before:bg-primary before:transition-transform before:duration-300 before:ease-out hover:!text-white hover:before:scale-x-100"
@@ -98,7 +98,7 @@ export default function AnimalProfileClient({
       </div>
 
       <section className="px-4 sm:px-6 lg:px-8">
-        <SectionFrame className="mx-auto max-w-7xl p-4 sm:p-6 lg:p-8">
+        <SectionFrame className="mx-auto max-w-336 p-4 sm:p-6 lg:p-8">
         <div className="grid grid-cols-1 gap-4 md:grid-cols-[2.3fr_3fr] md:items-start">
           <div className="space-y-5">
             <section>
@@ -236,7 +236,7 @@ export default function AnimalProfileClient({
       </section>
 
       {relatedAnimals.length > 0 && (
-        <section className="mx-auto mt-10 max-w-[calc(80rem+4rem)] px-4 sm:px-6 lg:px-8">
+        <section className="mx-auto mt-10 max-w-336 px-4 sm:px-6 lg:px-8">
           <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
             <div>
               <p className="text-sm font-black uppercase tracking-[0.18em] text-orange-500">

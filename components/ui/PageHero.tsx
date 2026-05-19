@@ -31,7 +31,7 @@ export default function PageHero({
 
       <div
         className={[
-          'relative mx-auto max-w-7xl',
+          'relative mx-auto max-w-336',
           isCentered
             ? 'text-center'
             : 'grid items-center gap-12 lg:grid-cols-[0.92fr_1.08fr]',

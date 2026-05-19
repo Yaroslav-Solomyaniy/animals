@@ -8,44 +8,7 @@ import {
 } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import { WobbleCard } from '@/components/ui/wobble-card'
-
-const cardColors = {
-  warm: {
-    bg: 'bg-[#fff7ed]',
-    icon: 'text-primary',
-    title: 'text-[#9a3412]',
-    beamFrom: '#f97316',
-    beamTo: '#fb7185',
-  },
-  mint: {
-    bg: 'bg-[#ecfdf5]',
-    icon: 'text-emerald-600',
-    title: 'text-[#047857]',
-    beamFrom: '#34d399',
-    beamTo: '#14b8a6',
-  },
-  blue: {
-    bg: 'bg-[#eff6ff]',
-    icon: 'text-sky-600',
-    title: 'text-[#1d4ed8]',
-    beamFrom: '#38bdf8',
-    beamTo: '#6366f1',
-  },
-  rose: {
-    bg: 'bg-[#fff1f2]',
-    icon: 'text-rose-500',
-    title: 'text-[#be123c]',
-    beamFrom: '#fb7185',
-    beamTo: '#f472b6',
-  },
-  violet: {
-    bg: 'bg-[#f5f3ff]',
-    icon: 'text-violet-600',
-    title: 'text-[#6d28d9]',
-    beamFrom: '#a78bfa',
-    beamTo: '#38bdf8',
-  },
-} as const
+import {cardColors, color_mint, color_warm} from "@/contstants/colors";
 
 type SmallCard = {
   icon: LucideIcon
@@ -76,12 +39,10 @@ const smallCards: Array<SmallCard> = [
 ]
 
 export default function TrustValues() {
-  const warm = cardColors.warm
-  const mint = cardColors.mint
 
   return (
     <section className="bg-white py-28">
-      <div className="mx-auto max-w-[calc(80rem+4rem)] px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-336 px-4 sm:px-6 lg:px-8">
         <div className="mb-12 max-w-3xl">
           <p className="mb-4 text-sm font-extrabold tracking-wider text-primary uppercase">
             Відкрита допомога
@@ -97,16 +58,16 @@ export default function TrustValues() {
 
         <div className="grid w-full grid-cols-1 gap-5 lg:grid-cols-3">
           <WobbleCard
-            containerClassName={`lg:col-span-2 min-h-[430px] border-gray-200 ${warm.bg}`}
+            containerClassName={`lg:col-span-2 min-h-[430px] border-gray-200 ${color_warm.bg}`}
             className="flex h-full flex-col justify-between p-8 sm:p-10"
-            beamColorFrom={warm.beamFrom}
-            beamColorTo={warm.beamTo}
+            beamColorFrom={color_warm.beamFrom}
+            beamColorTo={color_warm.beamTo}
             beamSize={260}
           >
             <div className="relative z-10 max-w-2xl">
-              <HeartHandshake className={`mb-8 h-12 w-12 ${warm.icon}`} />
+              <HeartHandshake className={`mb-8 h-12 w-12 ${color_warm.icon}`} />
               <h3
-                className={`text-3xl leading-tight font-extrabold md:text-4xl ${warm.title}`}
+                className={`text-3xl leading-tight font-extrabold md:text-4xl ${color_warm.title}`}
               >
                 Черкаська служба чистоти підтримує центр щодня
               </h3>
@@ -127,17 +88,17 @@ export default function TrustValues() {
           </WobbleCard>
 
           <WobbleCard
-            containerClassName={`min-h-[430px] border-gray-200 ${mint.bg}`}
+            containerClassName={`min-h-[430px] border-gray-200 ${color_mint.bg}`}
             className="flex h-full flex-col justify-between p-8 sm:p-10"
-            beamColorFrom={mint.beamFrom}
-            beamColorTo={mint.beamTo}
+            beamColorFrom={color_mint.beamFrom}
+            beamColorTo={color_mint.beamTo}
             beamDelay={1.5}
             beamSize={190}
           >
             <div className="relative z-10">
-              <Sparkles className={`mb-8 h-12 w-12 ${mint.icon}`} />
+              <Sparkles className={`mb-8 h-12 w-12 ${color_mint.icon}`} />
               <h3
-                className={`text-3xl leading-tight font-extrabold ${mint.title}`}
+                className={`text-3xl leading-tight font-extrabold ${color_mint.title}`}
               >
                 Місія і бачення
               </h3>

@@ -53,8 +53,8 @@ export function AdminAuthGate({ children }: { children: React.ReactNode }) {
           Для роботи з адмінкою потрібна активна сесія Supabase.
         </p>
         <div className="mt-6">
-          <LinkButton href="/sign-in">
-            Перейти до входу
+          <LinkButton href="/">
+            Перейти на головну
           </LinkButton>
         </div>
       </div>

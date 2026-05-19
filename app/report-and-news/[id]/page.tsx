@@ -58,12 +58,12 @@ export default async function NewsDetailsPage({ params }: NewsPageProps) {
     <main className="storybook-bg min-h-screen text-gray-950">
       <StorybookDecorations />
 
-      <div className="mx-auto max-w-[calc(80rem+4rem)] px-4 pt-8 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-336 px-4 pt-8 sm:px-6 lg:px-8">
         <BackLink />
       </div>
 
       <section className="px-4 pb-8 pt-5 sm:px-6 lg:px-8">
-        <article className="mx-auto grid max-w-7xl gap-5 overflow-hidden rounded-[28px] border border-orange-100 bg-white p-3 shadow-[0_28px_90px_rgba(15,23,42,0.10)] transition hover:border-orange-200 hover:shadow-[0_32px_100px_rgba(242,116,56,0.14)] lg:grid-cols-[minmax(0,1fr)_380px]">
+        <article className="mx-auto grid max-w-336 gap-5 overflow-hidden rounded-[28px] border border-orange-100 bg-white p-3 shadow-[0_28px_90px_rgba(15,23,42,0.10)] transition hover:border-orange-200 hover:shadow-[0_32px_100px_rgba(242,116,56,0.14)] lg:grid-cols-[minmax(0,1fr)_380px]">
           <div className="relative min-h-[440px] overflow-hidden rounded-[24px] ring-1 ring-orange-100/70 transition hover:ring-primary/45 lg:min-h-[560px]">
             <LightboxImage
               image={{
@@ -122,7 +122,7 @@ export default async function NewsDetailsPage({ params }: NewsPageProps) {
       </section>
 
       <section className="px-4 py-8 sm:px-6 lg:px-8">
-        <div className="mx-auto grid max-w-7xl gap-7 lg:grid-cols-[minmax(0,1fr)_380px] lg:items-start">
+        <div className="mx-auto grid max-w-336 gap-7 lg:grid-cols-[minmax(0,1fr)_380px] lg:items-start">
           <SectionFrame className="overflow-hidden rounded-[32px] p-0 transition hover:border-orange-200 hover:shadow-[0_28px_80px_rgba(242,116,56,0.16)]">
             <div className="border-b border-orange-100 bg-orange-50/60 px-6 py-5 sm:px-8">
               <p className="inline-flex items-center gap-2 text-sm font-extrabold uppercase tracking-[0.18em] text-primary">

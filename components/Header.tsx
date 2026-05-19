@@ -62,7 +62,7 @@ export default function Header() {
             'mx-auto flex items-center justify-between gap-4 px-4 transition-[height,max-width] duration-700 ease-out sm:px-6 lg:px-8',
             isCompact
               ? 'h-16 max-w-[calc(76rem+2rem)]'
-              : 'h-20 max-w-[calc(80rem+4rem)]'
+              : 'h-20 max-w-336'
           )}
         >
 

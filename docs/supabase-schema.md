@@ -1,589 +1,855 @@
-# Supabase-модель для сайту притулку
+# Supabase schema
 
-Цей документ не є SQL-міграцією. Це зрозумілий опис того, які сутності варто створити в Supabase, щоб потім зробити адмін-панель і замінити мокові дані на реальні.
+Документ описывает таблицы, которые создаем в схеме `public` Supabase.
 
-Головна ідея:
+Правило простое: одна сущность приложения = одна таблица Supabase. Детали, которые могут повторяться или иметь много записей, выносим в отдельные таблицы. Например, животное хранится в `animals`, его фотографии в `animal_photos`, новость в `news_posts`, медиа новости в `news_media`, отчеты в `reports`.
 
-- у Supabase зберігаємо тварин, характеристики, заявки, донати, послуги, звіти, новини та посилання на файли;
-- самі файли зберігаємо в Cloudflare R2: фото тварин, PDF-звіти, обкладинки новин та інші медіа;
-- в адмінці ці дані створюємо й редагуємо;
-- на публічному сайті показуємо тільки активні та опубліковані записи.
+Supabase Auth не создаем вручную. Пользователи и сессии живут в служебной схеме `auth`, а наши данные живут в `public`.
 
-## 1. Тварини
+## Минимальный набор для текущего кода
 
-Таблиця: `animals`
+Базовая схема для админки:
 
-Це головна таблиця. Усе, що зараз лежить у моках для карток і сторінки конкретної тварини, має поступово переїхати сюди.
+1. `public.animals`
+2. `public.animal_photos`
+3. `public.news_posts`
+4. `public.news_media`
+5. `public.reports`
 
-### Основні поля
+Этого достаточно, чтобы работали текущие страницы админки:
 
-| Поле | Що означає | Приклад |
+- `/admin/animals`
+- `/admin/news`
+- `/admin/reports`
+
+## Таблица `animals`
+
+Хранит карточки животных: имя, тип, пол, размер, статус, описание, историю, даты и флаги публикации.
+
+| Поле | Тип | Зачем нужно |
 | --- | --- | --- |
-| `id` | Унікальний ID тварини | `uuid` |
-| `slug` | URL-адреса для сторінки | `baks`, `maks` |
-| `name` | Ім’я тварини | `Бакс` |
-| `species` | Тип тварини | `dog`, `cat` |
-| `gender` | Стать | `male`, `female` |
-| `size` | Розмір | `small`, `medium`, `large` |
-| `status` | Стан запису | `available`, `adopted`, `hidden` |
-| `short_description` | Короткий опис для картки/hero | `Енергійний пес...` |
-| `full_story` | Повна історія для сторінки тварини | довгий текст |
+| `id` | `uuid` | Уникальный ID животного |
+| `slug` | `text` | Человекочитаемый URL, например `baks` |
+| `name` | `text` | Имя животного |
+| `gender` | `text` | Пол: `male` или `female` |
+| `size` | `text` | Размер: `small`, `medium`, `large` |
+| `status` | `text` | Состояние записи: `draft`, `available`, `reserved`, `adopted`, `hidden` |
+| `short_description` | `text` | Короткое описание для карточек |
+| `full_story` | `text` | Полная история для страницы животного |
+| `birth_date` | `date` | Дата рождения, если известна |
+| `approximate_age_label` | `text` | Возраст текстом, например `2 роки` |
+| `shelter_arrival_date` | `date` | Дата прибытия в приют |
+| `is_vaccinated` | `boolean` | Вакцинировано |
+| `is_neutered` | `boolean` | Стерилизовано/кастрировано |
+| `is_featured` | `boolean` | Показывать на главной или в избранном |
+| `published_at` | `timestamptz` | Дата публикации |
+| `created_at` | `timestamptz` | Дата создания |
+| `updated_at` | `timestamptz` | Дата последнего обновления |
 
-### Вік і перебування в притулку
+SQL:
 
-| Поле | Що означає |
-| --- | --- |
-| `birth_date` | Якщо знаємо приблизну або точну дату народження |
-| `approximate_age_label` | Якщо не хочемо рахувати автоматично: `2 роки`, `6 місяців` |
-| `shelter_arrival_date` | Дата, коли тварина потрапила в притулок |
+```sql
+create table if not exists public.animals (
+  id uuid primary key default gen_random_uuid(),
+  slug text not null unique,
+  name text not null,
+  gender text not null default 'male',
+  size text not null default 'medium',
+  status text not null default 'draft',
+  short_description text,
+  full_story text,
+  birth_date date,
+  approximate_age_label text,
+  shelter_arrival_date date,
+  is_vaccinated boolean not null default false,
+  is_neutered boolean not null default false,
+  is_featured boolean not null default false,
+  published_at timestamptz,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now(),
 
-Так ми зможемо показувати “2 роки” і “3 місяці в притулку”. Якщо дата невідома, просто використовуємо готовий текст.
-
-### Здоров’я
-
-| Поле | Що означає |
-| --- | --- |
-| `is_vaccinated` | Чи щеплена тварина |
-| `is_neutered` | Чи кастрований/стерилізована |
-
-У базі краще мати одне поле `is_neutered`, а в інтерфейсі підпис міняти за статтю:
-
-- якщо `gender = male`, показуємо `Кастрований`;
-- якщо `gender = female`, показуємо `Стерилізована`.
-
-### Публікація
-
-| Поле | Що означає |
-| --- | --- |
-| `is_featured` | Чи показувати в рекомендованих/на головній |
-| `published_at` | Коли запис опублікований |
-| `created_at` | Коли створено |
-| `updated_at` | Коли востаннє змінено |
-
-### Статуси тварини
-
-Рекомендовані значення для `status`:
-
-| Статус | Для чого |
-| --- | --- |
-| `draft` | Чернетка, не показуємо на сайті |
-| `available` | Доступна до адопції |
-| `reserved` | Є домовленість або заявка в роботі |
-| `adopted` | Уже прилаштована |
-| `hidden` | Прихована вручну |
-
-## 2. Фото тварин
-
-Таблиця: `animal_photos`
-
-Фото краще не зберігати прямо в `animals`, бо в однієї тварини може бути кілька фото.
-У самій таблиці зберігаємо не файл, а шлях/ключ до файлу в Cloudflare R2.
-
-| Поле | Що означає |
-| --- | --- |
-| `id` | ID фото |
-| `animal_id` | До якої тварини належить фото |
-| `r2_key` | Ключ файлу в Cloudflare R2 |
-| `public_url` | Публічний URL, якщо файл доступний напряму |
-| `alt` | Опис фото для доступності |
-| `sort_order` | Порядок фото в галереї |
-| `is_main` | Чи це головне фото |
-
-В адмінці це буде блок “Фото”, де можна:
-
-- завантажити кілька фото;
-- вибрати головне фото;
-- змінити порядок;
-- видалити невдалі фото.
-
-R2 bucket:
-
-```text
-animal-photos
+  constraint animals_gender_check check (gender in ('male', 'female')),
+  constraint animals_size_check check (size in ('small', 'medium', 'large')),
+  constraint animals_status_check check (status in ('draft', 'available', 'reserved', 'adopted', 'hidden'))
+);
 ```
 
-Приклад `r2_key`:
+## Таблица `animal_photos`
 
-```text
-animals/baks/gallery/photo-1.webp
+Хранит фотографии животного. У одного животного может быть несколько фото, а в админке можно выбрать главное фото через `is_main = true`.
+
+Файл не храним в Supabase. В таблице лежит только публичный URL или ключ файла в Cloudflare R2.
+
+| Поле | Тип | Зачем нужно |
+| --- | --- | --- |
+| `id` | `uuid` | Уникальный ID фото |
+| `animal_id` | `uuid` | К какому животному относится фото |
+| `r2_key` | `text` | Ключ файла в Cloudflare R2 |
+| `public_url` | `text` | Публичный URL фото |
+| `alt` | `text` | Alt-текст для доступности |
+| `sort_order` | `integer` | Порядок фото в галерее |
+| `is_main` | `boolean` | Главное фото животного |
+| `created_at` | `timestamptz` | Дата создания |
+| `updated_at` | `timestamptz` | Дата последнего обновления |
+
+SQL:
+
+```sql
+create table if not exists public.animal_photos (
+  id uuid primary key default gen_random_uuid(),
+  animal_id uuid not null references public.animals(id) on delete cascade,
+  r2_key text,
+  public_url text,
+  alt text,
+  sort_order integer not null default 0,
+  is_main boolean not null default false,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now(),
+
+  constraint animal_photos_has_source_check check (
+    r2_key is not null
+    or public_url is not null
+  )
+);
 ```
 
-Тобто файл фізично лежить у Cloudflare R2, а Supabase просто знає, де його знайти.
+Чтобы у одного животного было только одно главное фото:
 
-## 3. Характеристики
-
-Таблиці:
-
-- `animal_traits`
-- `animal_trait_links`
-
-Характеристики краще винести окремо, бо “Активний”, “Дружній до дітей”, “Спокійний” можуть повторюватися в багатьох тварин.
-
-### `animal_traits`
-
-Це довідник характеристик.
-
-| Поле | Що означає |
-| --- | --- |
-| `id` | ID характеристики |
-| `label` | Назва, наприклад `Активний` |
-| `icon_name` | Назва іконки, якщо треба |
-| `color_class` | Опційний колір для UI |
-
-### `animal_trait_links`
-
-Це таблиця-зв’язка між твариною і характеристиками.
-
-| Поле | Що означає |
-| --- | --- |
-| `animal_id` | ID тварини |
-| `trait_id` | ID характеристики |
-
-Простими словами: одна тварина може мати багато характеристик, і одна характеристика може бути в багатьох тварин.
-
-## 4. Заявки на адопцію
-
-Таблиця: `adoption_applications`
-
-Коли людина натискає “Стати вірним другом” або “Подати заявку”, ми створюємо запис тут.
-
-| Поле | Що означає |
-| --- | --- |
-| `id` | ID заявки |
-| `animal_id` | На яку тварину подана заявка |
-| `status` | Стан заявки |
-| `applicant_name` | Ім’я людини |
-| `applicant_phone` | Телефон |
-| `applicant_email` | Email |
-| `city` | Місто |
-| `message` | Повідомлення від людини |
-| `has_pet_experience` | Чи був досвід із тваринами |
-| `housing_type` | Квартира, будинок тощо |
-| `admin_notes` | Внутрішні нотатки адміна |
-| `created_at` | Коли створено |
-| `updated_at` | Коли змінено |
-
-Рекомендовані статуси:
-
-| Статус | Значення |
-| --- | --- |
-| `new` | Нова заявка |
-| `in_review` | У роботі |
-| `approved` | Погоджена |
-| `rejected` | Відхилена |
-| `closed` | Закрита |
-
-## 5. Донати і смаколики
-
-Таблиці:
-
-- `donation_gifts`
-- `donations`
-
-Це потрібно для кнопки “Дати смаколика” і майбутньої сторінки донатів.
-
-### `donation_gifts`
-
-Це типи подарунків або донатів.
-
-| Поле | Що означає |
-| --- | --- |
-| `id` | ID подарунка |
-| `slug` | URL/код: `treat`, `food`, `medicine` |
-| `title` | Назва |
-| `description` | Опис |
-| `amount_uah` | Рекомендована сума |
-| `icon_name` | Іконка |
-| `is_active` | Чи показувати на сайті |
-| `sort_order` | Порядок |
-
-### `donations`
-
-Це фактичні донати від людей.
-
-| Поле | Що означає |
-| --- | --- |
-| `id` | ID донату |
-| `animal_id` | Для якої тварини донат, якщо є прив’язка |
-| `gift_id` | Який тип подарунка |
-| `donor_name` | Ім’я донатора |
-| `donor_email` | Email |
-| `amount_uah` | Сума |
-| `status` | Стан оплати |
-| `payment_provider` | Сервіс оплати |
-| `payment_id` | ID платежу в платіжній системі |
-| `paid_at` | Коли оплачено |
-| `created_at` | Коли створено |
-
-Статуси донату:
-
-- `pending`
-- `paid`
-- `failed`
-- `refunded`
-
-## 6. Послуги
-
-Таблиця: `services`
-
-Це те, що зараз схоже на `MOCK_SERVICES`.
-
-| Поле | Що означає |
-| --- | --- |
-| `id` | ID послуги |
-| `slug` | URL/код |
-| `title` | Назва |
-| `description` | Опис |
-| `icon_name` | Іконка |
-| `is_paid` | Платна чи безкоштовна |
-| `is_active` | Чи показувати |
-| `sort_order` | Порядок |
-
-В адмінці можна буде міняти тексти послуг без зміни коду.
-
-## 7. Звіти
-
-Таблиця: `reports`
-
-Для сторінки зі звітами, PDF або іншими файлами.
-
-| Поле | Що означає |
-| --- | --- |
-| `id` | ID звіту |
-| `title` | Назва |
-| `month` | Місяць |
-| `year` | Рік |
-| `summary` | Короткий опис |
-| `file_r2_key` | Ключ файлу в Cloudflare R2 |
-| `file_url` | Публічний URL файлу, якщо потрібен прямий доступ |
-| `is_published` | Чи показувати на сайті |
-| `published_at` | Дата публікації |
-
-R2 bucket:
-
-```text
-report-files
+```sql
+create unique index if not exists animal_photos_one_main_per_animal_idx
+on public.animal_photos(animal_id)
+where is_main = true;
 ```
 
-## 8. Новини
+## Таблица `news_posts`
 
-Таблиця: `news_posts`
+Хранит новости и статьи. В самой таблице лежит основная информация и заглавное фото новости.
 
-Це опційний блок, якщо на сайті будуть новини або статті.
+Дополнительные фото и видео лучше хранить отдельно в `news_media`. А поле `content_blocks` оставляем для конструктора страницы: текстовые блоки, порядок секций, кнопки, таблицы и ссылки на медиа.
 
-| Поле | Що означає |
-| --- | --- |
-| `id` | ID новини |
-| `slug` | URL |
-| `title` | Заголовок |
-| `excerpt` | Короткий опис |
-| `content_blocks` | Масив блоків контенту |
-| `cover_r2_key` | Ключ обкладинки в Cloudflare R2 |
-| `cover_url` | Публічний URL обкладинки |
-| `related_animal_id` | Опційна прив’язка до тварини |
-| `is_published` | Чи опубліковано |
-| `published_at` | Дата публікації |
+| Поле | Тип | Зачем нужно |
+| --- | --- | --- |
+| `id` | `uuid` | Уникальный ID новости |
+| `slug` | `text` | URL новости |
+| `title` | `text` | Заголовок |
+| `excerpt` | `text` | Короткое описание |
+| `content_blocks` | `jsonb` | Блоки контента новости |
+| `cover_url` | `text` | Публичный URL заглавного фото |
+| `cover_r2_key` | `text` | Ключ заглавного фото в Cloudflare R2 |
+| `related_animal_id` | `uuid` | Связанное животное, если новость про него |
+| `is_published` | `boolean` | Опубликована ли новость |
+| `published_at` | `timestamptz` | Дата публикации |
+| `created_at` | `timestamptz` | Дата создания |
+| `updated_at` | `timestamptz` | Дата последнего обновления |
 
-R2 bucket:
+SQL:
 
-```text
-news-images
+```sql
+create table if not exists public.news_posts (
+  id uuid primary key default gen_random_uuid(),
+  slug text not null unique,
+  title text not null,
+  excerpt text,
+  content_blocks jsonb not null default '[]'::jsonb,
+  cover_url text,
+  cover_r2_key text,
+  related_animal_id uuid references public.animals(id) on delete set null,
+  is_published boolean not null default false,
+  published_at timestamptz,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
 ```
 
-### Як зберігати контент новини
+Пример `content_blocks`:
 
-Новина не має бути просто одним великим текстовим полем. У ній можуть бути:
-
-- абзаци;
-- фото;
-- відео;
-- таблиці;
-- кнопки;
-- галереї або слайдери;
-- блок із прив’язаною твариною.
-
-Кожен блок може мати ширину:
-
-| Значення | Як виглядає |
-| --- | --- |
-| `narrow` | вузький текстовий блок, зручно для читання |
-| `medium` | середній блок для фото, відео або слайдера |
-| `wide` | ширший блок для таблиць і галерей |
-| `full` | на всю доступну ширину |
-
-Медіа-блоки також можуть мати висоту:
-
-| Значення | Як виглядає |
-| --- | --- |
-| `small` | компактний блок |
-| `medium` | стандартний блок |
-| `large` | великий акцентний блок |
-
-Тому для старту найпростіше поле:
-
-```text
-content_blocks
-```
-
-Тип: `jsonb`.
-
-Приклад логіки:
-
-```text
+```json
 [
-  { type: "paragraph", width: "narrow", text: "Текст абзацу..." },
-  { type: "image", width: "medium", height: "medium", r2_key: "news/rescue/photo.webp", alt: "Опис фото" },
-  { type: "slider", width: "medium", height: "large", images: [{ r2_key: "news/slider/1.webp", alt: "Фото" }] },
-  { type: "table", width: "wide", columns: ["Етап", "Результат"], rows: [["Огляд", "Стабілізовано"]] },
-  { type: "buttons", width: "medium", buttons: [{ label: "Підтримати", href: "/help-for-us" }] },
-  { type: "gallery", width: "wide", images: [{ r2_key: "news/gallery/1.webp", alt: "Фото" }] }
+  {
+    "type": "paragraph",
+    "width": "narrow",
+    "text": "Текст абзаца..."
+  },
+  {
+    "type": "image",
+    "width": "medium",
+    "height": "medium",
+    "src": "https://example.com/photo.webp",
+    "alt": "Описание фото",
+    "caption": "Подпись"
+  },
+  {
+    "type": "buttons",
+    "width": "medium",
+    "buttons": [
+      {
+        "label": "Підтримати",
+        "href": "/help-for-us",
+        "variant": "primary"
+      }
+    ]
+  }
 ]
 ```
 
-Для адмінки це означає, що сторінка редагування новини має працювати як конструктор блоків: “додати текст”, “додати фото”, “додати таблицю”, “додати кнопку”.
+## Таблица `news_media`
 
-### Прив’язка новини до тварини
+Хранит дополнительные фото и видео для новости. У одной новости может быть два, три, пять или больше медиа-файлов.
 
-Поле:
+Заглавное фото новости остается в `news_posts.cover_url` / `news_posts.cover_r2_key`, потому что это часть самой карточки новости. Все остальные фото и видео идут сюда.
 
-```text
-related_animal_id
+| Поле | Тип | Зачем нужно |
+| --- | --- | --- |
+| `id` | `uuid` | Уникальный ID медиа |
+| `news_post_id` | `uuid` | К какой новости относится медиа |
+| `media_type` | `text` | Тип: `image` или `video` |
+| `r2_key` | `text` | Ключ файла в Cloudflare R2 |
+| `public_url` | `text` | Публичный URL фото или видео |
+| `embed_url` | `text` | Ссылка на внешнее видео, например YouTube |
+| `alt` | `text` | Alt-текст для фото |
+| `caption` | `text` | Подпись |
+| `sort_order` | `integer` | Порядок внутри новости |
+| `created_at` | `timestamptz` | Дата создания |
+| `updated_at` | `timestamptz` | Дата последнего обновления |
+
+SQL:
+
+```sql
+create table if not exists public.news_media (
+  id uuid primary key default gen_random_uuid(),
+  news_post_id uuid not null references public.news_posts(id) on delete cascade,
+  media_type text not null,
+  r2_key text,
+  public_url text,
+  embed_url text,
+  alt text,
+  caption text,
+  sort_order integer not null default 0,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now(),
+
+  constraint news_media_type_check check (media_type in ('image', 'video')),
+  constraint news_media_has_source_check check (
+    r2_key is not null
+    or public_url is not null
+    or embed_url is not null
+  )
+);
 ```
 
-Якщо новина стосується конкретної тварини, зберігаємо її ID.
+## Таблица `reports`
 
-Важливе правило:
+Хранит отчеты: название, месяц, год, описание и ссылку на файл.
 
-- якщо тварина активна в каталозі, показуємо картку й посилання;
-- якщо тварина прихована або вже прилаштована, можна показувати картку з бейджем `Архівна історія`;
-- якщо тварину повністю видалили, показуємо disabled-блок без переходу.
+| Поле | Тип | Зачем нужно |
+| --- | --- | --- |
+| `id` | `uuid` | Уникальный ID отчета |
+| `title` | `text` | Название отчета |
+| `month` | `text` | Месяц текстом |
+| `year` | `text` | Год |
+| `summary` | `text` | Короткое описание |
+| `file_url` | `text` | Публичный URL файла |
+| `file_r2_key` | `text` | Ключ файла в Cloudflare R2, если используем R2 |
+| `is_published` | `boolean` | Опубликован ли отчет |
+| `published_at` | `timestamptz` | Дата публикации |
+| `created_at` | `timestamptz` | Дата создания |
+| `updated_at` | `timestamptz` | Дата последнего обновления |
 
-Краще не видаляти тварин фізично з бази, а ставити `status = hidden` або `status = adopted`. Тоді старі новини не будуть ламатися.
+SQL:
 
-## 9. Адміни
-
-Таблиця: `admin_profiles`
-
-Supabase Auth відповідає за логін і пароль. Але роль користувача краще зберігати окремо.
-
-| Поле | Що означає |
-| --- | --- |
-| `id` | Такий самий ID, як у `auth.users` |
-| `email` | Email адміна |
-| `full_name` | Ім’я |
-| `role` | Роль |
-| `created_at` | Коли створено |
-
-Ролі:
-
-| Роль | Що може |
-| --- | --- |
-| `admin` | Повний доступ |
-| `editor` | Редагує контент, але не керує адмінами |
-
-## 10. Як це буде виглядати в адмінці
-
-### Розділ “Тварини”
-
-Список:
-
-- пошук за ім’ям;
-- фільтр за статусом;
-- фільтр за типом тварини;
-- швидка зміна статусу;
-- кнопка “Додати тварину”.
-
-Сторінка редагування:
-
-- вкладка “Основне”: ім’я, стать, розмір, статус, короткий опис;
-- вкладка “Історія”: повний текст;
-- вкладка “Фото”: завантаження, порядок, головне фото;
-- вкладка “Здоров’я”: щеплення, кастрація/стерилізація;
-- вкладка “Характер”: вибір характеристик;
-- вкладка “Публікація”: видимість, рекомендовані, дата публікації.
-
-### Розділ “Заявки”
-
-- список заявок;
-- статуси;
-- фільтр за твариною;
-- внутрішні нотатки;
-- контактні дані людини.
-
-### Розділ “Донати”
-
-- список донатів;
-- статус оплати;
-- прив’язка до тварини;
-- тип подарунка.
-
-### Розділ “Послуги”
-
-- редагування текстів;
-- порядок показу;
-- увімкнути/вимкнути послугу.
-
-### Розділ “Звіти” і “Новини”
-
-- створення чернеток;
-- публікація;
-- завантаження файлів і зображень.
-
-## 11. Cloudflare R2 для файлів
-
-Supabase Storage тоді не використовуємо як основне сховище. Supabase відповідає за дані, а Cloudflare R2 відповідає за файли.
-
-### Що зберігаємо в R2
-
-| Bucket | Що там лежить |
-| --- | --- |
-| `animal-photos` | Фото тварин |
-| `report-files` | PDF, таблиці або інші файли звітів |
-| `news-images` | Обкладинки новин |
-| `public-assets` | Загальні картинки сайту |
-
-### Що зберігаємо в Supabase
-
-У Supabase не кладемо сам файл. Там зберігаємо тільки:
-
-- ключ файлу в R2, наприклад `animals/baks/main.webp`;
-- публічний URL, якщо файл має бути доступний напряму;
-- alt-текст;
-- порядок фото;
-- ознаку головного фото.
-
-### Чому так краще
-
-- база не роздувається файлами;
-- фото й документи можна віддавати через Cloudflare;
-- легше масштабувати медіа;
-- можна окремо керувати кешем, форматами й оптимізацією зображень.
-
-### Як це буде працювати в адмінці
-
-1. Адмін завантажує фото.
-2. Backend/API завантажує файл у Cloudflare R2.
-3. R2 повертає ключ або URL.
-4. Supabase зберігає запис у `animal_photos`.
-5. Сайт бере список фото з Supabase і показує картинки з R2.
-
-## 12. Зв’язки простими словами
-
-```text
-animals
-  має багато animal_photos
-  має багато animal_traits через animal_trait_links
-  має багато adoption_applications
-  може мати багато donations
-
-donation_gifts
-  має багато donations
-
-admin_profiles
-  пов’язаний із Supabase Auth
+```sql
+create table if not exists public.reports (
+  id uuid primary key default gen_random_uuid(),
+  title text not null,
+  month text,
+  year text,
+  summary text,
+  file_url text,
+  file_r2_key text,
+  is_published boolean not null default false,
+  published_at timestamptz,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
 ```
 
-Тобто `animals` — центр системи. Більшість інших таблиць або напряму, або побічно прив’язані до конкретної тварини.
+## View `animal_cards`
 
-## 13. Що бачить сайт, а що бачить адмінка
+Это не отдельная таблица, а готовое представление для публичного каталога животных.
 
-Публічний сайт має право:
-
-- читати тільки опублікованих тварин;
-- читати активні послуги;
-- читати опубліковані звіти й новини;
-- створювати заявки;
-- створювати донати;
-- читати публічні фото з Cloudflare R2.
-
-Публічний сайт не має права:
-
-- редагувати тварин;
-- видаляти фото з R2;
-- бачити чернетки;
-- бачити приховані записи;
-- читати внутрішні нотатки адміна.
-
-Адмінка має право:
-
-- створювати й редагувати тварин;
-- завантажувати фото;
-- записувати ключі файлів у Supabase;
-- міняти статуси;
-- бачити заявки;
-- додавати нотатки;
-- керувати послугами, звітами й новинами.
-
-## 14. Мінімальна версія для старту
-
-Щоб не робити все одразу, я б починав з такого набору:
-
-1. `animals`
-2. `animal_photos`
-3. `animal_traits`
-4. `animal_trait_links`
-5. `adoption_applications`
-6. `admin_profiles`
-7. R2 bucket `animal-photos`
-
-Цього вистачить, щоб:
-
-- замінити каталог тварин на Supabase;
-- зробити сторінку конкретної тварини;
-- зробити базову адмінку для тварин;
-- приймати заявки на адопцію.
-
-Донати, послуги, звіти й новини можна додати другим етапом.
-
-## 15. UI-моделі для фронту
-
-Це не таблиці Supabase, а зручні типи, які можна використовувати в React-компонентах.
+Зачем оно нужно: чтобы на фронте не делать отдельный запрос за главным фото. Каталог может читать одну сущность:
 
 ```ts
-export type AnimalGender = 'male' | 'female'
-export type AnimalSize = 'small' | 'medium' | 'large'
-export type AnimalStatus = 'draft' | 'available' | 'reserved' | 'adopted' | 'hidden'
-
-export type AnimalListItem = {
-  id: string
-  slug: string
-  name: string
-  gender: AnimalGender
-  size: AnimalSize
-  ageLabel: string
-  stayDurationLabel: string
-  mainPhotoUrl: string
-  traits: string[]
-  isVaccinated: boolean
-  isNeutered: boolean
-  shortDescription: string
-}
-
-export type AnimalDetails = AnimalListItem & {
-  fullStory: string
-  photos: Array<{
-    id: string
-    url: string
-    r2Key?: string
-    alt?: string
-    sortOrder: number
-    isMain: boolean
-  }>
-}
+const { data } = await supabase
+  .from('animal_cards')
+  .select('*')
+  .order('published_at', { ascending: false })
 ```
 
-## 16. Що робимо потім
+View берет данные из `animals` и подмешивает главное фото из `animal_photos`, где `is_main = true`.
 
-Після узгодження цієї структури наступний нормальний порядок такий:
+SQL:
 
-1. Зробити окремий SQL migration файл.
-2. Створити таблиці в Supabase.
-3. Створити Cloudflare R2 buckets.
-4. Додати правила доступу.
-5. Перенести мокових тварин у seed-дані.
-6. Підключити сайт до Supabase.
-7. Замінити `MOCK_ANIMALS` на реальні запити.
-8. Додати API для завантаження файлів у R2.
-9. Почати робити адмін-панель.
+```sql
+create or replace view public.animal_cards
+with (security_invoker = on) as
+select
+  animals.id,
+  animals.slug,
+  animals.name,
+  animals.gender,
+  animals.size,
+  animals.status,
+  animals.short_description,
+  animals.birth_date,
+  animals.approximate_age_label,
+  animals.shelter_arrival_date,
+  animals.is_vaccinated,
+  animals.is_neutered,
+  animals.is_featured,
+  animals.published_at,
+  main_photo.id as main_photo_id,
+  main_photo.public_url as main_photo_url,
+  main_photo.r2_key as main_photo_r2_key,
+  main_photo.alt as main_photo_alt
+from public.animals
+left join public.animal_photos as main_photo
+  on main_photo.animal_id = animals.id
+  and main_photo.is_main = true
+where
+  animals.status in ('available', 'reserved', 'adopted')
+  and animals.published_at is not null;
+```
 
-SQL краще тримати окремо від цього документа, щоб тут лишалась зрозуміла схема для обговорення, а не технічне полотно.
+Использование:
+
+- публичный каталог: читать `animal_cards`;
+- публичная детальная страница животного: читать `animals` + `animal_photos`;
+- админка: работать с `animals` и `animal_photos` напрямую, потому что там нужно редактировать все фото и выбирать главное.
+
+## Обновление `updated_at`
+
+Чтобы `updated_at` обновлялся автоматически при изменении строки, создаем одну функцию и три триггера.
+
+SQL:
+
+```sql
+create or replace function public.set_updated_at()
+returns trigger
+language plpgsql
+as $$
+begin
+  new.updated_at = now();
+  return new;
+end;
+$$;
+
+drop trigger if exists set_animals_updated_at on public.animals;
+create trigger set_animals_updated_at
+before update on public.animals
+for each row
+execute function public.set_updated_at();
+
+drop trigger if exists set_animal_photos_updated_at on public.animal_photos;
+create trigger set_animal_photos_updated_at
+before update on public.animal_photos
+for each row
+execute function public.set_updated_at();
+
+drop trigger if exists set_news_posts_updated_at on public.news_posts;
+create trigger set_news_posts_updated_at
+before update on public.news_posts
+for each row
+execute function public.set_updated_at();
+
+drop trigger if exists set_news_media_updated_at on public.news_media;
+create trigger set_news_media_updated_at
+before update on public.news_media
+for each row
+execute function public.set_updated_at();
+
+drop trigger if exists set_reports_updated_at on public.reports;
+create trigger set_reports_updated_at
+before update on public.reports
+for each row
+execute function public.set_updated_at();
+```
+
+## Индексы
+
+Индексы нужны для быстрых списков, фильтров и сортировки.
+
+SQL:
+
+```sql
+create index if not exists animals_status_idx on public.animals(status);
+create index if not exists animals_published_at_idx on public.animals(published_at desc);
+create index if not exists animals_updated_at_idx on public.animals(updated_at desc);
+
+create index if not exists animal_photos_animal_id_idx on public.animal_photos(animal_id);
+create index if not exists animal_photos_sort_order_idx on public.animal_photos(animal_id, sort_order);
+create unique index if not exists animal_photos_one_main_per_animal_idx
+on public.animal_photos(animal_id)
+where is_main = true;
+
+create index if not exists news_posts_is_published_idx on public.news_posts(is_published);
+create index if not exists news_posts_published_at_idx on public.news_posts(published_at desc);
+create index if not exists news_posts_related_animal_id_idx on public.news_posts(related_animal_id);
+
+create index if not exists news_media_news_post_id_idx on public.news_media(news_post_id);
+create index if not exists news_media_sort_order_idx on public.news_media(news_post_id, sort_order);
+
+create index if not exists reports_is_published_idx on public.reports(is_published);
+create index if not exists reports_year_idx on public.reports(year desc);
+create index if not exists reports_published_at_idx on public.reports(published_at desc);
+```
+
+## RLS и доступы
+
+Включаем Row Level Security. Публичный сайт может читать только опубликованные данные. Авторизованный пользователь может читать, создавать, редактировать и удалять записи в админке.
+
+Это простой стартовый вариант. Позже можно ужесточить доступ через таблицу `admin_profiles`, чтобы не любой авторизованный пользователь был админом.
+
+SQL:
+
+```sql
+alter table public.animals enable row level security;
+alter table public.animal_photos enable row level security;
+alter table public.news_posts enable row level security;
+alter table public.news_media enable row level security;
+alter table public.reports enable row level security;
+
+drop policy if exists "Public can read published animals" on public.animals;
+create policy "Public can read published animals"
+on public.animals
+for select
+to anon
+using (
+  status in ('available', 'reserved', 'adopted')
+  and published_at is not null
+);
+
+drop policy if exists "Authenticated can manage animals" on public.animals;
+create policy "Authenticated can manage animals"
+on public.animals
+for all
+to authenticated
+using (true)
+with check (true);
+
+drop policy if exists "Public can read published animal photos" on public.animal_photos;
+create policy "Public can read published animal photos"
+on public.animal_photos
+for select
+to anon
+using (
+  exists (
+    select 1
+    from public.animals
+    where animals.id = animal_photos.animal_id
+      and animals.status in ('available', 'reserved', 'adopted')
+      and animals.published_at is not null
+  )
+);
+
+drop policy if exists "Authenticated can manage animal photos" on public.animal_photos;
+create policy "Authenticated can manage animal photos"
+on public.animal_photos
+for all
+to authenticated
+using (true)
+with check (true);
+
+drop policy if exists "Public can read published news" on public.news_posts;
+create policy "Public can read published news"
+on public.news_posts
+for select
+to anon
+using (
+  is_published = true
+  and published_at is not null
+);
+
+drop policy if exists "Authenticated can manage news" on public.news_posts;
+create policy "Authenticated can manage news"
+on public.news_posts
+for all
+to authenticated
+using (true)
+with check (true);
+
+drop policy if exists "Public can read published news media" on public.news_media;
+create policy "Public can read published news media"
+on public.news_media
+for select
+to anon
+using (
+  exists (
+    select 1
+    from public.news_posts
+    where news_posts.id = news_media.news_post_id
+      and news_posts.is_published = true
+      and news_posts.published_at is not null
+  )
+);
+
+drop policy if exists "Authenticated can manage news media" on public.news_media;
+create policy "Authenticated can manage news media"
+on public.news_media
+for all
+to authenticated
+using (true)
+with check (true);
+
+drop policy if exists "Public can read published reports" on public.reports;
+create policy "Public can read published reports"
+on public.reports
+for select
+to anon
+using (
+  is_published = true
+  and published_at is not null
+);
+
+drop policy if exists "Authenticated can manage reports" on public.reports;
+create policy "Authenticated can manage reports"
+on public.reports
+for all
+to authenticated
+using (true)
+with check (true);
+```
+
+## Полный SQL для первого запуска
+
+Этот блок можно вставить в Supabase SQL Editor одним куском.
+
+```sql
+create extension if not exists pgcrypto;
+
+create table if not exists public.animals (
+  id uuid primary key default gen_random_uuid(),
+  slug text not null unique,
+  name text not null,
+  gender text not null default 'male',
+  size text not null default 'medium',
+  status text not null default 'draft',
+  short_description text,
+  full_story text,
+  birth_date date,
+  approximate_age_label text,
+  shelter_arrival_date date,
+  is_vaccinated boolean not null default false,
+  is_neutered boolean not null default false,
+  is_featured boolean not null default false,
+  published_at timestamptz,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now(),
+  constraint animals_gender_check check (gender in ('male', 'female')),
+  constraint animals_size_check check (size in ('small', 'medium', 'large')),
+  constraint animals_status_check check (status in ('draft', 'available', 'reserved', 'adopted', 'hidden'))
+);
+
+create table if not exists public.animal_photos (
+  id uuid primary key default gen_random_uuid(),
+  animal_id uuid not null references public.animals(id) on delete cascade,
+  r2_key text,
+  public_url text,
+  alt text,
+  sort_order integer not null default 0,
+  is_main boolean not null default false,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now(),
+  constraint animal_photos_has_source_check check (
+    r2_key is not null
+    or public_url is not null
+  )
+);
+
+create table if not exists public.news_posts (
+  id uuid primary key default gen_random_uuid(),
+  slug text not null unique,
+  title text not null,
+  excerpt text,
+  content_blocks jsonb not null default '[]'::jsonb,
+  cover_url text,
+  cover_r2_key text,
+  related_animal_id uuid references public.animals(id) on delete set null,
+  is_published boolean not null default false,
+  published_at timestamptz,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create table if not exists public.news_media (
+  id uuid primary key default gen_random_uuid(),
+  news_post_id uuid not null references public.news_posts(id) on delete cascade,
+  media_type text not null,
+  r2_key text,
+  public_url text,
+  embed_url text,
+  alt text,
+  caption text,
+  sort_order integer not null default 0,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now(),
+  constraint news_media_type_check check (media_type in ('image', 'video')),
+  constraint news_media_has_source_check check (
+    r2_key is not null
+    or public_url is not null
+    or embed_url is not null
+  )
+);
+
+create table if not exists public.reports (
+  id uuid primary key default gen_random_uuid(),
+  title text not null,
+  month text,
+  year text,
+  summary text,
+  file_url text,
+  file_r2_key text,
+  is_published boolean not null default false,
+  published_at timestamptz,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create or replace view public.animal_cards
+with (security_invoker = on) as
+select
+  animals.id,
+  animals.slug,
+  animals.name,
+  animals.gender,
+  animals.size,
+  animals.status,
+  animals.short_description,
+  animals.birth_date,
+  animals.approximate_age_label,
+  animals.shelter_arrival_date,
+  animals.is_vaccinated,
+  animals.is_neutered,
+  animals.is_featured,
+  animals.published_at,
+  main_photo.id as main_photo_id,
+  main_photo.public_url as main_photo_url,
+  main_photo.r2_key as main_photo_r2_key,
+  main_photo.alt as main_photo_alt
+from public.animals
+left join public.animal_photos as main_photo
+  on main_photo.animal_id = animals.id
+  and main_photo.is_main = true
+where
+  animals.status in ('available', 'reserved', 'adopted')
+  and animals.published_at is not null;
+
+create or replace function public.set_updated_at()
+returns trigger
+language plpgsql
+as $$
+begin
+  new.updated_at = now();
+  return new;
+end;
+$$;
+
+drop trigger if exists set_animals_updated_at on public.animals;
+create trigger set_animals_updated_at
+before update on public.animals
+for each row
+execute function public.set_updated_at();
+
+drop trigger if exists set_animal_photos_updated_at on public.animal_photos;
+create trigger set_animal_photos_updated_at
+before update on public.animal_photos
+for each row
+execute function public.set_updated_at();
+
+drop trigger if exists set_news_posts_updated_at on public.news_posts;
+create trigger set_news_posts_updated_at
+before update on public.news_posts
+for each row
+execute function public.set_updated_at();
+
+drop trigger if exists set_news_media_updated_at on public.news_media;
+create trigger set_news_media_updated_at
+before update on public.news_media
+for each row
+execute function public.set_updated_at();
+
+drop trigger if exists set_reports_updated_at on public.reports;
+create trigger set_reports_updated_at
+before update on public.reports
+for each row
+execute function public.set_updated_at();
+
+create index if not exists animals_status_idx on public.animals(status);
+create index if not exists animals_published_at_idx on public.animals(published_at desc);
+create index if not exists animals_updated_at_idx on public.animals(updated_at desc);
+
+create index if not exists animal_photos_animal_id_idx on public.animal_photos(animal_id);
+create index if not exists animal_photos_sort_order_idx on public.animal_photos(animal_id, sort_order);
+create unique index if not exists animal_photos_one_main_per_animal_idx
+on public.animal_photos(animal_id)
+where is_main = true;
+
+create index if not exists news_posts_is_published_idx on public.news_posts(is_published);
+create index if not exists news_posts_published_at_idx on public.news_posts(published_at desc);
+create index if not exists news_posts_related_animal_id_idx on public.news_posts(related_animal_id);
+
+create index if not exists news_media_news_post_id_idx on public.news_media(news_post_id);
+create index if not exists news_media_sort_order_idx on public.news_media(news_post_id, sort_order);
+
+create index if not exists reports_is_published_idx on public.reports(is_published);
+create index if not exists reports_year_idx on public.reports(year desc);
+create index if not exists reports_published_at_idx on public.reports(published_at desc);
+
+alter table public.animals enable row level security;
+alter table public.animal_photos enable row level security;
+alter table public.news_posts enable row level security;
+alter table public.news_media enable row level security;
+alter table public.reports enable row level security;
+
+drop policy if exists "Public can read published animals" on public.animals;
+create policy "Public can read published animals"
+on public.animals
+for select
+to anon
+using (
+  status in ('available', 'reserved', 'adopted')
+  and published_at is not null
+);
+
+drop policy if exists "Authenticated can manage animals" on public.animals;
+create policy "Authenticated can manage animals"
+on public.animals
+for all
+to authenticated
+using (true)
+with check (true);
+
+drop policy if exists "Public can read published animal photos" on public.animal_photos;
+create policy "Public can read published animal photos"
+on public.animal_photos
+for select
+to anon
+using (
+  exists (
+    select 1
+    from public.animals
+    where animals.id = animal_photos.animal_id
+      and animals.status in ('available', 'reserved', 'adopted')
+      and animals.published_at is not null
+  )
+);
+
+drop policy if exists "Authenticated can manage animal photos" on public.animal_photos;
+create policy "Authenticated can manage animal photos"
+on public.animal_photos
+for all
+to authenticated
+using (true)
+with check (true);
+
+drop policy if exists "Public can read published news" on public.news_posts;
+create policy "Public can read published news"
+on public.news_posts
+for select
+to anon
+using (
+  is_published = true
+  and published_at is not null
+);
+
+drop policy if exists "Authenticated can manage news" on public.news_posts;
+create policy "Authenticated can manage news"
+on public.news_posts
+for all
+to authenticated
+using (true)
+with check (true);
+
+drop policy if exists "Public can read published news media" on public.news_media;
+create policy "Public can read published news media"
+on public.news_media
+for select
+to anon
+using (
+  exists (
+    select 1
+    from public.news_posts
+    where news_posts.id = news_media.news_post_id
+      and news_posts.is_published = true
+      and news_posts.published_at is not null
+  )
+);
+
+drop policy if exists "Authenticated can manage news media" on public.news_media;
+create policy "Authenticated can manage news media"
+on public.news_media
+for all
+to authenticated
+using (true)
+with check (true);
+
+drop policy if exists "Public can read published reports" on public.reports;
+create policy "Public can read published reports"
+on public.reports
+for select
+to anon
+using (
+  is_published = true
+  and published_at is not null
+);
+
+drop policy if exists "Authenticated can manage reports" on public.reports;
+create policy "Authenticated can manage reports"
+on public.reports
+for all
+to authenticated
+using (true)
+with check (true);
+```
+
+## Таблицы на следующий этап
+
+Эти таблицы не обязательны для текущего кода, но их стоит добавить, когда появятся соответствующие экраны.
+
+### `adoption_applications`
+
+Заявки на адопцию.
+
+```sql
+create table if not exists public.adoption_applications (
+  id uuid primary key default gen_random_uuid(),
+  animal_id uuid references public.animals(id) on delete set null,
+  status text not null default 'new',
+  applicant_name text not null,
+  applicant_phone text,
+  applicant_email text,
+  city text,
+  message text,
+  admin_notes text,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now(),
+  constraint adoption_applications_status_check check (status in ('new', 'in_review', 'approved', 'rejected', 'closed'))
+);
+```
+
+### `admin_profiles`
+
+Профили админов поверх Supabase Auth. `id` должен совпадать с `auth.users.id`.
+
+```sql
+create table if not exists public.admin_profiles (
+  id uuid primary key references auth.users(id) on delete cascade,
+  email text not null,
+  full_name text,
+  role text not null default 'editor',
+  created_at timestamptz not null default now(),
+  constraint admin_profiles_role_check check (role in ('admin', 'editor'))
+);
+```
+
+После добавления `admin_profiles` RLS можно усилить: разрешать управление контентом только пользователям, которые есть в `admin_profiles`.

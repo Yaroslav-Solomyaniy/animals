@@ -34,6 +34,7 @@
   }
 }
 
+
 .btn-primary {
   @apply relative isolate overflow-hidden inline-flex items-center justify-center gap-2 rounded-xl border border-primary/35 bg-primary px-7 py-3 font-extrabold text-white shadow-[0_14px_34px_rgba(242,116,56,0.12)] transition-[transform,border-color,background-color,color,box-shadow] duration-200 ease-out hover:-translate-y-0.5 hover:border-primary hover:bg-primary hover:shadow-[0_18px_45px_rgba(242,116,56,0.2)] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20 active:translate-y-0 active:scale-[0.98];
   --button-fill: rgba(255, 255, 255, 0.18);
@@ -318,21 +319,21 @@
   display: none;
 }
 
-@media (min-width: 768px) {
-  .animal-carousel {
-    -webkit-mask-image: linear-gradient(
-      90deg,
-      transparent,
-      #000 3%,
-      #000 97%,
-      transparent
-    );
-    mask-image: linear-gradient(
-      90deg,
-      transparent,
-      #000 3%,
-      #000 97%,
-      transparent
-    );
-  }
-}
+/*@media (min-width: 768px) {*/
+/*  .animal-carousel {*/
+/*    -webkit-mask-image: linear-gradient(*/
+/*      90deg,*/
+/*      transparent,*/
+/*      #000 3%,*/
+/*      #000 97%,*/
+/*      transparent*/
+/*    );*/
+/*    mask-image: linear-gradient(*/
+/*      90deg,*/
+/*      transparent,*/
+/*      #000 3%,*/
+/*      #000 97%,*/
+/*      transparent*/
+/*    );*/
+/*  }*/
+/*}*/

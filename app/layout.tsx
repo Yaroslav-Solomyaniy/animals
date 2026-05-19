@@ -1,24 +1,35 @@
 import type { Metadata } from 'next'
+import { Geist } from 'next/font/google'
+import type { ReactNode } from 'react'
 import AdminShell from '@/components/admin/AdminShell'
+import { cn } from '@/lib/utils'
 import './globals.css'
-import { Geist } from "next/font/google";
-import { cn } from "@/lib/utils";
 
-const geist = Geist({subsets:['latin'],variable:'--font-sans'});
+const geist = Geist({ subsets: ['latin'], variable: '--font-sans' })
 
 export const metadata: Metadata = {
-  title: 'Центр надання допомоги безпритульним тваринам',
-  description: 'Сайт центру допомоги безпритульним тваринам у Черкасах',
+  title: 'Міський центр допомоги тваринам м. Черкаси | Допомога та новий дім для тварин',
+  description:
+    'Офіційний сайт центру допомоги тваринам у Черкасах. Інформація про адопцію, допомогу тваринам, підтримку ініціатив, волонтерство та відповідальне поводження з тваринами.',
+
+  icons: [
+    { url: '/favicon-16x16.png', type: 'image/png', sizes: '16x16' },
+    { url: '/favicon-32x32.png', type: 'image/png', sizes: '32x32' },
+    { url: '/favicon.ico', type: 'image/x-icon' }
+  ]
 }
 
-export default function RootLayout({children,}: {
-    children: React.ReactNode
-}) {
-    return (
-        <html lang="uk" className={cn("h-full", "font-sans", geist.variable)} suppressHydrationWarning>
-        <body className="min-h-full font-sans antialiased wrap-anywhere selection:bg-[rgba(79,184,178,0.24)]">
+export default function RootLayout({ children }: { children: ReactNode }) {
+
+  return (
+    <html
+      lang="uk"
+      className={cn('h-full', 'font-sans', geist.variable)}
+      suppressHydrationWarning
+    >
+      <body className="min-h-full font-sans antialiased wrap-anywhere selection:bg-[rgba(79,184,178,0.24)]">
         <AdminShell>{children}</AdminShell>
-        </body>
-        </html>
-    )
+      </body>
+    </html>
+  )
 }
