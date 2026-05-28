@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { Check, Copy, Facebook, Link2, Send, Share2, X } from 'lucide-react'
 import { Button, IconButton } from '@/components/ui/Button'
+import { cn } from '@/lib/utils'
 
 type ShareMenuProps = {
   path: string
@@ -125,13 +126,13 @@ export default function ShareMenu({
   }
 
   return (
-    <div ref={rootRef} className={`relative z-[80] h-full ${className}`}>
+    <div ref={rootRef} className={cn('relative z-[80] flex', className)}>
       <Button
         type="button"
         onClick={() => setIsOpen((current) => !current)}
         variant="outline"
-        size={variant === 'icon' ? 'icon' : 'md'}
-        className={variant === 'icon' ? 'h-full min-h-12 w-full min-w-12 rounded-xl sm:w-14' : 'h-full w-full'}
+        size={'md'}
+        className={variant === 'icon' ? 'min-h-12 w-full min-w-12 rounded-xl sm:w-14' : 'min-h-11 w-full'}
         aria-expanded={isOpen}
         aria-label={label}
       >

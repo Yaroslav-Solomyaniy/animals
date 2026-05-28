@@ -1,20 +1,78 @@
-import { defineConfig, globalIgnores } from "eslint/config";
+import {defineConfig, globalIgnores} from "eslint/config";
 import nextVitals from "eslint-config-next/core-web-vitals";
 import nextTs from "eslint-config-next/typescript";
 
 const eslintConfig = defineConfig([
-  ...nextVitals,
-  ...nextTs,
-  // Override default ignores of eslint-config-next.
-  globalIgnores([
-    // Default ignores of eslint-config-next:
-    ".next/**",
-    "out/**",
-    "build/**",
-    "next-env.d.ts",
-    "components/_archive/**",
-    ".codex-animals-archive/**",
-  ]),
+    ...nextVitals,
+    ...nextTs,
+    {
+        linterOptions: {
+            reportUnusedDisableDirectives: "warn",
+        },
+    },
+    {
+        files: ["**/*.{js,jsx,ts,tsx}"],
+        rules: {
+            "curly": ["warn", "all"],
+            "eqeqeq": ["error", "always", {null: "ignore"}],
+            "no-alert": "error",
+            "no-debugger": "error",
+            "no-implicit-coercion": "error",
+            "no-var": "error",
+            "object-shorthand": ["error", "always"],
+            "prefer-const": ["error", {destructuring: "all"}],
+            "prefer-template": "error",
+            "no-console": ["warn", {allow: ["warn", "error"]}],
+            "react/jsx-curly-brace-presence": [
+                "warn",
+                {props: "never", children: "never"},
+            ],
+            "react/jsx-no-useless-fragment": "warn",
+            "react/self-closing-comp": "warn",
+            "@typescript-eslint/consistent-type-imports": [
+                "warn",
+                {
+                    prefer: "type-imports",
+                    fixStyle: "separate-type-imports",
+                },
+            ],
+            "@typescript-eslint/no-explicit-any": "warn",
+            "@typescript-eslint/no-unused-vars": [
+                "warn",
+                {
+                    argsIgnorePattern: "^_",
+                    varsIgnorePattern: "^_",
+                    caughtErrorsIgnorePattern: "^_",
+                },
+            ],
+        },
+        'react/destructuring-assignment': [
+            'error',
+            'always',
+            {
+                destructureInSignature: 'always',
+            },
+        ],
+        'object-curly-newline': [
+            'error',
+            {
+                ObjectPattern: {
+                    multiline: false,
+                    minProperties: 999,
+                },
+            },
+        ],
+    },
+    // Override default ignores of eslint-config-next.
+    globalIgnores([
+        // Default ignores of eslint-config-next:
+        ".next/**",
+        "out/**",
+        "build/**",
+        "next-env.d.ts",
+        "components/_archive/**",
+        ".codex-animals-archive/**",
+    ]),
 ]);
 
 export default eslintConfig;

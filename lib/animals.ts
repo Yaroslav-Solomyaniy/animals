@@ -1,20 +1,46 @@
 import 'server-only'
 
-import type { Animal } from '@/types'
-import type { AnimalPhotoRow, AnimalRow } from '@/lib/admin-types'
-import { createClient } from '@/lib/supabase/server'
+import type {Animal} from '@/types'
+import type {AnimalPhotoRow, AnimalRow} from '@/lib/admin-types'
+import {createClient} from '@/lib/supabase/server'
+import {AnimalFilters} from "@/lib/animal-filter-parsers";
 
 const fallbackAnimalImage = '/dog.png'
 const fallbackAnimalName = "Ім'я відсутнє"
 
-export async function getPublicAnimals(limit?: number): Promise<Animal[]> {
+export async function getPublicAnimals(limit?: number, filters?: Partial<AnimalFilters>): Promise<Animal[]> {
   const supabase = await createClient()
+
   let query = supabase
-    .from('animals')
-    .select('*')
-    .eq('status', 'available')
-    .order('published_at', { ascending: false, nullsFirst: false })
-    .order('created_at', { ascending: false })
+      .from('animals')
+      .select('*', {count: 'exact'})
+      .eq('status', 'available')
+
+  if (filters?.gender && filters.gender !== 'all') {
+    query = query.eq('gender', filters.gender)
+  }
+
+  if (filters?.size && filters.size !== 'all') {
+    query = query.eq('size', filters.size)
+  }
+
+  if (filters?.care && filters.care !== 'all') {
+    query = query.eq('care', filters.care)
+  }
+
+  if (filters?.q) {
+    query = query.ilike('name', `%${filters.q}%`)
+  }
+
+  if (filters?.sort === 'name') {
+    query = query.order('name', {
+      ascending: filters.order === 'asc',
+    })
+  } else {
+    query = query
+        .order('published_at', { ascending: false, nullsFirst: false })
+        .order('created_at', { ascending: false })
+  }
 
   if (limit) {
     query = query.limit(limit)
@@ -27,7 +53,10 @@ export async function getPublicAnimals(limit?: number): Promise<Animal[]> {
   }
 
   const photos = await getPhotosForAnimals(animals.map((animal) => animal.id))
-  return animals.map((animal) => mapAnimalRow(animal as AnimalRow, photos.get(animal.id) ?? []))
+
+  return animals.map((animal) =>
+      mapAnimalRow(animal as AnimalRow, photos.get(animal.id) ?? []),
+  )
 }
 
 export async function getPublicAnimalBySlugOrId(slugOrId: string): Promise<Animal | null> {

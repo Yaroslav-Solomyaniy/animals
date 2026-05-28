@@ -41,3 +41,40 @@ export interface Report {
   fileUrl: string
   summary: string
 }
+
+
+
+export interface PetStoryChapter {
+  id: string;
+  title: string;
+  description: string;
+  image: string;
+  icon: string;
+  bgGradient: string;
+}
+
+export interface PetDetail {
+  label: string;
+  value: string;
+  icon: string;
+  status?: 'success' | 'warning' | 'info';
+}
+
+export interface FAQItem {
+  question: string;
+  answer: string;
+}
+
+export interface PetProfile {
+  name: string;
+  age: string;
+  gender: string;
+  size: string;
+  vaccinated: boolean;
+  sterilized: boolean;
+  character: string[];
+  badges: string[];
+  fullStory: string;
+  chapters: PetStoryChapter[];
+  faq: FAQItem[];
+}
