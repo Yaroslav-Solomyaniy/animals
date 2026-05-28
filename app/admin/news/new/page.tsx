@@ -1,8 +1,8 @@
 import { AdminAuthGate } from '@/components/admin/AdminAuthGate'
 import AdminPageHeader from '@/components/admin/AdminPageHeader'
-import { NewsForm } from '@/components/admin/admin-forms'
-import { createClient } from '@/lib/supabase/server'
+import { NewsForm } from '@/components/admin/forms/NewsForm'
 import type { AnimalRow } from '@/lib/admin-types'
+import { createClient } from '@/lib/supabase/server'
 
 export default async function NewNewsPage() {
   const supabase = await createClient()

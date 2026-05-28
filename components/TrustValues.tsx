@@ -1,5 +1,4 @@
 import {
-  ArrowRight,
   HeartHandshake,
   ShieldCheck,
   Sparkles,
@@ -7,17 +6,39 @@ import {
   Users,
 } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
-import { WobbleCard } from '@/components/ui/wobble-card'
-import {cardColors, color_mint, color_warm} from "@/contstants/colors";
 
-type SmallCard = {
+import { LinkButton } from '@/components/ui/Button'
+import { WobbleCard } from '@/components/ui/wobble-card'
+import { cardColors } from '@/contstants/colors'
+import { SITE_ROUTES } from '@/lib/site-config'
+
+type TrustCard = {
   icon: LucideIcon
   title: string
   text: string
   color: keyof typeof cardColors
+  slogan?: string
+  featuredOnTablet?: boolean
+  desktopVariant?: 'wide' | 'tall'
 }
 
-const smallCards: Array<SmallCard> = [
+const trustCards: Array<TrustCard> = [
+  {
+    icon: HeartHandshake,
+    title: 'Черкаська служба чистоти підтримує центр щодня',
+    text: 'Підприємство забезпечує роботу центру, закупівлю кормів, ветеринарних препаратів, медикаментів і всього необхідного для утримання тварин.',
+    color: 'warm',
+    featuredOnTablet: true,
+    desktopVariant: 'wide',
+  },
+  {
+    icon: Sparkles,
+    title: 'Місія і бачення',
+    text: 'Рятувати безпритульних тварин, лікувати, створювати комфортні умови та наближати Черкаси до міста, де кожна тварина має дім.',
+    color: 'mint',
+    slogan: 'Кожен має право на гідне життя',
+    desktopVariant: 'tall',
+  },
   {
     icon: ShieldCheck,
     title: 'Міська програма',
@@ -33,109 +54,70 @@ const smallCards: Array<SmallCard> = [
   {
     icon: Users,
     title: 'Спільнота',
-    text: 'Об’єднуємо людей, які хочуть допомагати тваринам і місту.',
+    text: 'Обʼєднуємо людей, які хочуть допомагати тваринам і місту.',
     color: 'violet',
   },
 ]
 
 export default function TrustValues() {
-
   return (
-    <section className="bg-white py-28">
+    <section className="bg-white py-12 sm:py-16 md:py-20 lg:py-24">
       <div className="mx-auto max-w-336 px-4 sm:px-6 lg:px-8">
-        <div className="mb-12 max-w-3xl">
-          <p className="mb-4 text-sm font-extrabold tracking-wider text-primary uppercase">
+        <div className="mb-8 max-w-3xl sm:mb-10 md:mb-12 lg:mb-14">
+          <p className="mb-3 text-xs font-extrabold uppercase tracking-[0.14em] text-primary sm:text-sm">
             Відкрита допомога
           </p>
-          <h2 className="text-4xl leading-tight font-extrabold text-text-main md:text-6xl">
+          <h2 className="text-3xl font-extrabold leading-tight text-text-main sm:text-4xl md:text-5xl lg:text-6xl">
             Турбота без зайвого шуму
           </h2>
-          <p className="mt-5 max-w-2xl text-lg leading-8 text-gray-500">
+          <p className="mt-4 max-w-2xl text-base leading-7 text-gray-500 sm:text-lg sm:leading-8">
             Кілька простих принципів, які тримають роботу центру людяною,
             відкритою та корисною для тварин і міста.
           </p>
         </div>
 
-        <div className="grid w-full grid-cols-1 gap-5 lg:grid-cols-3">
-          <WobbleCard
-            containerClassName={`lg:col-span-2 min-h-[430px] border-gray-200 ${color_warm.bg}`}
-            className="flex h-full flex-col justify-between p-8 sm:p-10"
-            beamColorFrom={color_warm.beamFrom}
-            beamColorTo={color_warm.beamTo}
-            beamSize={260}
-          >
-            <div className="relative z-10 max-w-2xl">
-              <HeartHandshake className={`mb-8 h-12 w-12 ${color_warm.icon}`} />
-              <h3
-                className={`text-3xl leading-tight font-extrabold md:text-4xl ${color_warm.title}`}
-              >
-                Черкаська служба чистоти підтримує центр щодня
-              </h3>
-              <p className="mt-5 max-w-xl text-lg leading-8 text-gray-600">
-                Підприємство забезпечує роботу центру, закупівлю кормів,
-                ветеринарних препаратів, медикаментів і всього необхідного для
-                утримання тварин.
-              </p>
-            </div>
-
-            <a
-              href="/donate"
-              className="relative z-10 mt-10 inline-flex w-fit items-center gap-2 rounded-2xl border border-primary bg-primary px-6 py-3.5 font-extrabold text-white transition-colors hover:bg-white hover:text-primary focus-visible:bg-white focus-visible:text-primary focus-visible:outline-none"
-            >
-              Підтримати центр
-              <ArrowRight className="h-4 w-4" />
-            </a>
-          </WobbleCard>
-
-          <WobbleCard
-            containerClassName={`min-h-[430px] border-gray-200 ${color_mint.bg}`}
-            className="flex h-full flex-col justify-between p-8 sm:p-10"
-            beamColorFrom={color_mint.beamFrom}
-            beamColorTo={color_mint.beamTo}
-            beamDelay={1.5}
-            beamSize={190}
-          >
-            <div className="relative z-10">
-              <Sparkles className={`mb-8 h-12 w-12 ${color_mint.icon}`} />
-              <h3
-                className={`text-3xl leading-tight font-extrabold ${color_mint.title}`}
-              >
-                Місія і бачення
-              </h3>
-              <p className="mt-5 text-lg leading-8 text-gray-600">
-                Рятувати безпритульних тварин, лікувати, створювати комфортні
-                умови та наближати Черкаси до міста, де кожна тварина має дім.
-              </p>
-            </div>
-
-            <p className="relative z-10 mt-10 text-sm font-extrabold tracking-wider text-gray-400 uppercase">
-              Кожен має право на гідне життя
-            </p>
-          </WobbleCard>
-
-          {smallCards.map((card, index) => {
+        <div className="grid w-full grid-cols-1 gap-4 md:grid-cols-2 md:gap-5 lg:grid-cols-3 lg:gap-6">
+          {trustCards.map((card, index) => {
             const colors = cardColors[card.color]
             const Icon = card.icon
+            const isWideDesktop = card.desktopVariant === 'wide'
+            const isTallDesktop = card.desktopVariant === 'tall'
+            const isFeaturedDesktop = isWideDesktop || isTallDesktop
 
             return (
               <WobbleCard
                 key={card.title}
-                containerClassName={`min-h-[260px] border-gray-200 ${colors.bg}`}
-                className="p-8 sm:p-9"
+                containerClassName={`min-h-0 border-gray-200 ${card.featuredOnTablet ? 'md:max-lg:col-span-2' : ''} ${isWideDesktop ? 'lg:col-span-2 lg:min-h-[430px]' : ''} ${isTallDesktop ? 'lg:min-h-[430px]' : ''} ${!isFeaturedDesktop ? 'lg:min-h-[260px]' : ''} ${colors.bg}`}
+                className={`${isFeaturedDesktop ? 'lg:flex lg:h-full lg:flex-col lg:justify-between lg:!p-10' : 'lg:!p-9'} ${card.featuredOnTablet ? '!p-4 sm:!p-6 md:max-lg:!p-8' : '!p-4 sm:!p-6'}`}
                 beamColorFrom={colors.beamFrom}
                 beamColorTo={colors.beamTo}
                 beamDelay={index * 1.1}
-                beamSize={140}
+                beamSize={isWideDesktop ? 260 : isTallDesktop ? 190 : card.featuredOnTablet ? 160 : 140}
               >
-                <div className="relative z-10">
-                  <Icon className={`mb-7 h-8 w-8 ${colors.icon}`} />
-                  <h3
-                    className={`mb-3 text-2xl font-extrabold ${colors.title}`}
-                  >
+                <div className={`${card.featuredOnTablet ? 'relative z-10 md:max-lg:max-w-xl' : 'relative z-10'} ${isWideDesktop ? 'lg:max-w-2xl' : ''}`}>
+                  <Icon className={`mb-4 h-8 w-8 sm:mb-5 ${card.featuredOnTablet ? 'md:max-lg:h-10 md:max-lg:w-10' : ''} ${isFeaturedDesktop ? 'lg:mb-8 lg:h-12 lg:w-12' : ''} ${colors.icon}`} />
+                  <h3 className={`mb-3 text-xl font-extrabold sm:text-2xl ${card.featuredOnTablet ? 'md:max-lg:text-3xl' : ''} ${isFeaturedDesktop ? 'lg:text-3xl' : ''} ${isWideDesktop ? 'lg:text-4xl lg:leading-tight' : ''} ${colors.title}`}>
                     {card.title}
                   </h3>
-                  <p className="leading-7 text-gray-600">{card.text}</p>
+                  <p className={`text-sm leading-6 text-gray-600 sm:text-base sm:leading-7 ${card.featuredOnTablet ? 'md:max-lg:text-lg md:max-lg:leading-8' : ''} ${isFeaturedDesktop ? 'lg:mt-5 lg:text-lg lg:leading-8' : ''} ${isWideDesktop ? 'lg:max-w-xl' : ''}`}>
+                    {card.text}
+                  </p>
                 </div>
+
+                {isWideDesktop ? (
+                  <LinkButton
+                    href={SITE_ROUTES.donate}
+                    className="relative z-10 mt-10 hidden w-fit rounded-2xl px-6 py-3.5 lg:inline-flex"
+                  >
+                    Підтримати центр
+                  </LinkButton>
+                ) : null}
+
+                {card.slogan ? (
+                  <p className="relative z-10 mt-6 text-xs font-extrabold tracking-[0.14em] text-gray-400 uppercase sm:text-sm lg:mt-10 lg:tracking-wider">
+                    {card.slogan}
+                  </p>
+                ) : null}
               </WobbleCard>
             )
           })}

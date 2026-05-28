@@ -157,7 +157,7 @@ export default function BounceCards({
           key={`${src}-${idx}`}
           type="button"
           className={[
-            `card card-${idx} absolute h-[108px] w-[148px] overflow-hidden rounded-[22px] border-[6px] bg-[#f4f1ea] shadow-[0_10px_28px_-18px_rgba(15,23,42,0.65)] ring-4 transition-shadow sm:h-[170px] sm:w-[200px]`,
+            `card card-${idx} absolute h-[108px] w-[148px] cursor-pointer overflow-hidden rounded-[22px] border-[6px] bg-[#f4f1ea] shadow-[0_10px_28px_-18px_rgba(15,23,42,0.65)] ring-4 transition-shadow sm:h-[170px] sm:w-[200px]`,
             selectedIndex === idx
               ? 'border-white ring-orange-300/60'
               : 'border-white ring-transparent',

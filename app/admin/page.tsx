@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { Newspaper, PawPrint, ScrollText } from 'lucide-react'
+import { Footprints, Newspaper, PawPrint, ScrollText } from 'lucide-react'
 import { AdminAuthGate } from '@/components/admin/AdminAuthGate'
 import AdminPageHeader from '@/components/admin/AdminPageHeader'
 
@@ -12,7 +12,7 @@ export default function AdminPage() {
         description="Нормальна структура адмінки: окремі розділи, таблиці списків і окремі сторінки створення та редагування."
       />
 
-      <div className="grid gap-4 md:grid-cols-3">
+      <div className="grid gap-4 md:grid-cols-4">
         {[
           {
             href: '/admin/animals',
@@ -31,6 +31,12 @@ export default function AdminPage() {
             title: 'Звіти',
             text: 'Окремий список звітів і сторінки створення та редагування.',
             icon: ScrollText,
+          },
+          {
+            href: '/admin/volunteer-requests',
+            title: 'Заявки',
+            text: 'Список заявок на волонтерство з контактами та статусом email-відправки.',
+            icon: Footprints,
           },
         ].map((item) => {
           const Icon = item.icon

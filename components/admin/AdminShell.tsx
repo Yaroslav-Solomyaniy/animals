@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation'
 import type { ReactNode } from 'react'
 import {
   FilePlus2,
+  Footprints,
   LayoutDashboard,
   Newspaper,
   PanelLeft,
@@ -15,6 +16,7 @@ import {
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import { LinkButton } from '@/components/ui/Button'
+import { useScrollToTopOnRouteChange } from '@/hooks/useScrollToTopOnRouteChange'
 import { cn } from '@/lib/utils'
 
 const adminNavigation = [
@@ -22,17 +24,21 @@ const adminNavigation = [
   { href: '/admin/animals', label: 'Тварини', icon: PawPrint },
   { href: '/admin/news', label: 'Новини', icon: Newspaper },
   { href: '/admin/reports', label: 'Звіти', icon: ScrollText },
+  { href: '/admin/volunteer-requests', label: 'Заявки', icon: Footprints },
 ]
 
 export default function AdminShell({ children }: { children: ReactNode }) {
   const pathname = usePathname()
+  useScrollToTopOnRouteChange()
   const isAdminRoute = pathname.startsWith('/admin')
 
   if (!isAdminRoute) {
     return (
       <div className="flex min-h-screen flex-col">
         <Header />
-        <div className="storybook-bg flex flex-1 flex-col">{children}</div>
+        <div className="storybook-bg flex flex-1 flex-col">
+          {children}
+        </div>
         <Footer />
       </div>
     )
@@ -87,7 +93,8 @@ export default function AdminShell({ children }: { children: ReactNode }) {
           <div className="mt-auto rounded-2xl border border-slate-200 bg-slate-50 p-4">
             <p className="text-sm font-extrabold text-slate-950">Швидкі дії</p>
             <div className="mt-3 space-y-2">
-              <QuickLink href="/admin/animals/new" label="Додати тварину" />
+              <QuickLink href="/admin/animals" label="Каталог тварин" />
+              <QuickLink href="/admin/volunteer-requests" label="Заявки волонтерів" />
               <QuickLink href="/admin/news/new" label="Додати новину" />
               <QuickLink href="/admin/reports/new" label="Додати звіт" />
             </div>

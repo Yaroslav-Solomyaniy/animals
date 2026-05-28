@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { Geist } from 'next/font/google'
 import type { ReactNode } from 'react'
+import { NuqsAdapter } from 'nuqs/adapters/next/app'
 import AdminShell from '@/components/admin/AdminShell'
 import { cn } from '@/lib/utils'
 import './globals.css'
@@ -28,7 +29,9 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       suppressHydrationWarning
     >
       <body className="min-h-full font-sans antialiased wrap-anywhere selection:bg-[rgba(79,184,178,0.24)]">
-        <AdminShell>{children}</AdminShell>
+        <NuqsAdapter defaultOptions={{ clearOnDefault: true, scroll: false, shallow: true }}>
+          <AdminShell>{children}</AdminShell>
+        </NuqsAdapter>
       </body>
     </html>
   )

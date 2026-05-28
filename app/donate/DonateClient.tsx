@@ -1,0 +1,357 @@
+'use client'
+
+import { useState } from 'react'
+import type { LucideIcon } from 'lucide-react'
+import {
+  BadgeCheck,
+  Banknote,
+  Bone,
+  Copy,
+  CreditCard,
+  Heart,
+  PawPrint,
+  ShieldCheck,
+  Sparkles,
+} from 'lucide-react'
+
+import SectionFrame from '@/components/ui/SectionFrame'
+import { Button } from '@/components/ui/Button'
+import { Select, Textarea } from '@/components/ui/FormControls'
+import { SITE_CONTACTS } from '@/lib/site-config'
+
+const DONATION_PAYMENT_URL = process.env.NEXT_PUBLIC_DONATION_PAYMENT_URL
+const TREAT_AMOUNTS = [50, 100, 250, 500]
+const GENERAL_AMOUNTS = [200, 500, 1000, 1500]
+
+type DonateAnimal = {
+  id: string
+  name: string
+  age: string
+  gender: string
+  size: string
+  imageUrl: string
+}
+
+export function DonateClient({
+  animal,
+  gift,
+  initialAmount,
+}: {
+  animal: DonateAnimal | null
+  gift: string
+  initialAmount: string
+}) {
+  const isTreatGift = gift === 'treat'
+  const targetName = animal?.name ?? 'тварин центру'
+  const amounts = isTreatGift ? TREAT_AMOUNTS : GENERAL_AMOUNTS
+  const fallbackAmount = String(amounts[1] ?? amounts[0])
+  const [selectedAmount, setSelectedAmount] = useState(initialAmount || fallbackAmount)
+  const [customAmount, setCustomAmount] = useState(
+    initialAmount && !amounts.includes(Number(initialAmount)) ? initialAmount : ''
+  )
+  const [currency, setCurrency] = useState('UAH')
+  const [comment, setComment] = useState(
+    animal
+      ? `Смаколик для ${animal.name}`
+      : 'Підтримка центру допомоги тваринам'
+  )
+  const [showRequisites, setShowRequisites] = useState(false)
+  const [copied, setCopied] = useState('')
+  const amount = normalizeAmount(customAmount) || selectedAmount
+  const paymentHref = getPaymentHref({
+    amount,
+    animalId: animal?.id,
+    comment,
+    currency,
+  })
+
+  function startPayment() {
+    if (paymentHref) {
+      window.location.href = paymentHref
+      return
+    }
+
+    setShowRequisites(true)
+  }
+
+  async function copyValue(label: string, value: string) {
+    await navigator.clipboard.writeText(value)
+    setCopied(label)
+    window.setTimeout(() => setCopied(''), 1800)
+  }
+
+  return (
+    <SectionFrame className="overflow-hidden rounded-[28px] p-0">
+      <div className="grid min-h-[680px] lg:grid-cols-[0.92fr_1.08fr]">
+        <div className="relative min-h-[420px] overflow-hidden bg-gray-950 lg:min-h-full">
+          {animal ? (
+            <img
+              src={animal.imageUrl}
+              alt={animal.name}
+              className="h-full w-full object-cover opacity-90"
+              referrerPolicy="no-referrer"
+            />
+          ) : (
+            <div className="flex h-full min-h-[420px] w-full items-center justify-center bg-secondary/10">
+              <PawPrint className="h-24 w-24 text-secondary" />
+            </div>
+          )}
+
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-gray-950 via-gray-950/35 to-transparent" />
+          <div className="absolute inset-x-5 bottom-5 sm:inset-x-7 sm:bottom-7">
+            <span className="mb-4 inline-flex items-center gap-2 rounded-full bg-white/92 px-4 py-2 text-xs font-extrabold text-text-main backdrop-blur">
+              <Sparkles className="h-3.5 w-3.5 text-primary" />
+              {isTreatGift ? 'Смаколик для' : 'Підтримка для'}
+            </span>
+
+            <h1 className="max-w-xl text-4xl font-black leading-tight text-white sm:text-5xl">
+              {targetName}
+            </h1>
+
+            {animal && (
+              <div className="mt-5 flex flex-wrap gap-2">
+                <InfoChip>{animal.age}</InfoChip>
+                <InfoChip>{animal.gender}</InfoChip>
+                <InfoChip>{animal.size}</InfoChip>
+              </div>
+            )}
+          </div>
+        </div>
+
+        <div className="flex flex-col p-5 sm:p-7 lg:p-9">
+          <div className="mb-7 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+            <div>
+              <div className="mb-4 inline-flex w-fit items-center gap-2 rounded-full bg-orange-50 px-4 py-2 text-sm font-extrabold text-orange-600">
+                {isTreatGift ? <Bone className="h-4 w-4" /> : <Heart className="h-4 w-4" />}
+                {isTreatGift ? 'Дати смаколик' : 'Підтримати центр'}
+              </div>
+              <h2 className="max-w-xl text-3xl font-black leading-tight text-text-main">
+                {isTreatGift ? 'Оберіть суму для маленької радості' : 'Оберіть суму допомоги'}
+              </h2>
+              <p className="mt-3 max-w-2xl leading-7 text-gray-500">
+                {isTreatGift
+                  ? 'Донат буде привʼязаний до цієї тварини: ласощі, корм або дрібна покупка для догляду.'
+                  : 'Ваш внесок піде на корм, ліки, обробки й щоденний догляд за тваринами.'}
+              </p>
+            </div>
+
+            <span className="inline-flex w-fit shrink-0 items-center gap-2 rounded-2xl bg-[#F1FFF8] px-4 py-3 text-sm font-extrabold text-secondary">
+              <ShieldCheck className="h-4 w-4" />
+              Призначення є
+            </span>
+          </div>
+
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+            {amounts.map((presetAmount) => (
+              <Button
+                key={presetAmount}
+                type="button"
+                variant={!customAmount && selectedAmount === String(presetAmount) ? 'primary' : 'outline'}
+                className="h-16 text-lg"
+                onClick={() => {
+                  setSelectedAmount(String(presetAmount))
+                  setCustomAmount('')
+                }}
+              >
+                {presetAmount} грн
+              </Button>
+            ))}
+          </div>
+
+          <div className="mt-5 grid gap-4 sm:grid-cols-[minmax(0,1fr)_160px]">
+            <label className="block">
+              <span className="mb-2 block text-sm font-bold text-gray-500">
+                Інша сума
+              </span>
+              <input
+                type="text"
+                inputMode="numeric"
+                min="1"
+                value={customAmount}
+                placeholder="Наприклад, 150"
+                onChange={(event) => setCustomAmount(event.target.value.replace(/\D/g, '').slice(0, 7))}
+                className="h-14 w-full rounded-2xl border border-gray-100 bg-white px-5 text-base font-bold text-text-main shadow-sm outline-none transition-all placeholder:text-gray-300 focus:border-primary focus:ring-4 focus:ring-primary/10"
+              />
+            </label>
+
+            <label className="block">
+              <span className="mb-2 block text-sm font-bold text-gray-500">
+                Валюта
+              </span>
+              <Select
+                value={currency}
+                onChange={(event) => setCurrency(event.target.value)}
+                className="h-14 bg-white px-5 text-base font-bold"
+              >
+                <option>UAH</option>
+                <option>EUR</option>
+                <option>USD</option>
+              </Select>
+            </label>
+          </div>
+
+          <label className="mt-5 block">
+            <span className="mb-2 block text-sm font-bold text-gray-500">
+              Коментар
+            </span>
+            <Textarea
+              rows={3}
+              value={comment}
+              onChange={(event) => setComment(event.target.value)}
+              className="bg-white px-5 py-4 text-sm font-bold leading-6"
+            />
+          </label>
+
+          <div className="mt-6 grid gap-3 sm:grid-cols-[minmax(0,1fr)_180px]">
+            <Button type="button" size="lg" className="h-14 text-base" onClick={startPayment}>
+              <CreditCard className="h-5 w-5" />
+              {paymentHref ? 'Оплатити' : 'Показати реквізити'}
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              size="lg"
+              className="h-14 text-base"
+              onClick={() => setShowRequisites((value) => !value)}
+            >
+              <Banknote className="h-5 w-5" />
+              Реквізити
+            </Button>
+          </div>
+
+          {showRequisites ? (
+            <div className="mt-5 rounded-3xl border border-orange-100 bg-orange-50/70 p-5">
+              <h3 className="text-lg font-black text-text-main">Реквізити для переказу</h3>
+              <p className="mt-2 text-sm leading-6 text-gray-600">
+                Платіжний провайдер ще не вказаний. Нижче дані для звʼязку з центром; коли додамо банку або LiqPay/WayForPay URL, кнопка “Оплатити” відкриватиме оплату напряму.
+              </p>
+              <div className="mt-4 grid gap-3">
+                <RequisiteLine
+                  label="Сума"
+                  value={`${amount} ${currency}`}
+                  copied={copied}
+                  onCopy={copyValue}
+                />
+                <RequisiteLine
+                  label="Призначення"
+                  value={comment}
+                  copied={copied}
+                  onCopy={copyValue}
+                />
+                <RequisiteLine
+                  label="Email"
+                  value={SITE_CONTACTS.email}
+                  copied={copied}
+                  onCopy={copyValue}
+                />
+                <RequisiteLine
+                  label="Телефон"
+                  value={SITE_CONTACTS.phoneDisplay}
+                  copied={copied}
+                  onCopy={copyValue}
+                />
+              </div>
+            </div>
+          ) : null}
+
+          <div className="mt-auto pt-7">
+            <div className="grid gap-3 md:grid-cols-3">
+              <SupportItem
+                icon={Bone}
+                title={isTreatGift ? 'Ласощі' : 'Корм'}
+                text={isTreatGift ? 'Смаколики та корм.' : 'Щоденне харчування.'}
+              />
+              <SupportItem icon={BadgeCheck} title="Догляд" text="Гігієна і базові потреби." />
+              <SupportItem icon={ShieldCheck} title="Здоров'я" text="Ліки, обробки, щеплення." />
+            </div>
+          </div>
+        </div>
+      </div>
+    </SectionFrame>
+  )
+}
+
+function RequisiteLine({
+  label,
+  value,
+  copied,
+  onCopy,
+}: {
+  label: string
+  value: string
+  copied: string
+  onCopy: (label: string, value: string) => void
+}) {
+  return (
+    <div className="flex flex-col gap-2 rounded-2xl bg-white p-4 sm:flex-row sm:items-center sm:justify-between">
+      <span>
+        <span className="block text-xs font-extrabold uppercase tracking-[0.12em] text-gray-400">{label}</span>
+        <span className="mt-1 block break-words text-sm font-black text-text-main">{value}</span>
+      </span>
+      <Button type="button" variant="outline" size="sm" onClick={() => onCopy(label, value)}>
+        <Copy className="h-4 w-4" />
+        {copied === label ? 'Скопійовано' : 'Копіювати'}
+      </Button>
+    </div>
+  )
+}
+
+function normalizeAmount(value: string) {
+  const amount = Number(value)
+  return Number.isFinite(amount) && amount > 0 ? String(amount) : ''
+}
+
+function getPaymentHref({
+  amount,
+  animalId,
+  comment,
+  currency,
+}: {
+  amount: string
+  animalId?: string
+  comment: string
+  currency: string
+}) {
+  if (!DONATION_PAYMENT_URL) return ''
+
+  const url = new URL(DONATION_PAYMENT_URL)
+  url.searchParams.set('amount', amount)
+  url.searchParams.set('currency', currency)
+  url.searchParams.set('comment', comment)
+
+  if (animalId) {
+    url.searchParams.set('animalId', animalId)
+  }
+
+  return url.toString()
+}
+
+function InfoChip({ children }: { children: React.ReactNode }) {
+  return (
+    <span className="rounded-full bg-white/92 px-3 py-1 text-xs font-extrabold text-text-main backdrop-blur">
+      {children}
+    </span>
+  )
+}
+
+function SupportItem({
+  icon: Icon,
+  title,
+  text,
+}: {
+  icon: LucideIcon
+  title: string
+  text: string
+}) {
+  return (
+    <div className="flex gap-3 rounded-2xl bg-gray-50 p-4">
+      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white text-primary shadow-sm">
+        <Icon className="h-5 w-5" />
+      </span>
+      <span>
+        <span className="block text-sm font-extrabold text-text-main">{title}</span>
+        <span className="mt-1 block text-xs leading-5 text-gray-500">{text}</span>
+      </span>
+    </div>
+  )
+}

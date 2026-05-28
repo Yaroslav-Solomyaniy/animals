@@ -2,7 +2,7 @@ import {
   CheckCircle2,
   Clock,
   DollarSign,
-  Heart,
+  Heart, Icon,
   Package,
   Phone,
   Users,
@@ -12,6 +12,9 @@ import SectionFrame from '@/components/ui/SectionFrame'
 import StorybookDecorations from '@/components/ui/StorybookDecorations'
 import { Button, LinkButton } from '@/components/ui/Button'
 import helpDogsImage from '@/public/DogHelp.png'
+import { SITE_CONTACTS, SITE_ROUTES } from '@/lib/site-config'
+import {WobbleCard} from "@/components/ui/wobble-card";
+import {cardColors} from "@/contstants/colors";
 
 
 const helpWays = [
@@ -105,10 +108,10 @@ export default function HelpForUsPage() {
     <main className="storybook-bg min-h-screen text-gray-950">
       <StorybookDecorations />
       <PageHero
-        eyebrow="Кожна допомога має значення"
-        title="Як ви можете допомогти"
-        description="Ваш внесок допомагає центру щодня годувати, лікувати, вигулювати та соціалізувати тварин, які чекають на безпечне життя."
-        icon={Heart}
+          eyebrow="Кожна допомога має значення"
+          title="Як ви можете допомогти центру"
+          description="Кожен внесок допомагає тваринам отримувати необхідний догляд, лікування, харчування та шанс знайти нову родину. Ви можете підтримати центр фінансово, стати волонтером або передати необхідні речі для щоденної турботи."
+          icon={Heart}
       >
         <div className="overflow-hidden rounded-[32px] border border-orange-100 bg-white p-3 shadow-[0_28px_80px_rgba(15,23,42,0.08)]">
           <div className="relative min-h-[420px] overflow-hidden rounded-[26px] border border-orange-100 bg-gray-950">
@@ -127,7 +130,7 @@ export default function HelpForUsPage() {
         </div>
       </PageHero>
 
-      <section className="px-4 py-16 sm:px-6 lg:px-8">
+      <section className="px-4 py-8 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-336">
           <SectionFrame className="p-4 sm:p-6 lg:p-8">
             <div className="grid gap-6 md:grid-cols-3">
@@ -211,7 +214,7 @@ export default function HelpForUsPage() {
                 <div className="rounded-2xl bg-gray-50 p-4">
                   <p className="text-gray-500">Уточнення</p>
                   <p className="mt-1 font-semibold text-gray-950">
-                    Актуальні реквізити підтвердіть телефоном
+                    Актуальні реквізити можна перевірити зателефонувавши до нас
                   </p>
                 </div>
               </div>
@@ -272,7 +275,7 @@ export default function HelpForUsPage() {
                 ))}
               </ol>
               <LinkButton
-                href="/contacts"
+                href={SITE_ROUTES.contacts}
                 size="lg"
                 className="mt-8 w-full"
               >
@@ -282,6 +285,7 @@ export default function HelpForUsPage() {
           </SectionFrame>
 
           <SectionFrame as="section" className="mt-16 p-6 sm:p-8">
+            <div id="necessary-things" className="scroll-mt-24" />
             <div className="mx-auto mb-8 max-w-3xl text-center">
               <Package className="mx-auto mb-4 h-11 w-11 text-orange-500" />
               <h2 className="text-3xl font-black text-gray-950">
@@ -324,14 +328,14 @@ export default function HelpForUsPage() {
           </p>
           <div className="mt-8 flex flex-col justify-center gap-4 sm:flex-row">
             <LinkButton
-              href="tel:+380932966097"
+              href={SITE_CONTACTS.phoneHref}
               size="lg"
             >
               <Phone className="h-5 w-5" />
               Зателефонувати
             </LinkButton>
             <LinkButton
-              href="/contacts"
+              href={SITE_ROUTES.contacts}
               variant="outline"
               size="lg"
             >

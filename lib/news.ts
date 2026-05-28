@@ -1,3 +1,5 @@
+import { SITE_ROUTES } from '@/lib/site-config'
+
 export type NewsBlockWidth = 'narrow' | 'medium' | 'wide' | 'full'
 export type NewsBlockHeight = 'small' | 'medium' | 'large'
 
@@ -15,6 +17,7 @@ export type NewsContentBlock =
       type: 'image'
       src: string
       alt: string
+      r2Key?: string
       caption?: string
     } & NewsBlockBase)
   | ({
@@ -42,6 +45,7 @@ export type NewsContentBlock =
       images: Array<{
         src: string
         alt: string
+        r2Key?: string
       }>
     } & NewsBlockBase)
   | ({
@@ -49,12 +53,14 @@ export type NewsContentBlock =
       images: Array<{
         src: string
         alt: string
+        r2Key?: string
       }>
       caption?: string
     } & NewsBlockBase)
 
 export type NewsItem = {
   id: string
+  slug?: string
   title: string
   excerpt: string
   date: string
@@ -192,12 +198,12 @@ export const news: NewsItem[] = [
         buttons: [
           {
             label: 'Підтримати лікування',
-            href: '/help-for-us',
+            href: SITE_ROUTES.help,
             variant: 'primary',
           },
           {
             label: 'Переглянути тварин',
-            href: '/animals',
+            href: SITE_ROUTES.animals,
             variant: 'outline',
           },
         ],

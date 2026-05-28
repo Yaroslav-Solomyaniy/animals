@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation'
 import AnimalProfileClient from './AnimalProfileClient'
-import { MOCK_ANIMALS } from '@/mockData'
+import { getPublicAnimalBySlugOrId, getRelatedPublicAnimals } from '@/lib/animals'
 
 type AnimalPageProps = {
   params: Promise<{
@@ -8,15 +8,9 @@ type AnimalPageProps = {
   }>
 }
 
-export function generateStaticParams() {
-  return MOCK_ANIMALS.map((animal) => ({
-    id: animal.id,
-  }))
-}
-
 export async function generateMetadata({ params }: AnimalPageProps) {
   const { id } = await params
-  const animal = MOCK_ANIMALS.find((item) => item.id === id)
+  const animal = await getPublicAnimalBySlugOrId(id)
 
   return {
     title: animal ? animal.name : 'Тварину не знайдено',
@@ -25,18 +19,14 @@ export async function generateMetadata({ params }: AnimalPageProps) {
 
 export default async function AnimalPage({ params }: AnimalPageProps) {
   const { id } = await params
-  const animal = MOCK_ANIMALS.find((item) => item.id === id)
+  const animal = await getPublicAnimalBySlugOrId(id)
 
   if (!animal) {
     notFound()
   }
 
-  const galleryImages = MOCK_ANIMALS.filter((item) => item.id !== animal.id)
-    .map((item) => item.imageUrl)
-    .slice(0, 4)
-  const relatedAnimals = MOCK_ANIMALS.filter((item) => item.id !== animal.id)
-    .filter((item) => item.size === animal.size || item.gender === animal.gender)
-    .slice(0, 3)
+  const galleryImages = animal.galleryImages ?? [animal.imageUrl]
+  const relatedAnimals = await getRelatedPublicAnimals(animal, 3)
 
   return (
     <AnimalProfileClient

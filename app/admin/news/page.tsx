@@ -22,7 +22,7 @@ export default async function AdminNewsPage() {
       />
       {error ? <AdminNotice>{error.message}</AdminNotice> : null}
       <div className="mt-6">
-        <AdminTable columns={['Новина', 'Slug', 'Статус', 'Дата', 'Дія']}>
+        <AdminTable columns={['Новина', 'Статус', 'Дія']}>
           {posts.map((post) => (
             <AdminTableRow
               key={post.id}
@@ -36,9 +36,7 @@ export default async function AdminNewsPage() {
                     <p className="text-xs text-slate-500">{post.excerpt ?? 'Без опису'}</p>
                   </div>
                 </div>,
-                <span key="slug" className="text-slate-700">{post.slug}</span>,
                 <span key="status" className="font-semibold text-slate-700">{post.is_published ? 'published' : 'draft'}</span>,
-                <span key="date" className="text-slate-500">{post.published_at ? new Date(post.published_at).toLocaleString() : '—'}</span>,
                 <div key="action"><Link href={`/admin/news/${post.id}`} className="inline-flex rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-extrabold text-slate-700 transition hover:border-orange-200 hover:bg-orange-50 hover:text-primary">Редагувати</Link></div>,
               ]}
             />

@@ -90,6 +90,7 @@ interface RenderGridItem extends GridItem {
 interface MasonryProps {
   items: Array<MasonryItem>
   columns?: number
+  maxColumns?: number
   autoScroll?: boolean
   scrollSpeed?: number
   ease?: string
@@ -105,6 +106,7 @@ interface MasonryProps {
 export default function Masonry({
   items,
   columns: fixedColumns,
+  maxColumns,
   autoScroll = false,
   scrollSpeed = 40,
   ease = 'power3.out',
@@ -127,7 +129,7 @@ export default function Masonry({
   )
   const values = useMemo(() => [5, 4, 3, 2], [])
   const responsiveColumns = useMedia(queries, values, 1)
-  const columns = fixedColumns ?? responsiveColumns
+  const columns = Math.min(fixedColumns ?? responsiveColumns, maxColumns ?? Infinity)
 
   const [containerRef, { width }] = useMeasure<HTMLDivElement>()
   const contentRef = useRef<HTMLDivElement | null>(null)

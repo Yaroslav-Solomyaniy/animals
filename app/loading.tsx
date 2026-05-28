@@ -1,5 +1,5 @@
-import AngryLoader from '@/components/ui/AngryLoader'
+import Loader from '@/components/Loader'
 
 export default function Loading() {
-  return <AngryLoader fullscreen message="Завантажуємо..." size="huge" />
+  return <Loader />
 }

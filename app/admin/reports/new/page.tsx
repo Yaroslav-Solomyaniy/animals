@@ -1,6 +1,6 @@
 import { AdminAuthGate } from '@/components/admin/AdminAuthGate'
 import AdminPageHeader from '@/components/admin/AdminPageHeader'
-import { ReportForm } from '@/components/admin/admin-forms'
+import { ReportForm } from '@/components/admin/forms/ReportForm'
 
 export default function NewReportPage() {
   return (

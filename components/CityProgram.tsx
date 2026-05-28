@@ -1,202 +1,229 @@
 'use client'
+
 import {
-  ArrowRight, ClipboardCheck,
-  HeartPulse, Home, LucideIcon, PawPrint,
-  RotateCcw,
-  Shield, ShieldCheck,
-  Stethoscope, Users,
+    ArrowRight,
+    ClipboardCheck,
+    HeartPulse,
+    Home,
+    PawPrint,
+    RotateCcw,
+    Shield,
+    ShieldCheck,
+    Stethoscope,
+    Users,
+    type LucideIcon,
 } from 'lucide-react'
-import { LinkButton } from '@/components/ui/Button'
-import { motion } from "framer-motion"
+import {motion} from 'motion/react'
+
+import {LinkButton} from '@/components/ui/Button'
+import {SITE_ROUTES} from '@/lib/site-config'
 
 const services = [
-  {
-    icon: Shield,
-    title: 'Відлов',
-    text: 'Гуманний відлов безпритульних тварин без шкоди для людей і тварин.',
-  },
-  {
-    icon: Stethoscope,
-    title: 'Стерилізація',
-    text: 'Медична операція для стабілізації популяції безпритульних собак.',
-  },
-  {
-    icon: HeartPulse,
-    title: 'Вакцинація',
-    text: 'Захист від сказу та інших хвороб, медичний догляд і спостереження.',
-  },
-  {
-    icon: RotateCcw,
-    title: 'Повернення',
-    text: 'Кліпсування та випуск у безпечне середовище після процедур.',
-  },
+    {
+        icon: Shield,
+        title: 'Відлов',
+        text: 'Гуманний відлов безпритульних тварин без шкоди для людей і тварин.',
+    },
+    {
+        icon: Stethoscope,
+        title: 'Стерилізація',
+        text: 'Медична операція для стабілізації популяції безпритульних собак.',
+    },
+    {
+        icon: HeartPulse,
+        title: 'Вакцинація',
+        text: 'Захист від сказу та інших хвороб, медичний догляд і спостереження.',
+    },
+    {
+        icon: RotateCcw,
+        title: 'Повернення',
+        text: 'Кліпсування та випуск у безпечне середовище після процедур.',
+    },
 ]
 
 type Card = {
-  icon: LucideIcon
-  title: string
-  text: string
-  className: string
-  iconClassName: string
-  sizeClassName: string
+    icon: LucideIcon
+    title: string
+    text: string
+    positionClassName: string
+    iconClassName: string
+    sizeClassName: string
 }
 
 const cards: Array<Card> = [
-  {
-    icon: PawPrint,
-    title: 'Адопція',
-    text: 'Знайти дім',
-    className: 'top-0 left-0 rotate-[-8deg] bg-white',
-    iconClassName: 'bg-lime-50 text-purple',
-    sizeClassName: 'h-[178px] w-[250px] sm:h-[190px] sm:w-[280px]',
-  },
-  {
-    icon: HeartPulse,
-    title: 'Турбота',
-    text: 'Лікування',
-    className: 'top-8 right-0 rotate-[6deg] bg-cyan-50',
-    iconClassName: 'bg-primary/10 text-primary',
-    sizeClassName: 'h-[160px] w-[235px] sm:h-[176px] sm:w-[255px]',
-  },
-  {
-    icon: ShieldCheck,
-    title: 'Безпека',
-    text: 'Гуманне місто',
-    className: 'top-[238px] left-6 rotate-[4deg] bg-red-50',
-    iconClassName: 'bg-emerald-100 text-black',
-    sizeClassName: 'h-[190px] w-[270px] sm:h-[205px] sm:w-[300px]',
-  },
-  {
-    icon: ClipboardCheck,
-    title: 'Контроль',
-    text: 'Облік тварин',
-    className: 'top-[285px] right-0 rotate-[-7deg] bg-purple-100',
-    iconClassName: 'bg-white text-primary',
-    sizeClassName: 'h-[165px] w-[245px] sm:h-[180px] sm:w-[270px]',
-  },
-  {
-    icon: Home,
-    title: 'Прихисток',
-    text: 'Щоденна опіка',
-    className: 'right-[20px] bottom-[50px] z-20 rotate-[7deg] bg-blue-50',
-    iconClassName: 'bg-green-100 text-text-main',
-    sizeClassName: 'h-[170px] w-[250px] sm:h-[188px] sm:w-[275px]',
-  },
-  {
-    icon: Users,
-    title: 'Волонтери',
-    text: 'Разом легше',
-    className: 'bottom-0 left-0 z-10 rotate-[-6deg] bg-yellow-50',
-    iconClassName: 'bg-primary/10 text-primary',
-    sizeClassName: 'h-[192px] w-[280px] sm:h-[220px] sm:w-[330px]',
-  },
+    {
+        icon: PawPrint,
+        title: 'Адопція',
+        text: 'Знайти дім',
+        positionClassName:
+            'top-0 left-0 rotate-[-7deg] bg-[#FFEDD5] md:top-0 md:left-5 lg:left-0 lg:rotate-[-8deg]',
+        iconClassName: 'bg-white/90 text-primary',
+        sizeClassName:
+            'h-[124px] w-[181px] sm:h-[132px] sm:w-[190px] md:h-[200px] md:w-[350px] lg:h-[190px] lg:w-[280px]',
+    },
+    {
+        icon: HeartPulse,
+        title: 'Турбота',
+        text: 'Лікування',
+        positionClassName:
+            'top-6 right-0 rotate-[6deg] bg-[#D8F0E4] md:top-0 md:right-5 lg:right-0',
+        iconClassName: 'bg-white/90 text-[#2F7A5D]',
+        sizeClassName:
+            'h-[120px] w-[184px] sm:h-[126px] sm:w-[180px] md:h-[200px] md:w-[350px] lg:h-[189px] lg:w-[289px]',
+    },
+    {
+        icon: ShieldCheck,
+        title: 'Безпека',
+        text: 'Гуманне місто',
+        positionClassName:
+            'top-[166px] left-0 rotate-[3deg] bg-[#F7E8E6] sm:top-[164px] md:top-[220px] md:left-5 lg:top-[258px] lg:left-3 lg:rotate-0',
+        iconClassName: 'bg-[#DDF7EA] text-[#173F35]',
+        sizeClassName:
+            'h-[124px] w-[172px] sm:h-[146px] sm:w-[212px] md:h-[200px] md:w-[350px] lg:h-[205px] lg:w-[300px]',
+    },
+    {
+        icon: ClipboardCheck,
+        title: 'Контроль',
+        text: 'Облік тварин',
+        positionClassName:
+            'top-[173px] right-0 rotate-[-7deg] bg-[#E9DFF7] sm:top-[220px] md:top-[215px] md:right-5 lg:top-[285px] lg:right-0',
+        iconClassName: 'bg-white text-primary',
+        sizeClassName:
+            'h-[127px] w-[180px] sm:h-[132px] sm:w-[192px] md:h-[200px] md:w-[350px] lg:h-[180px] lg:w-[270px]',
+    },
+    {
+        icon: Home,
+        title: 'Прихисток',
+        text: 'Щоденна опіка',
+        positionClassName:
+            'right-0 bottom-[12px] z-20 rotate-[7deg] bg-[#FCE7F3] sm:right-2 sm:bottom-[54px] md:right-5 md:bottom-[0px] lg:right-[20px] lg:bottom-[50px]',
+        iconClassName: 'bg-white/90 text-rose-600',
+        sizeClassName:
+            'h-[125px] w-[185px] sm:h-[136px] sm:w-[200px] md:h-[200px] md:w-[350px] lg:h-[188px] lg:w-[275px]',
+    },
+    {
+        icon: Users,
+        title: 'Волонтери',
+        text: 'Разом легше',
+        positionClassName:
+            'bottom-0 left-0 z-10 rotate-[-6deg] bg-[#FEF3C7] md:left-5 lg:left-0',
+        iconClassName: 'bg-white/90 text-amber-600',
+        sizeClassName:
+            'h-[128px] w-[188px] sm:h-[150px] sm:w-[230px] md:h-[200px] md:w-[350px] lg:h-[200px] lg:w-[330px]',
+    },
 ]
 
 export default function CityProgram() {
-  return (
-    <section id="services" className="bg-white py-24">
-      <div className="mx-auto grid max-w-336 items-center gap-14 px-4 sm:px-6 lg:grid-cols-[0.95fr_1.05fr] lg:px-8">
-        {/*======================= Left Side ===============================*/}
-        <div className="relative mt-12 min-h-190 lg:mt-0">
-          <div className="relative mx-auto h-190 max-w-180">
-            {cards.map((card, index) => {
-              const Icon = card.icon
-
-              return (
-                  <motion.div
-                      key={card.title}
-                      animate={{
-                        y: [0, 20, 0],
-                        scale: [1, 0.955, 1],
-                      }}
-                      transition={{
-                        duration: 3,
-                        delay: index * 0.25,
-                        repeat: Infinity,
-                        repeatDelay: 1.5,
-                        ease: 'easeInOut',
-                      }}
-                      className={`absolute z-10 flex flex-col justify-between rounded-3xl border border-gray-100 p-5 shadow-[0_18px_45px_-34px_rgba(31,41,55,0.45)] ${card.sizeClassName} ${card.className}`}
-                  >
+    return (
+        <section id="services" className="bg-white py-12 sm:py-16 md:py-20 lg:py-24">
+            <div
+                className="mx-auto grid max-w-336 items-center gap-10 px-4 sm:px-6 md:gap-12 lg:grid-cols-[0.95fr_1.05fr] lg:gap-x-14 lg:gap-y-0 lg:px-8">
+                <div className="relative order-2 lg:order-1 lg:row-span-2 lg:min-h-190">
                     <div
-                        className={`flex h-12 w-12 items-center justify-center rounded-2xl ${card.iconClassName}`}
+                        className="relative mx-auto h-115 max-w-85.75 sm:h-130 sm:max-w-130 md:h-170 md:max-w-3xl lg:h-190 lg:max-w-180">
+                        {cards.map((card, index) => {
+                            const Icon = card.icon
+
+                            return (
+                                <motion.div
+                                    key={card.title}
+                                    data-city-floating-card
+                                    animate={{
+                                        y: [0, index % 2 === 0 ? 8 : -8, 0],
+                                        scale: [1, 0.985, 1],
+                                    }}
+                                    transition={{
+                                        duration: 3,
+                                        delay: index * 0.25,
+                                        repeat: Infinity,
+                                        repeatDelay: 1.5,
+                                        ease: 'easeInOut',
+                                    }}
+                                    className={`absolute z-10 flex flex-col justify-between rounded-2xl border border-gray-100 p-3 shadow-[0_18px_45px_-34px_rgba(31,41,55,0.45)] sm:rounded-3xl sm:p-4 lg:p-5 ${card.sizeClassName} ${card.positionClassName}`}
+                                >
+                                    <div
+                                        className={`flex h-9 w-9 items-center justify-center rounded-xl sm:h-10 sm:w-10 sm:rounded-2xl lg:h-12 lg:w-12 ${card.iconClassName}`}
+                                    >
+                                        <Icon className="h-[18px] w-[18px] sm:h-5 sm:w-5 lg:h-6 lg:w-6"/>
+                                    </div>
+
+                                    <div>
+                                        <p className="text-[11px] font-bold tracking-[0.12em] text-gray-400 uppercase sm:text-xs">
+                                            {card.title}
+                                        </p>
+                                        <p className="mt-1 text-lg leading-tight font-black text-text-main sm:text-xl md:text-2xl lg:text-[28px]">
+                                            {card.text}
+                                        </p>
+                                    </div>
+                                </motion.div>
+                            )
+                        })}
+                    </div>
+                </div>
+
+                <div className="order-1 lg:order-2">
+                    <p className="mb-3 text-xs font-extrabold tracking-[0.14em] text-primary uppercase sm:text-sm">
+                        Міська програма
+                    </p>
+                    <h2 className="mb-4 text-3xl font-extrabold leading-tight text-text-main sm:text-4xl md:text-5xl lg:mb-5">
+                        Допомога безпритульним тваринам у Черкасах
+                    </h2>
+                    <div
+                        className="mb-7 max-w-2xl space-y-3 text-base leading-7 text-gray-500 sm:text-lg sm:leading-8 lg:mb-8">
+                        <p>
+                            Вже понад 3 роки Центр надання допомоги безпритульним тваринам на
+                            базі Черкаської служби чистоти дарує тваринам надію на нове життя.
+                        </p>
+                        <p>
+                            У притулку є просторі вольєри, регулярне харчування, медичний
+                            догляд і щоденна турбота про чотирилапих.
+                        </p>
+                    </div>
+
+                </div>
+
+                <div className="order-3 lg:order-3 md:mt-5">
+                    <div className="space-y-4 sm:space-y-5 md:grid md:grid-cols-2 md:gap-8 lg:block md:items-stretch">
+                        {services.map((service) => {
+                            const Icon = service.icon
+
+                            return (
+                                <div
+                                    key={service.title}
+                                    className="flex gap-3 border-b items-center border-gray-100 pb-4 last:border-b-0 last:pb-0 sm:gap-4 sm:pb-5 0 md:last:border-b md:h-full"
+                                >
+                                    <div
+                                        className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-orange-50 text-primary sm:h-12 sm:w-12">
+                                        <Icon className="h-5 w-5 sm:h-6 sm:w-6"/>
+                                    </div>
+
+                                    <div className="min-w-0">
+                                        <h3 className="mb-1.5 text-lg font-extrabold text-text-main sm:mb-2 sm:text-xl">
+                                            {service.title}
+                                        </h3>
+                                        <p className="text-sm leading-6 text-gray-500 sm:text-base sm:leading-7">
+                                            {service.text}
+                                        </p>
+                                    </div>
+                                </div>
+                            )
+                        })}
+                    </div>
+
+                    <p className="mt-6 max-w-2xl border-l-4 border-primary pl-4 text-sm font-bold leading-7 text-text-main sm:mt-7">
+                        Гуманне ставлення до тварин - це ознака цивілізованого міста.
+                    </p>
+
+                    <LinkButton
+                        href={SITE_ROUTES.services}
+                        variant="outline"
+                        className="mt-7 h-auto w-full justify-center whitespace-normal rounded-xl px-4 py-3 text-center text-sm sm:w-fit sm:px-5"
                     >
-                      <Icon className="h-6 w-6" />
-                    </div>
-
-                    <div>
-                      <p className="text-xs font-bold tracking-wider text-gray-400 uppercase">
-                        {card.title}
-                      </p>
-                      <p className="mt-1 text-2xl leading-tight font-black text-text-main sm:text-[28px]">
-                        {card.text}
-                      </p>
-                    </div>
-                  </motion.div>
-              )
-            })}
-          </div>
-        </div>
-
-
-        {/*======================= Right Side ===============================*/}
-        <div>
-          <p className="mb-3 text-sm font-extrabold tracking-wider text-primary uppercase">
-            Міська програма
-          </p>
-          <h2 className="mb-5 text-4xl font-extrabold leading-tight text-text-main md:text-5xl">
-            Допомога безпритульним тваринам у Черкасах
-          </h2>
-          <div className="mb-8 max-w-2xl space-y-3 text-lg leading-8 text-gray-500">
-            <p>
-              Вже понад 3 роки Центр надання допомоги безпритульним тваринам на
-              базі Черкаської служби чистоти дарує тваринам надію на нове життя.
-            </p>
-            <p>
-              У притулку є просторі вольєри, регулярне харчування, медичний
-              догляд і щоденна турбота про чотирилапих.
-            </p>
-          </div>
-
-          <div className="space-y-5">
-            {services.map((service) => {
-              const Icon = service.icon
-
-              return (
-                  <div
-                      key={service.title}
-                      className="flex gap-4 border-b border-gray-100 pb-5 last:border-b-0 last:pb-0"
-                  >
-                    <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-orange-50 text-primary">
-                      <Icon className="h-6 w-6" />
-                    </div>
-
-                    <div>
-                      <h3 className="mb-2 text-xl font-extrabold text-text-main">
-                        {service.title}
-                      </h3>
-                      <p className="leading-7 text-gray-500">{service.text}</p>
-                    </div>
-                  </div>
-              )
-            })}
-          </div>
-
-          <p className="mt-7 max-w-2xl border-l-4 border-primary pl-4 text-sm font-bold leading-7 text-text-main">
-            Гуманне ставлення до тварин - це ознака цивілізованого міста.
-          </p>
-
-
-          <LinkButton
-            href="/services"
-            variant="outline"
-            className="mt-7"
-          >
-            Детальніше про всі послуги які надає центр
-            <ArrowRight className="h-4 w-4" />
-          </LinkButton>
-        </div>
-      </div>
-    </section>
-  )
+                        Детальніше про всі послуги які надає центр
+                        <ArrowRight className="h-4 w-4"/>
+                    </LinkButton>
+                </div>
+            </div>
+        </section>
+    )
 }

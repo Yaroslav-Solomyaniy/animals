@@ -86,7 +86,7 @@ export default function ImageLightbox({
           >
             <IconButton
               type="button"
-              label="Р—Р°РєСЂРёС‚Рё РїРµСЂРµРіР»СЏРґ С„РѕС‚Рѕ"
+              label="Закрити перегляд фото"
               variant="ghost"
               onClick={close}
               className="absolute right-4 top-4 z-[10001] border-white/30 bg-white/12 text-white backdrop-blur hover:bg-white hover:text-gray-950"
@@ -99,7 +99,7 @@ export default function ImageLightbox({
               <>
                 <IconButton
                   type="button"
-                  label="РџРѕРїРµСЂРµРґРЅС” С„РѕС‚Рѕ"
+                  label="Попереднє фото"
                   variant="ghost"
                   onClick={(event) => {
                     event.stopPropagation()
@@ -112,7 +112,7 @@ export default function ImageLightbox({
                 </IconButton>
                 <IconButton
                   type="button"
-                  label="РќР°СЃС‚СѓРїРЅРµ С„РѕС‚Рѕ"
+                  label="Наступне фото"
                   variant="ghost"
                   onClick={(event) => {
                     event.stopPropagation()

@@ -8,6 +8,7 @@ type PageHeroProps = {
   children?: React.ReactNode
   actions?: React.ReactNode
   align?: 'center' | 'split'
+  spacing?: 'default' | 'compact'
 }
 
 export default function PageHero({
@@ -18,11 +19,16 @@ export default function PageHero({
   children,
   actions,
   align = 'split',
+  spacing = 'default',
 }: PageHeroProps) {
   const isCentered = align === 'center'
+  const sectionSpacing =
+    spacing === 'compact'
+      ? 'px-4 py-10 sm:px-6 sm:py-14 lg:px-8 lg:py-20'
+      : 'px-4 py-16 sm:px-6 lg:px-8 lg:py-24'
 
   return (
-    <section className="relative isolate overflow-hidden border-b border-gray-100/70 px-4 py-16 sm:px-6 lg:px-8 lg:py-24">
+    <section className={`relative isolate overflow-hidden border-b border-gray-100/70 ${sectionSpacing}`}>
       <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(255,250,245,0.58),rgba(249,250,251,0.28))]" />
       <HeroTile className="left-6 top-10 hidden h-16 w-16 rotate-[-8deg] rounded-2xl border-orange-100 bg-white/75 sm:block" />
       <HeroTile className="right-10 top-20 hidden h-12 w-12 rotate-[10deg] rounded-xl border-emerald-100 bg-white/75 lg:block [animation-delay:900ms]" />
@@ -42,7 +48,7 @@ export default function PageHero({
             <Icon className="h-4 w-4" />
             {eyebrow}
           </span>
-          <h1 className="text-4xl font-black tracking-tight text-gray-950 sm:text-5xl lg:text-6xl">
+          <h1 className="text-4xl font-extrabold tracking-tight text-text-main sm:text-5xl lg:text-6xl">
             {title}
           </h1>
           <p

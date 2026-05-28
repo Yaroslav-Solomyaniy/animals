@@ -1,16 +1,23 @@
 export interface Animal {
   id: string
+  databaseId?: string
+  slug?: string
   name: string
   age: string
   gender: 'Самець' | 'Самка'
   size: 'Малий' | 'Середній' | 'Великий'
   stayDuration: string
   badge?: string
+  adoptionStatus?: 'ready' | 'needs_care' | null
   imageUrl: string
+  galleryImages?: string[]
   character: string[]
   isVaccinated: boolean
   isNeutered: boolean
   description: string
+  fullStory?: string
+  publishedAt?: string | null
+  createdAt?: string | null
 }
 
 export interface StatItem {

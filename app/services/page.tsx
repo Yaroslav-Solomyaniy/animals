@@ -24,6 +24,7 @@ import SectionFrame from '@/components/ui/SectionFrame'
 import Stack from '@/components/ui/Stack'
 import StorybookDecorations from '@/components/ui/StorybookDecorations'
 import { LinkButton } from '@/components/ui/Button'
+import { SITE_CONTACTS, SITE_ROUTES } from '@/lib/site-config'
 
 
 const services = [
@@ -213,19 +214,19 @@ export default function ServicesPage() {
                 actions={
                     <>
                         <LinkButton
-                            href="/contacts"
+                            href={SITE_ROUTES.contacts}
                             size="lg"
                         >
                             Записатися на послугу
                             <ArrowRight className="h-5 w-5"/>
                         </LinkButton>
                         <LinkButton
-                            href="tel:+380932966097"
+                            href={SITE_CONTACTS.phoneHref}
                             variant="outline"
                             size="lg"
                         >
                             <Phone className="h-5 w-5"/>
-                            +38 (093) 296-60-97
+                            {SITE_CONTACTS.phoneDisplay}
                         </LinkButton>
                     </>
                 }
@@ -404,14 +405,14 @@ export default function ServicesPage() {
                                     </span>
                                 </div>
                                 <div className="flex flex-col gap-3">
-                                    <LinkButton href="tel:+380932966097" size="lg" className="w-full justify-between rounded-2xl">
+                                    <LinkButton href={SITE_CONTACTS.phoneHref} size="lg" className="w-full justify-between rounded-2xl">
                                         <span className="inline-flex items-center gap-2">
                                             <Phone className="h-5 w-5"/>
                                             Зателефонувати
                                         </span>
                                         <ArrowRight className="h-5 w-5"/>
                                     </LinkButton>
-                                    <LinkButton href="/contacts" variant="secondary" size="lg" className="w-full justify-between rounded-2xl">
+                                    <LinkButton href={SITE_ROUTES.contacts} variant="secondary" size="lg" className="w-full justify-between rounded-2xl">
                                         Написати повідомлення
                                         <MessageCircle className="h-5 w-5"/>
                                     </LinkButton>
@@ -460,7 +461,7 @@ export default function ServicesPage() {
                             </div>
 
                             <LinkButton
-                                href="/contacts"
+                                href={SITE_ROUTES.contacts}
                                 variant="primary"
                                 className="mt-8 rounded-2xl"
                             >

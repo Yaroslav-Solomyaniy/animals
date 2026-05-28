@@ -8,7 +8,9 @@ import {
 import SectionFrame from '@/components/ui/SectionFrame'
 import StorybookDecorations from '@/components/ui/StorybookDecorations'
 import { Button, LinkButton } from '@/components/ui/Button'
-import { news, reports } from '@/lib/news'
+import { reports } from '@/lib/news'
+import { getPublishedNews } from '@/lib/public-news'
+import { buildNewsHref, SITE_ROUTES } from '@/lib/site-config'
 
 // const stats = [
 //   ['Усиновлення', '8', '80%', 'bg-orange-500'],
@@ -16,7 +18,9 @@ import { news, reports } from '@/lib/news'
 //   ['Стерилізації', '12', '60%', 'bg-sky-500'],
 // ]
 
-export default function ReportAndNewsPage() {
+export default async function ReportAndNewsPage() {
+  const news = await getPublishedNews()
+
   return (
     <main className="storybook-bg min-h-screen text-gray-950">
       <StorybookDecorations />
@@ -82,8 +86,9 @@ export default function ReportAndNewsPage() {
               </div>
             </div>
 
-            <div className="grid gap-7 md:grid-cols-2 xl:grid-cols-3">
-              {news.map((item) => (
+            {news.length > 0 ? (
+              <div className="grid gap-7 md:grid-cols-2 xl:grid-cols-3">
+                {news.map((item) => (
                 <article
                   key={item.id}
                   className="group flex overflow-hidden rounded-[28px] border border-gray-100 bg-white shadow-soft transition hover:-translate-y-1 hover:border-orange-200 hover:shadow-[0_20px_70px_rgba(15,23,42,0.08)]"
@@ -110,7 +115,7 @@ export default function ReportAndNewsPage() {
                         {item.excerpt}
                       </p>
                       <LinkButton
-                        href={`/report-and-news/${item.id}`}
+                        href={buildNewsHref(item.slug ?? item.id)}
                         variant="outline"
                         size="sm"
                         className="mt-auto self-start"
@@ -121,8 +126,16 @@ export default function ReportAndNewsPage() {
                     </div>
                   </div>
                 </article>
-              ))}
-            </div>
+                ))}
+              </div>
+            ) : (
+              <div className="rounded-[28px] border border-dashed border-orange-200 bg-orange-50/70 p-8 text-center">
+                <p className="text-lg font-black text-gray-950">Новин поки немає</p>
+                <p className="mt-2 text-gray-600">
+                  Опублікуй першу новину в адмінці, і вона зʼявиться тут автоматично.
+                </p>
+              </div>
+            )}
           </div>
         </SectionFrame>
       </section>
@@ -189,13 +202,13 @@ export default function ReportAndNewsPage() {
           </p>
           <div className="mt-8 flex flex-col justify-center gap-4 sm:flex-row">
             <LinkButton
-              href="/"
+              href={SITE_ROUTES.animals}
               size="md"
             >
               Усиновити тварину
             </LinkButton>
             <LinkButton
-              href="/help-for-us"
+              href={SITE_ROUTES.help}
               variant="outline"
               size="md"
             >

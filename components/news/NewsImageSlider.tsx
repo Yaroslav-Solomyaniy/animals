@@ -69,7 +69,7 @@ export default function NewsImageSlider({
                       event.stopPropagation()
                       goPrev()
                     }}
-                    label="РџРѕРїРµСЂРµРґРЅС” С„РѕС‚Рѕ"
+                    label="Попереднє фото"
                     variant="light"
                     className="h-11 w-11 backdrop-blur"
                     aria-label="Попереднє фото"
@@ -82,7 +82,7 @@ export default function NewsImageSlider({
                       event.stopPropagation()
                       goNext()
                     }}
-                    label="РќР°СЃС‚СѓРїРЅРµ С„РѕС‚Рѕ"
+                    label="Наступне фото"
                     variant="light"
                     className="h-11 w-11 backdrop-blur"
                     aria-label="Наступне фото"

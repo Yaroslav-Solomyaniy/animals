@@ -36,12 +36,13 @@ Supabase Auth не создаем вручную. Пользователи и с
 | `status` | `text` | Состояние записи: `draft`, `available`, `reserved`, `adopted`, `hidden` |
 | `short_description` | `text` | Короткое описание для карточек |
 | `full_story` | `text` | Полная история для страницы животного |
+| `public_badges` | `text[]` | Ручные публичные бейджи для карточки и страницы животного |
+| `adoption_status` | `text` | Статус бейджа и фильтра: `ready`, `needs_care` или `null` |
 | `birth_date` | `date` | Дата рождения, если известна |
 | `approximate_age_label` | `text` | Возраст текстом, например `2 роки` |
 | `shelter_arrival_date` | `date` | Дата прибытия в приют |
 | `is_vaccinated` | `boolean` | Вакцинировано |
 | `is_neutered` | `boolean` | Стерилизовано/кастрировано |
-| `is_featured` | `boolean` | Показывать на главной или в избранном |
 | `published_at` | `timestamptz` | Дата публикации |
 | `created_at` | `timestamptz` | Дата создания |
 | `updated_at` | `timestamptz` | Дата последнего обновления |
@@ -58,12 +59,13 @@ create table if not exists public.animals (
   status text not null default 'draft',
   short_description text,
   full_story text,
+  public_badges text[] not null default '{}',
+  adoption_status text,
   birth_date date,
   approximate_age_label text,
   shelter_arrival_date date,
   is_vaccinated boolean not null default false,
   is_neutered boolean not null default false,
-  is_featured boolean not null default false,
   published_at timestamptz,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now(),
@@ -306,7 +308,8 @@ select
   animals.shelter_arrival_date,
   animals.is_vaccinated,
   animals.is_neutered,
-  animals.is_featured,
+  animals.public_badges,
+  animals.adoption_status,
   animals.published_at,
   main_photo.id as main_photo_id,
   main_photo.public_url as main_photo_url,
@@ -536,12 +539,13 @@ create table if not exists public.animals (
   status text not null default 'draft',
   short_description text,
   full_story text,
+  public_badges text[] not null default '{}',
+  adoption_status text,
   birth_date date,
   approximate_age_label text,
   shelter_arrival_date date,
   is_vaccinated boolean not null default false,
   is_neutered boolean not null default false,
-  is_featured boolean not null default false,
   published_at timestamptz,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now(),
@@ -630,7 +634,8 @@ select
   animals.shelter_arrival_date,
   animals.is_vaccinated,
   animals.is_neutered,
-  animals.is_featured,
+  animals.public_badges,
+  animals.adoption_status,
   animals.published_at,
   main_photo.id as main_photo_id,
   main_photo.public_url as main_photo_url,

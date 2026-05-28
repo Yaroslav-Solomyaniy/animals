@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation'
 import { AdminAuthGate } from '@/components/admin/AdminAuthGate'
 import AdminPageHeader from '@/components/admin/AdminPageHeader'
-import { NewsForm } from '@/components/admin/admin-forms'
+import { NewsForm } from '@/components/admin/forms/NewsForm'
 import { createClient } from '@/lib/supabase/server'
 import type { AnimalRow, NewsPostRow } from '@/lib/admin-types'
 

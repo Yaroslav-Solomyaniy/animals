@@ -3,9 +3,11 @@
 import { useMemo, useState } from 'react'
 import {
   ArrowLeft,
+  ArrowRight,
   BadgeCheck,
   CalendarDays,
   Heart, MessageCircleQuestionMark,
+  Maximize2,
   PawPrint,
   Ruler,
   ShieldCheck,
@@ -20,6 +22,11 @@ import SectionFrame from "@/components/ui/SectionFrame";
 import {InfoCard} from "@/app/animals/[id]/_components/InfoCards";
 import Link from "next/link";
 import ShareMenu from '@/components/ui/ShareMenu'
+import {Button, LinkButton} from "@/components/ui/Button";
+import ImageLightbox from '@/components/news/ImageLightbox'
+import StorybookDecorations from '@/components/ui/StorybookDecorations'
+import { buildDonateHref } from '@/lib/donate-search-params'
+import { buildAnimalHref, SITE_ROUTES } from '@/lib/site-config'
 
 type AnimalProfileClientProps = {
   animal: Animal
@@ -35,14 +42,6 @@ const transformStyles = [
   'rotate(-4deg) translate(126px)',
 ]
 
-const fallbackDogGallery = [
-  'https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&q=80&w=900',
-  'https://images.unsplash.com/photo-1518717758536-85ae29035b6d?auto=format&fit=crop&q=80&w=900',
-  'https://images.unsplash.com/photo-1552053831-71594a27632d?auto=format&fit=crop&q=80&w=900',
-  'https://images.unsplash.com/photo-1537151625747-768eb6cf92b2?auto=format&fit=crop&q=80&w=900',
-  'https://images.unsplash.com/photo-1507146426996-ef05306b995a?auto=format&fit=crop&q=80&w=900',
-]
-
 export default function AnimalProfileClient({
   animal,
   galleryImages,
@@ -50,15 +49,29 @@ export default function AnimalProfileClient({
 }: AnimalProfileClientProps) {
   const images = useMemo(
     () => {
-      const sourceImages =
-        animal.id === '1' ? fallbackDogGallery : [animal.imageUrl, ...galleryImages]
-
-      return Array.from(new Set(sourceImages)).slice(0, 5)
+      return Array.from(new Set([animal.imageUrl, ...galleryImages])).slice(0, 5)
     },
-    [animal.id, animal.imageUrl, galleryImages],
+    [animal.imageUrl, galleryImages],
+  )
+  const lightboxImages = useMemo(
+    () =>
+      images.map((src, index) => ({
+        src,
+        alt: `${animal.name} - фото ${index + 1}`,
+      })),
+    [animal.name, images],
   )
   const [selectedIndex, setSelectedIndex] = useState(0)
   const selectedImage = images[selectedIndex] ?? animal.imageUrl
+  const hasManyImages = images.length > 1
+
+  const showPreviousPhoto = () => {
+    setSelectedIndex((current) => (current - 1 + images.length) % images.length)
+  }
+
+  const showNextPhoto = () => {
+    setSelectedIndex((current) => (current + 1) % images.length)
+  }
 
   const infoCards = [
     {
@@ -67,8 +80,8 @@ export default function AnimalProfileClient({
       icon: Ruler,
     },
     {
-      label: 'Термін у притулку',
-      value: animal.stayDuration,
+      label: 'Вік',
+      value: animal.age,
       icon: CalendarDays,
     },
     {
@@ -86,32 +99,47 @@ export default function AnimalProfileClient({
   ]
 
   return (
-    <main className="min-h-screen pb-10 pt-12 text-[#111827] sm:pt-16 md:pb-14 md:pt-20">
-      <div className="mx-auto mb-5 max-w-336 px-4 sm:px-6 lg:px-8">
-        <Link
-          href="/animals"
-          className="btn-outline group relative inline-flex items-center gap-2 overflow-hidden !border-primary !text-primary before:absolute before:inset-0 before:origin-left before:scale-x-0 before:bg-primary before:transition-transform before:duration-300 before:ease-out hover:!text-white hover:before:scale-x-100"
-        >
-          <ArrowLeft className="relative z-10 h-4 w-4 transition-colors" />
-          <span className="relative z-10">Повернутись назад</span>
-        </Link>
-      </div>
-
+    <main className="storybook-bg min-h-screen pb-10 pt-12 text-[#111827] sm:pt-16 md:pb-14 md:pt-20">
+      <StorybookDecorations />
       <section className="px-4 sm:px-6 lg:px-8">
         <SectionFrame className="mx-auto max-w-336 p-4 sm:p-6 lg:p-8">
+          <div className="mb-5">
+            <LinkButton
+              href={SITE_ROUTES.animals}
+              variant="outline"
+              className="w-full sm:w-auto"
+            >
+              <ArrowLeft className="h-4 w-4" />
+              <span>Повернутись назад</span>
+            </LinkButton>
+          </div>
         <div className="grid grid-cols-1 gap-4 md:grid-cols-[2.3fr_3fr] md:items-start">
           <div className="space-y-5">
             <section>
               <div className="relative aspect-4/5 w-full h-125 overflow-hidden rounded-[30px] bg-gray-100 shadow-[0_24px_70px_-52px_rgba(15,23,42,0.95)]">
-                <img
-                    src={selectedImage}
-                    alt={animal.name}
-                    className="h-full w-full object-cover object-center"
-                    referrerPolicy="no-referrer"
-                />
-                <div className="absolute inset-0 bg-linear-to-t from-black/70 via-black/10 to-transparent" />
+                <ImageLightbox images={lightboxImages} initialIndex={selectedIndex}>
+                  {(openLightbox) => (
+                    <button
+                      type="button"
+                      onClick={openLightbox}
+                      className="group h-full w-full cursor-zoom-in overflow-hidden text-left"
+                      aria-label="Відкрити фото на весь екран"
+                    >
+                      <img
+                          src={selectedImage}
+                          alt={animal.name}
+                          className="h-full w-full object-cover object-center transition duration-500 group-hover:scale-[1.02]"
+                          referrerPolicy="no-referrer"
+                      />
+                      <span className="absolute bottom-6 right-6 z-20 inline-flex h-11 w-11 items-center justify-center rounded-full bg-white/90 text-orange-500 shadow-sm backdrop-blur transition group-hover:bg-white group-hover:text-primary">
+                        <Maximize2 className="h-5 w-5" />
+                      </span>
+                    </button>
+                  )}
+                </ImageLightbox>
+                <div className="pointer-events-none absolute inset-0 bg-linear-to-t from-black/70 via-black/10 to-transparent" />
 
-                <div className="absolute left-6 right-6 top-6 flex items-center justify-between gap-3">
+                <div className="pointer-events-none absolute left-6 right-6 top-6 flex items-center justify-between gap-3">
                 <span className="inline-flex items-center gap-2 rounded-full bg-white/90 px-3 py-1.5 text-xs font-extrabold text-emerald-700 shadow-sm backdrop-blur">
                   <BadgeCheck className="h-4 w-4" />
                   {animal.badge ?? getReadinessLabel(animal)}
@@ -121,7 +149,7 @@ export default function AnimalProfileClient({
                   </span>
                 </div>
 
-                <div className="absolute bottom-0 left-0 right-0 p-7 sm:p-9">
+                <div className="pointer-events-none absolute bottom-0 left-0 right-0 p-7 sm:p-9">
                   <h1 className="text-6xl font-black leading-none tracking-normal text-white sm:text-7xl">
                     {animal.name}
                   </h1>
@@ -132,6 +160,32 @@ export default function AnimalProfileClient({
                 </div>
               </div>
             </section>
+
+            {hasManyImages && (
+              <div className="grid gap-3 sm:grid-cols-[1fr_auto_1fr]">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={showPreviousPhoto}
+                  className="w-full"
+                >
+                  <ArrowLeft className="h-4 w-4" />
+                  Попереднє фото
+                </Button>
+                <span className="flex h-11 items-center justify-center rounded-md border border-gray-100 bg-white px-4 text-sm font-extrabold text-gray-500 shadow-sm">
+                  Фото {selectedIndex + 1} з {images.length}
+                </span>
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={showNextPhoto}
+                  className="w-full"
+                >
+                  Наступне фото
+                  <ArrowRight className="h-4 w-4" />
+                </Button>
+              </div>
+            )}
 
             <section className="overflow-hidden rounded-[28px] bg-[#f8f6f1] p-5">
               <div className="mb-2 flex items-center justify-between gap-3">
@@ -189,46 +243,47 @@ export default function AnimalProfileClient({
               <p className="mb-2 text-sm font-black uppercase tracking-wider text-orange-500">
                 Повна історія
               </p>
-              <h2 className="text-3xl font-black tracking-normal">
-                Історія {animal.name}
-              </h2>
               <div className="mt-5 space-y-4 text-lg leading-8 text-gray-600">
-                <p>{buildStory(animal)}</p>
+                <p>{animal.fullStory || buildStory(animal)}</p>
                 <p>{animal.description}</p>
               </div>
             </section>
 
             <section className="mt-8 grid gap-3">
-              <div className="grid gap-3 sm:grid-cols-[1fr_1fr_auto]">
-              <Link
-                href={`/donate?animalId=${animal.id}&gift=treat`}
-                className="btn-outline inline-flex flex-1 items-center justify-center gap-2 border-orange-200 bg-orange-50 text-orange-600 text-center hover:bg-orange-100"
+              <div className="grid gap-3 sm:grid-cols-3">
+              <LinkButton
+                href={buildDonateHref({ animalId: animal.id, gift: 'treat' })}
+                variant="outline"
+                className="w-full"
               >
                 <PawPrint className="h-5 w-5" />
                 Дати смаколика
-              </Link>
-              <Link
-                href="/contacts"
-                className="btn-outline inline-flex flex-1 items-center justify-center gap-2 border-gray-300 bg-gray-50 text-gray-700 text-center hover:bg-white"
+              </LinkButton>
+              <LinkButton
+                href={SITE_ROUTES.contacts}
+                variant="outline"
+                className="w-full"
               >
-                Поставити запитання <MessageCircleQuestionMark className="h-6 w-6" />
-              </Link>
+                Уточнити деталі <MessageCircleQuestionMark className="h-6 w-6" />
+              </LinkButton>
                 <ShareMenu
-                  path={`/animals/${animal.id}`}
+                  path={buildAnimalHref(animal.id)}
                   title={`${animal.name} шукає дім`}
                   text={animal.description}
                   label="Поділитись"
-                  variant="icon"
-                  className="w-full sm:w-auto"
+                  variant="button"
+                  className="w-full"
                 />
               </div>
-              <Link
-                href="/contacts"
-                className="btn-primary inline-flex w-full items-center justify-center gap-2 text-center"
+              <LinkButton
+                href={SITE_ROUTES.contacts}
+                variant="primary"
+                size="lg"
+                className="w-full"
               >
                 <Heart className="h-5 w-5 fill-white/20" />
                 Стати вірним другом
-              </Link>
+              </LinkButton>
             </section>
           </section>
         </div>
@@ -246,12 +301,13 @@ export default function AnimalProfileClient({
                 Познайомтесь ще з кількома хвостиками
               </h2>
             </div>
-            <Link
-              href="/animals"
-              className="btn-outline group relative inline-flex items-center justify-center overflow-hidden !border-primary !text-primary before:absolute before:inset-0 before:origin-left before:scale-x-0 before:bg-primary before:transition-transform before:duration-300 before:ease-out hover:!text-white hover:before:scale-x-100"
+            <LinkButton
+              href={SITE_ROUTES.animals}
+              variant="outline"
+              className="w-full sm:w-auto"
             >
-              <span className="relative z-10">Весь каталог</span>
-            </Link>
+              Весь каталог
+            </LinkButton>
           </div>
 
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
@@ -268,7 +324,7 @@ export default function AnimalProfileClient({
 function RelatedAnimalCard({ animal }: { animal: Animal }) {
   return (
     <Link
-      href={`/animals/${animal.id}`}
+      href={buildAnimalHref(animal.id)}
       className="group flex items-center gap-4 rounded-3xl border border-gray-100 bg-white p-3 shadow-soft transition-all hover:-translate-y-1 hover:border-primary/30 hover:shadow-primary/20"
     >
       <div className="relative h-24 w-24 shrink-0 overflow-hidden rounded-2xl bg-gray-100">
@@ -326,7 +382,7 @@ function TraitChip({
 }
 
 function buildStory(animal: Animal) {
-  return `${animal.name} вже ${animal.stayDuration} перебуває під опікою притулку. За цей час команда краще зрозуміла його характер, потреби та темп життя, щоб підібрати родину, якій буде комфортно поруч із ним.`
+  return `${animal.name} перебуває під опікою центру. Команда краще зрозуміла характер, потреби та темп життя, щоб підібрати родину, якій буде комфортно поруч із ним.`
 }
 
 function getReadinessLabel(animal: Animal) {

@@ -14,6 +14,8 @@ import {
 import type { LucideIcon } from 'lucide-react'
 import { motion } from 'motion/react'
 import { LinkButton } from '@/components/ui/Button'
+import { buildDonateHref } from '@/lib/donate-search-params'
+import { buildAnimalHref } from '@/lib/site-config'
 import type { Animal } from '@/types'
 
 type AnimalCardProps = {
@@ -29,8 +31,8 @@ export default function AnimalCard({
   detailsHref,
   index = 0,
 }: AnimalCardProps) {
-  const treatHref = `/donate?animalId=${animal.id}&gift=treat`
-  const primaryHref = detailsHref ?? `/animals/${animal.id}`
+  const treatHref = buildDonateHref({ animalId: animal.id, gift: 'treat' })
+  const primaryHref = detailsHref ?? buildAnimalHref(animal.id)
 
   return (
     <motion.article

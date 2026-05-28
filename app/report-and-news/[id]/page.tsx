@@ -15,9 +15,10 @@ import StorybookDecorations from '@/components/ui/StorybookDecorations'
 import ShareMenu from '@/components/ui/ShareMenu'
 import { LightboxImage } from '@/components/news/ImageLightbox'
 import NewsImageSlider from '@/components/news/NewsImageSlider'
-import { MOCK_ANIMALS } from '@/mockData'
+import { getPublicAnimalBySlugOrId } from '@/lib/animals'
 import type { NewsContentBlock } from '@/lib/news'
-import { getNewsById, getRelatedNews, news } from '@/lib/news'
+import { getPublishedNewsBySlugOrId, getRelatedPublishedNews } from '@/lib/public-news'
+import { buildAnimalHref, buildNewsHref, SITE_ROUTES } from '@/lib/site-config'
 
 type NewsPageProps = {
   params: Promise<{
@@ -25,15 +26,9 @@ type NewsPageProps = {
   }>
 }
 
-export function generateStaticParams() {
-  return news.map((item) => ({
-    id: item.id,
-  }))
-}
-
 export async function generateMetadata({ params }: NewsPageProps) {
   const { id } = await params
-  const article = getNewsById(id)
+  const article = await getPublishedNewsBySlugOrId(id)
 
   return {
     title: article ? article.title : 'Новину не знайдено',
@@ -43,16 +38,17 @@ export async function generateMetadata({ params }: NewsPageProps) {
 
 export default async function NewsDetailsPage({ params }: NewsPageProps) {
   const { id } = await params
-  const article = getNewsById(id)
+  const article = await getPublishedNewsBySlugOrId(id)
 
   if (!article) {
     notFound()
   }
 
-  const relatedNews = getRelatedNews(article.id, 4)
+  const relatedNews = await getRelatedPublishedNews(article.id, 4)
   const relatedAnimal = article.relatedAnimalId
-    ? MOCK_ANIMALS.find((animal) => animal.id === article.relatedAnimalId)
+    ? await getPublicAnimalBySlugOrId(article.relatedAnimalId)
     : undefined
+  const relatedAnimalPreview = relatedAnimal ?? undefined
 
   return (
     <main className="storybook-bg min-h-screen text-gray-950">
@@ -103,14 +99,14 @@ export default async function NewsDetailsPage({ params }: NewsPageProps) {
                 value={`${article.publishedTime} · ${article.readingTime}`}
               />
               {article.relatedAnimalId ? (
-                <RelatedAnimalPreview relatedAnimal={relatedAnimal} />
+                <RelatedAnimalPreview relatedAnimal={relatedAnimalPreview} />
               ) : null}
             </div>
             </div>
 
             <div className="mt-7 border-t border-orange-100 pt-6">
               <ShareMenu
-                path={`/report-and-news/${article.id}`}
+                path={buildNewsHref(article.slug ?? article.id)}
                 title={article.title}
                 text={article.excerpt}
                 label="Поділитися новиною"
@@ -157,7 +153,7 @@ export default async function NewsDetailsPage({ params }: NewsPageProps) {
                 для тварин.
               </p>
               <Link
-                href="/help-for-us"
+                href={SITE_ROUTES.help}
                 className="mt-5 inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-xl bg-primary px-5 py-3 font-extrabold text-white shadow-[0_18px_45px_rgba(242,116,56,0.22)] transition hover:-translate-y-0.5 hover:bg-orange-600 hover:shadow-[0_22px_55px_rgba(242,116,56,0.32)]"
               >
                 Підтримати
@@ -177,7 +173,7 @@ export default async function NewsDetailsPage({ params }: NewsPageProps) {
                 {relatedNews.map((item) => (
                   <Link
                     key={item.id}
-                    href={`/report-and-news/${item.id}`}
+                    href={buildNewsHref(item.slug ?? item.id)}
                     className="group grid grid-cols-[86px_1fr] gap-3 rounded-2xl border border-white/10 bg-white/[0.06] p-2 transition hover:-translate-y-0.5 hover:border-primary/70 hover:bg-white/[0.10] hover:shadow-[0_18px_45px_rgba(242,116,56,0.18)]"
                   >
                     <img
@@ -198,7 +194,7 @@ export default async function NewsDetailsPage({ params }: NewsPageProps) {
               </div>
 
               <Link
-                href="/report-and-news"
+                href={SITE_ROUTES.reportAndNews}
                 className="mt-5 inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-xl border border-white/15 bg-white/[0.06] px-4 py-2.5 text-sm font-extrabold text-white transition hover:-translate-y-0.5 hover:border-primary hover:bg-primary hover:shadow-[0_18px_45px_rgba(242,116,56,0.22)]"
               >
                 Усі новини
@@ -217,7 +213,7 @@ export default async function NewsDetailsPage({ params }: NewsPageProps) {
 function BackLink() {
   return (
     <Link
-      href="/report-and-news"
+      href={SITE_ROUTES.reportAndNews}
       className="group relative inline-flex items-center justify-center gap-2 overflow-hidden rounded-xl border border-primary/30 bg-white/90 px-4 py-2.5 text-sm font-extrabold text-primary shadow-[0_16px_45px_rgba(242,116,56,0.12)] backdrop-blur transition hover:border-primary active:scale-[0.98]"
     >
       <span className="absolute inset-y-0 left-0 w-0 bg-primary transition-all duration-300 ease-out group-hover:w-full" />
@@ -249,7 +245,7 @@ function RelatedAnimalPreview({
       </p>
       {relatedAnimal ? (
         <Link
-          href={`/animals/${relatedAnimal.id}`}
+          href={buildAnimalHref(relatedAnimal.id)}
           className="group mt-3 grid grid-cols-[82px_1fr] gap-3 rounded-xl border border-orange-100 bg-orange-50/70 p-2 transition hover:border-primary hover:bg-white"
         >
           <span className="overflow-hidden rounded-lg">
