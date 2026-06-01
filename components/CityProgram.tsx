@@ -5,13 +5,13 @@ import {
     ClipboardCheck,
     HeartPulse,
     Home,
+    type LucideIcon,
     PawPrint,
     RotateCcw,
     Shield,
     ShieldCheck,
     Stethoscope,
     Users,
-    type LucideIcon,
 } from 'lucide-react'
 import {motion} from 'motion/react'
 
@@ -144,7 +144,7 @@ export default function CityProgram() {
                                     <div
                                         className={`flex h-9 w-9 items-center justify-center rounded-xl sm:h-10 sm:w-10 sm:rounded-2xl lg:h-12 lg:w-12 ${card.iconClassName}`}
                                     >
-                                        <Icon className="h-[18px] w-[18px] sm:h-5 sm:w-5 lg:h-6 lg:w-6"/>
+                                        <Icon className="h-4.5 w-4.5 sm:h-5 sm:w-5 lg:h-6 lg:w-6"/>
                                     </div>
 
                                     <div>
@@ -219,7 +219,7 @@ export default function CityProgram() {
                         variant="outline"
                         className="mt-7 h-auto w-full justify-center whitespace-normal rounded-xl px-4 py-3 text-center text-sm sm:w-fit sm:px-5"
                     >
-                        Детальніше про всі послуги які надає центр
+                        Дізнатись більше про комерційні послуги
                         <ArrowRight className="h-4 w-4"/>
                     </LinkButton>
                 </div>

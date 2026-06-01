@@ -1,7 +1,7 @@
 'use client'
 
 import { useRef, useState, type FormEvent } from 'react'
-import { Check, Loader2, Paperclip, PawPrint, Send, X } from 'lucide-react'
+import { Loader2, Paperclip, PawPrint, Send, X } from 'lucide-react'
 
 import { createContactAttachmentUploadAction, submitContactFormAction, type ContactFormState } from './actions'
 import { Button } from '@/components/ui/Button'
@@ -99,10 +99,10 @@ export default function ContactForm({ animals }: ContactFormProps) {
       ref={formRef}
       id="contact-form"
       encType="multipart/form-data"
-      className="scroll-mt-28 bg-white/86 p-4 sm:p-6 lg:p-8 xl:p-10"
+      className="grid scroll-mt-28 gap-6 bg-white/86 p-4 sm:p-6 lg:grid-cols-[minmax(260px,0.72fr)_minmax(0,1.28fr)] lg:gap-8 lg:p-8 xl:gap-10 xl:p-10"
       onSubmit={handleSubmit}
     >
-      <div className="mb-6 sm:mb-8">
+      <div className="lg:pt-1">
         <p className="text-sm font-semibold uppercase tracking-[0.18em] text-orange-600">
           Форма зв&#39;язку
         </p>
@@ -114,6 +114,7 @@ export default function ContactForm({ animals }: ContactFormProps) {
         </p>
       </div>
 
+      <div className="min-w-0">
       <div className="grid gap-4 md:grid-cols-2">
         <label className="space-y-2">
           <span className="text-sm font-semibold text-gray-700">Ваше ім&#39;я</span>
@@ -279,6 +280,7 @@ export default function ContactForm({ animals }: ContactFormProps) {
           setIsAnimalModalOpen(false)
         }}
       />
+      </div>
     </form>
   )
 }

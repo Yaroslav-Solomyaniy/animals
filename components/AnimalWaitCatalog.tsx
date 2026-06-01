@@ -1,12 +1,12 @@
 'use client'
 
 import useEmblaCarousel from 'embla-carousel-react'
-import { ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react'
+import {ArrowRight, ChevronLeft, ChevronRight} from 'lucide-react'
 
 import AnimalCard from '@/components/AnimalCard'
-import { LinkButton } from '@/components/ui/Button'
-import { SITE_ROUTES } from '@/lib/site-config'
-import type { Animal } from '@/types'
+import {LinkButton} from '@/components/ui/Button'
+import {SITE_ROUTES} from '@/lib/site-config'
+import type {Animal} from '@/types'
 
 export default function AnimalWaitCatalog({ animals }: { animals: Animal[] }) {
   const [emblaRef, emblaApi] = useEmblaCarousel({
@@ -35,10 +35,10 @@ export default function AnimalWaitCatalog({ animals }: { animals: Animal[] }) {
 
           <LinkButton
             href={SITE_ROUTES.animals}
-            variant="outline"
-            className="hidden h-10 w-fit max-w-full shrink-0 rounded-full px-4 text-sm lg:inline-flex"
+            variant="primary"
+            className="hidden h-10 w-fit max-w-full shrink-0 px-4 text-sm lg:inline-flex"
           >
-            До всіх тварин
+            Загальний перелік тварин
             <ArrowRight className="h-4 w-4" />
           </LinkButton>
         </div>
@@ -53,7 +53,7 @@ export default function AnimalWaitCatalog({ animals }: { animals: Animal[] }) {
                       key={animal.id}
                       animal={animal}
                       index={index}
-                      className="flex-[0_0_100%] sm:flex-[0_0_calc(85%-8px)] md:flex-[0_0_calc(50%-10px)] xl:flex-[0_0_calc(33.333%-16px)] 2xl:flex-[0_0_calc(25%-18px)]"
+                      className="flex-[0_0_100%] sm:flex-[0_0_calc(85%-8px)] md:flex-[0_0_calc(50%-10px)] xl:flex-[0_0_calc(33.333%-16px)] 2xl:flex-[0_0_calc(33.333%-18px)]"
                     />
                   ))}
                 </div>

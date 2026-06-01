@@ -1,0 +1,1 @@
+export const ANIMALS_PAGE_ITEMS_LIMIT = 6

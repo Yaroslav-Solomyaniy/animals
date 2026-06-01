@@ -137,7 +137,7 @@ export default function AnimalProfileClient({animal, galleryImages, relatedAnima
                             <div className="mt-8 grid grid-cols-2 gap-3 md:grid-cols-4">
                                 {infoCards.map((card) => (
                                     <InfoCard
-                                        key={card.label}
+                                        key={`${card.label}+++${card.value} + ${animal.slug}`}
                                         icon={card.icon}
                                         label={card.label}
                                         value={card.value}

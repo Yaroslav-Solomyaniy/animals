@@ -19,9 +19,9 @@ import BorderGlow from '@/components/ui/BorderGlow'
 import PageHero from '@/components/ui/PageHero'
 import SectionFrame from '@/components/ui/SectionFrame'
 import StorybookDecorations from '@/components/ui/StorybookDecorations'
-import { LinkButton } from '@/components/ui/Button'
-import { getPublicAnimals } from '@/lib/animals'
-import { SITE_CONTACTS, SITE_ROUTES, SITE_SOCIAL_LINKS } from '@/lib/site-config'
+import {LinkButton} from '@/components/ui/Button'
+import {getPublicAnimals} from '@/lib/animals'
+import {SITE_CONTACTS, SITE_ROUTES, SITE_SOCIAL_LINKS} from '@/lib/site-config'
 import ContactForm from './ContactForm'
 
 
@@ -281,68 +281,23 @@ export default async function ContactsPage() {
       </section>
 
       <section className={sectionClassName}>
-        <SectionFrame className={`mx-auto grid max-w-336 gap-4 p-3 sm:gap-5 sm:p-5 xl:grid-cols-[0.95fr_1.05fr] xl:gap-6 xl:p-6 ${contactGradientClassNames.sunrise}`}>
-          <div className="space-y-4">
-            {reasons.map((reason) => {
-              const Icon = reason.icon
-              return (
-                <div
-                  key={reason.title}
-                  className={`rounded-[24px] border p-4 shadow-sm transition-[transform,border-color,box-shadow] duration-300 md:hover:-translate-y-1 md:hover:shadow-[0_24px_70px_rgba(15,23,42,0.08)] sm:rounded-[28px] sm:p-6 ${reason.color}`}
-                >
-                  <div className="flex items-start gap-3 sm:gap-4">
-                    <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-white/70">
-                      <Icon className="h-5 w-5" />
-                    </span>
-                    <div>
-                      <h3 className="text-xl font-extrabold text-text-main">
-                        {reason.title}
-                      </h3>
-                      <p className="mt-2 leading-7 text-gray-600">
-                        {reason.text}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              )
-            })}
-
-            <div
-              id="visit-schedule"
-              className="rounded-[24px] border border-gray-100 bg-gray-50 p-4 shadow-sm sm:rounded-[28px] sm:p-6"
-            >
-              <h3 className="text-xl font-extrabold text-text-main">
-                Графік відвідування
-              </h3>
-              <div className="mt-5 space-y-3">
-                {schedule.map(([days, time]) => (
-                  <div
-                    key={days}
-                    className="flex flex-col gap-1 rounded-2xl bg-white px-4 py-3 text-base font-semibold sm:flex-row sm:items-center sm:justify-between sm:gap-4"
-                  >
-                    <span className="text-gray-600">{days}</span>
-                    <span className="text-text-main">{time}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-
+        <SectionFrame className={`mx-auto max-w-336 p-3 sm:p-5 xl:p-6 ${contactGradientClassNames.sunrise}`}>
           <BorderGlow
+            className="w-full"
             borderRadius={32}
             glowRadius={22}
             colors={['#fb923c', '#f59e0b', '#38bdf8']}
             glowColor="249 115 22"
             fillOpacity={0.08}
           >
-            <ContactForm animals={animals} />
+            <ContactForm animals={animals.animals} />
           </BorderGlow>
         </SectionFrame>
       </section>
 
       <section className="px-4 pb-14 pt-4 sm:px-6 sm:pb-16 sm:pt-5 lg:px-8 lg:pb-20 lg:pt-6">
         <SectionFrame className={`mx-auto grid max-w-336 gap-4 p-3 sm:gap-5 sm:p-5 xl:grid-cols-[1fr_1.25fr] xl:gap-6 xl:p-6 ${contactGradientClassNames.river}`}>
-          <div className="rounded-[24px] border border-orange-100 bg-white/86 p-4 shadow-sm sm:rounded-[28px] sm:p-7">
+          <div className="rounded-3xl border border-orange-100 bg-white/86 p-4 shadow-sm sm:rounded-[28px] sm:p-7">
             <div className="max-w-md">
               <p className="text-sm font-semibold uppercase tracking-[0.18em] text-orange-600">
                 Соціальні мережі

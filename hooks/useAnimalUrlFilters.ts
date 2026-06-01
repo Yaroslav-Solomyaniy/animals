@@ -1,11 +1,10 @@
-// lib/use-animal-url-filters.ts
 'use client'
 
 import {useQueryStates} from 'nuqs'
 import {AnimalFilterParsers, type AnimalFilters, AnimalSort,} from '@/lib/animal-filter-parsers'
 
 export function useAnimalUrlFilters() {
-   const ITEMS_LIMIT = 1
+
     const [filters, setFilters] = useQueryStates(AnimalFilterParsers, {
         history: 'push',
         shallow: false,
@@ -44,7 +43,6 @@ export function useAnimalUrlFilters() {
     }
 
     return {
-        ITEMS_LIMIT,
         filters,
         updateFilter,
         resetFilters,

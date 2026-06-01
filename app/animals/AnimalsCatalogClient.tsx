@@ -9,7 +9,7 @@ import {Button} from '@/components/ui/Button'
 import type {Animal} from '@/types'
 import AnimalsFilter from "@/app/animals/_components/animalsFilter";
 import AnimalCard from "@/components/AnimalCard";
-import {FC, useEffect} from "react";
+import {FC} from "react";
 import {useAnimalUrlFilters} from "@/hooks/useAnimalUrlFilters";
 
 
@@ -29,54 +29,16 @@ const EMPTY_FEATURED_ANIMAL: Animal = {
     description: 'У каталозі скоро зʼявляться тварини, які шукають дім.',
 }
 interface Props{
-    animals: Animal[]
+    animals: Animal[];
+    pagination: {
+        currentPage: number;
+        totalPages: number;
+    }
+
 }
 
-export const AnimalsCatalogClient:FC<Props> = ({animals}) => {
-    const {filters, updateFilter, resetFilters, ITEMS_LIMIT} = useAnimalUrlFilters()
-
-    useEffect(()=>{
-        console.log(animals)
-    },[animals])
-
-    const totalPages = Math.max(1, Math.ceil(animals.length / ITEMS_LIMIT),)
-    const currentPage = Math.min(Math.max(1, filters.page ), totalPages)
-    const currentAnimals = animals.slice((currentPage - 1) * ITEMS_LIMIT, currentPage * ITEMS_LIMIT)
-
-    // const filteredAnimals = useMemo(() => {
-    //     const normalizedSearch = filters.q.trim().toLowerCase()
-    //
-    //     return animals.filter((animal) => {
-    //         const matchesSearch =
-    //             normalizedSearch.length === 0 ||
-    //             [animal.name, animal.age, animal.description, animal.badge, ...animal.character]
-    //                 .filter(Boolean)
-    //                 .join(' ')
-    //                 .toLowerCase()
-    //                 .includes(normalizedSearch)
-    //
-    //
-    //         return matchesSearch && matchesGender && matchesSize && matchesCare
-    //     }).sort((first, second) => {
-    //         if (filters.sort === 'name') {
-    //             const result = first.name.localeCompare(second.name, 'uk')
-    //             return filters.order === 'desc' ? -result : result
-    //         }
-    //
-    //         return getDateScore(second) - getDateScore(first)
-    //     })
-    // }, [animals, filters.care, filters.gender, filters.order, filters.q, filters.size, filters.sort])
-
-
-    // const featuredAnimal = filteredAnimals[0] ?? animals[0] ?? EMPTY_FEATURED_ANIMAL
-    // const activeFiltersCount = [
-    //     filters.q.trim(),
-    //     filters.gender !== 'all',
-    //     filters.size !== 'all',
-    //     filters.care !== 'all',
-    // ].filter(Boolean).length
-
-
+export const AnimalsCatalogClient:FC<Props> = ({animals, pagination}) => {
+    const {filters, updateFilter}  = useAnimalUrlFilters()
 
     return (
         <main className="storybook-bg min-h-screen overflow-hidden text-text-main">
@@ -88,12 +50,12 @@ export const AnimalsCatalogClient:FC<Props> = ({animals}) => {
                 icon={BookOpen}
             >
                 <div className="orange-neon relative overflow-hidden rounded-3xl bg-gray-950">
-                    {/*<img*/}
-                    {/*    src={featuredAnimal.imageUrl}*/}
-                    {/*    alt={featuredAnimal.name}*/}
-                    {/*    className="h-90 w-full object-cover opacity-75"*/}
-                    {/*    referrerPolicy="no-referrer"*/}
-                    {/*/>*/}
+                    <img
+                        src={animals[4].imageUrl}
+                        alt={animals[4].name}
+                        className="h-90 w-full object-cover opacity-75"
+                        referrerPolicy="no-referrer"
+                    />
                     <div className="absolute inset-0 bg-linear-to-t from-gray-950 via-gray-950/20 to-transparent"/>
                     <DecorativeIcon
                         icon={PawPrint}
@@ -116,10 +78,10 @@ export const AnimalsCatalogClient:FC<Props> = ({animals}) => {
               Герой сторінки
             </span>
                         <h2 className="mt-3 text-4xl font-black text-white">
-                            {/*{featuredAnimal.name}*/}
+                            {animals[4].name}
                         </h2>
                         <p className="mt-2 max-w-md text-sm leading-6 text-white/75">
-                            {/*{featuredAnimal.description}*/}
+                            {animals[4].description}
                         </p>
                     </div>
                 </div>
@@ -258,9 +220,9 @@ export const AnimalsCatalogClient:FC<Props> = ({animals}) => {
                         </div>
 
                         <Pagination
-                            currentPage={currentPage}
-                            totalPages={totalPages}
-                            onChange={(page) => updateFilter('page', page, false)}
+                            currentPage={pagination.currentPage}
+                            totalPages={pagination.totalPages}
+                            onChange={(page:number) => updateFilter('page', page, false)}
                         />
                     </>
                 )}
@@ -345,7 +307,7 @@ function Pagination({
                 type="button"
                 disabled={currentPage === 1}
                 onClick={() => onChange(currentPage - 1)}
-                variant="outline"
+                variant="primary"
                 size="sm"
                 className="h-11"
             >
@@ -370,7 +332,7 @@ function Pagination({
                 type="button"
                 disabled={currentPage === totalPages}
                 onClick={() => onChange(currentPage + 1)}
-                variant="outline"
+                variant="primary"
                 size="sm"
                 className="h-11"
             >

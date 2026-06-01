@@ -7,7 +7,7 @@ import type {MasonryItem} from './ui/Masonry'
 import Masonry from './ui/Masonry'
 import {WobbleCard} from "@/components/ui/wobble-card";
 import {color_blue, color_rose, color_violet} from "@/contstants/colors";
-import { SITE_ROUTES, SITE_SOCIAL_LINKS } from '@/lib/site-config'
+import {SITE_ROUTES, SITE_SOCIAL_LINKS} from '@/lib/site-config'
 
 const dogItems: Array<MasonryItem> = [
     {
@@ -89,10 +89,9 @@ const heroStats = [
 
 export default function Welcome() {
     return (
-        <section className="relative flex min-h-0 items-center overflow-hidden py-8 sm:py-12 md:py-14 lg:min-h-[calc(100vh-80px)] lg:py-16 xl:py-20">
+        <section className="relative flex min-h-0 items-center overflow-hidden py-8 sm:py-12 md:py-14 lg:py-16 xl:py-20">
             <div
                 className="absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.46),rgba(249,250,251,0.32))]"/>
-
             <div className="relative mx-auto w-full max-w-336 px-4 sm:px-6 lg:px-8">
                 <div className="items-center lg:grid lg:grid-cols-[minmax(0,0.95fr)_minmax(320px,0.75fr)] lg:gap-10 xl:grid-cols-[minmax(0,1fr)_minmax(360px,0.9fr)] xl:gap-16">
                     <motion.div
@@ -114,7 +113,7 @@ export default function Welcome() {
                             <span className="text-primary">Центр надання допомоги тваринам</span>
                         </h1>
                         <p className="mx-auto max-w-2xl text-sm leading-6 text-gray-500 sm:text-base sm:leading-7 md:text-lg md:leading-8 lg:mx-0 lg:max-w-xl">
-                            Діяльність нашого центру розповсюджується на всю територію м.Черкаси, але за можливості ми намагаємось надати прихисток тваринам з різних куточків нашої країни.
+                            Діяльність нашого центру розповсюджується на територію м.Черкаси.
                         </p>
 
                         <p className="mx-auto max-w-2xl text-sm leading-6 font-bold text-primary sm:text-base sm:leading-7 md:text-lg md:leading-8 lg:mx-0 lg:max-w-xl">
@@ -137,7 +136,7 @@ export default function Welcome() {
                         >
                             <div className="flex flex-col justify-center gap-3 pt-1 sm:flex-row sm:gap-4 lg:justify-start">
                                 <LinkButton href={SITE_ROUTES.animals} className="h-11 w-full justify-center text-center text-sm sm:w-auto sm:text-base">Знайти вірного друга</LinkButton>
-                                <LinkButton href={SITE_ROUTES.services} variant="outline" className="h-11 w-full justify-center text-center text-sm sm:w-auto sm:text-base">Переглянути перелік послуг</LinkButton>
+                                <LinkButton href={SITE_ROUTES.services} variant="outline" className="h-11 w-full justify-center text-center text-sm sm:w-auto sm:text-base">Комерційні послуги</LinkButton>
                             </div>
                         </motion.div>
 
@@ -200,6 +199,7 @@ export default function Welcome() {
                         )
                     })}
                 </motion.div>
+
             </div>
         </section>
     )

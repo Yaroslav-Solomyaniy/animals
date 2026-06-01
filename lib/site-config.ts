@@ -1,6 +1,7 @@
 export const SITE_ROUTES = {
   home: '/',
   animals: '/animals',
+  walks: '/walks',
   services: '/services',
   help: '/help-for-us',
   reportAndNews: '/report-and-news',
@@ -42,6 +43,7 @@ export const SITE_SOCIAL_LINKS = {
 export const SITE_NAV_LINKS = [
   { name: 'Головна', href: SITE_ROUTES.home },
   { name: 'Книга хвостиків', href: SITE_ROUTES.animals },
+  { name: 'Прогулянки', href: SITE_ROUTES.walks },
   { name: 'Послуги', href: SITE_ROUTES.services },
   { name: 'Як можна допомогти', href: SITE_ROUTES.help },
   { name: 'Звіти та новини', href: SITE_ROUTES.reportAndNews },
