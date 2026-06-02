@@ -19,7 +19,7 @@ export default function AnimalWaitCatalog({ animals }: { animals: Animal[] }) {
   return (
     <section
       id="adopt"
-      className="pt-12 pb-8 sm:pt-16 sm:pb-10 md:pt-20 md:pb-8 lg:pt-24 lg:pb-12"
+      className="bg-transparent pt-12 pb-8 sm:pt-16 sm:pb-10 md:pt-20 md:pb-8 lg:pt-24 lg:pb-12"
     >
       <div className="mx-auto max-w-336 px-4 sm:px-6 lg:px-8">
         <div className="mb-7 grid gap-5 sm:mb-9 md:mb-10 md:grid-cols-[minmax(0,1fr)_auto] md:items-start md:gap-6">
