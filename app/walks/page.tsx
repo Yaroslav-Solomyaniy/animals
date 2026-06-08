@@ -82,20 +82,20 @@ export default async function WalksPage() {
   const { animals } = await getPublicAnimals({ from: 0, to: 2 }, 3)
 
   return (
-    <main className="bg-[#fffaf4] text-text-main">
+    <main className="overflow-hidden bg-[#fffaf4] text-text-main">
       <section className="overflow-hidden px-4 py-10 sm:px-6 sm:py-14 lg:px-8 lg:py-18">
-        <div className="mx-auto grid max-w-336 items-center gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:gap-12">
-          <div>
+        <div className="mx-auto grid max-w-336 min-w-0 items-center gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:gap-12">
+          <div className="min-w-0">
             <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-orange-200 bg-white px-4 py-2 text-xs font-extrabold uppercase tracking-[0.16em] text-primary shadow-sm">
               <PawPrint className="h-4 w-4" />
               Прогулянки з тваринами
             </div>
 
-            <h1 className="max-w-3xl text-[42px] font-black leading-[1.03] text-text-main sm:text-6xl lg:text-7xl">
+            <h1 className="max-w-3xl break-words text-[38px] font-black leading-[1.05] text-text-main sm:text-6xl lg:text-7xl">
               Прогулянка, яку вони запам’ятають
             </h1>
 
-            <p className="mt-6 max-w-2xl text-lg leading-8 text-gray-600">
+            <p className="mt-6 max-w-2xl break-words text-lg leading-8 text-gray-600">
               Подаруйте хвостику радість, а собі - теплу зустріч і гарний настрій.
               Оберіть будь-яку тварину, приходьте у час прогулянок і проведіть поруч
               кілька важливих для неї хвилин.
@@ -119,34 +119,23 @@ export default async function WalksPage() {
                 Графік прогулянок
               </LinkButton>
             </div>
-
-            <div className="mt-8 grid gap-3 text-sm font-extrabold text-gray-700 sm:grid-cols-3">
-              <div className="rounded-2xl border border-orange-100 bg-white px-4 py-3">
-                Свіже повітря
-              </div>
-              <div className="rounded-2xl border border-orange-100 bg-white px-4 py-3">
-                Добрі руки
-              </div>
-              <div className="rounded-2xl border border-orange-100 bg-white px-4 py-3">
-                Спокійний темп
-              </div>
-            </div>
           </div>
 
-          <div className="relative">
+          <div className="relative min-w-0">
             <div className="relative overflow-hidden rounded-[34px] border-8 border-white bg-gray-100 shadow-[0_32px_90px_rgba(31,41,55,0.16)]">
-              <div className="relative aspect-[1.22] min-h-[340px]">
+              <div className="relative aspect-[16/10] min-h-[300px] sm:min-h-[360px] lg:min-h-[440px]">
                 <Image
-                  src="/DogHelp.png"
-                  alt="Тварина чекає на прогулянку"
+                  src="/WithDog.png"
+                  alt="Людина гуляє з собакою у парку"
                   fill
+                  priority
                   sizes="(max-width: 1024px) 100vw, 760px"
-                  className="object-cover"
+                  className="object-cover object-center"
                 />
               </div>
             </div>
 
-            <div className="absolute -bottom-5 left-4 right-4 rounded-3xl border border-orange-100 bg-white p-5 shadow-[0_20px_60px_rgba(31,41,55,0.14)] sm:left-8 sm:right-8">
+            <div className="relative z-10 mx-3 -mt-12 overflow-hidden rounded-3xl border border-orange-100 bg-white/94 p-5 backdrop-blur sm:absolute sm:-bottom-8 sm:left-8 sm:right-8 sm:mx-0">
               <div className="flex items-start gap-3">
                 <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-orange-50 text-primary">
                   <Sparkles className="h-5 w-5" />

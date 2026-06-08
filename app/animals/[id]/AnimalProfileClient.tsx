@@ -1,355 +1,593 @@
-﻿'use client'
+'use client'
 
-import React, {useMemo, useState} from 'react'
+import {useMemo, useState} from 'react'
 import {
-    ArrowLeft,
-    BadgeCheck,
-    CalendarDays,
-    ChevronLeft,
-    ChevronRight,
-    Heart,
-    MessageCircleQuestionMark,
-    PawPrint,
-    Ruler,
-    ShieldCheck,
-    Syringe,
-    VenusAndMars,
-    Zap,
+  ArrowLeft,
+  BadgeCheck,
+  CalendarDays,
+  Camera,
+  ChevronLeft,
+  ChevronRight,
+  Heart,
+  HeartHandshake,
+  Home,
+  MapPin,
+  MessageCircleQuestion,
+  PawPrint,
+  Ruler,
+  ShieldCheck,
+  Sparkles,
+  Syringe,
+  VenusAndMars,
 } from 'lucide-react'
+import type {LucideIcon} from 'lucide-react'
+import {AnimatePresence, motion} from 'motion/react'
+
 import type {Animal} from '@/types'
-import SectionFrame from "@/components/ui/SectionFrame";
-import {InfoCard} from "@/app/animals/[id]/_components/InfoCards";
-import Link from "next/link";
+import AnimalCard from '@/components/AnimalCard'
+import {LinkButton} from '@/components/ui/Button'
 import ShareMenu from '@/components/ui/ShareMenu'
-import {LinkButton} from "@/components/ui/Button";
 import {buildDonateHref} from '@/lib/donate-search-params'
 import {buildAnimalHref, SITE_ROUTES} from '@/lib/site-config'
-import {AnimatePresence, motion} from 'motion/react'
-import {MetaPill} from "@/app/animals/[id]/_components/MetaPill";
-import {TraitChip} from "@/app/animals/[id]/_components/TraitChip";
+import {cn} from '@/lib/utils'
 
 type AnimalProfileClientProps = {
-    animal: Animal
-    galleryImages: string[]
-    relatedAnimals: Animal[]
+  animal: Animal
+  galleryImages: string[]
+  relatedAnimals: Animal[]
 }
 
-export default function AnimalProfileClient({animal, galleryImages, relatedAnimals,}: AnimalProfileClientProps) {
-    const images = useMemo(
-        () => {
-            return Array.from(new Set([animal.imageUrl, ...galleryImages])).slice(0, 5)
-        },
-        [animal.imageUrl, galleryImages],
-    )
-    const [selectedIndex, setSelectedIndex] = useState(0)
+type Tone = 'orange' | 'green' | 'sky' | 'slate'
 
-    const infoCards = [
-        {
-            label: 'Розмір',
-            value: animal.size,
-            icon: Ruler,
-        },
-        {
-            label: 'Вік',
-            value: animal.age,
-            icon: CalendarDays,
-        },
-        {
-            label: '',
-            value: animal.isVaccinated ? 'Щеплений' : 'Не щеплений',
-            icon: Syringe,
-            isActive: animal.isVaccinated,
-        },
-        {
-            label: '',
-            value: animal.isNeutered ? 'Стерилізований' : 'Не стерилізований',
-            icon: ShieldCheck,
-            isActive: animal.isNeutered,
-        },
-    ]
+const surfaceClass =
+  'rounded-[26px] border border-gray-200 bg-white shadow-[0_16px_48px_rgba(15,23,42,0.06)]'
 
-    return (
-        <main className="contacts-gradient-honey min-h-screen pb-8 pt-8 text-[#111827] sm:pt-8 md:pb-8 md:pt-8">
-            <section className="px-4 sm:px-6 lg:px-8">
-                <SectionFrame className="mx-auto max-w-336 p-4 sm:p-6 lg:p-8">
-                    <div className="mb-5 flex items-stretch justify-between gap-3">
-                        <LinkButton
-                            href={SITE_ROUTES.animals}
-                            variant="outline"
-                            className="w-1/2 sm:w-auto"
-                        >
-                            <ArrowLeft className="h-4 w-4" />
-                            <span>Повернутись назад</span>
-                        </LinkButton>
+export default function AnimalProfileClient({
+  animal,
+  galleryImages,
+  relatedAnimals,
+}: AnimalProfileClientProps) {
+  const images = useMemo(
+    () => Array.from(new Set([animal.imageUrl, ...galleryImages].filter(Boolean))).slice(0, 6),
+    [animal.imageUrl, galleryImages],
+  )
+  const [selectedIndex, setSelectedIndex] = useState(0)
+  const displayName = animal.name?.trim() || 'Новий друг'
+  const profile = buildProfile(animal, displayName)
+  const donationHref = buildDonateHref({animalId: animal.id, gift: 'treat'})
 
-                        <div className={'flex gap-6'}>
-                            <LinkButton
-                                href={buildDonateHref({ animalId: animal.id, gift: 'treat' })}
-                                variant="outline"
-                            >
-                                <PawPrint className="h-5 w-5" />
-                                Дати смаколика
-                            </LinkButton>
-                            <ShareMenu
-                                path={buildAnimalHref(animal.id)}
-                                title={`${animal.name} шукає дім`}
-                                text={animal.description}
-                                label="Поширити в соціальних мережах"
-                                variant="button"
-                                className="self-stretch [&>button]:h-full!"
-                            />
-                            <LinkButton
-                                href={SITE_ROUTES.contacts}
-                                variant="outline"
-                            >
-                                Уточнити деталі <MessageCircleQuestionMark className="h-6 w-6" />
-                            </LinkButton>
-                        </div>
-                    </div>
-                    <div className="grid grid-cols-1 gap-4 md:grid-cols-[2.3fr_3fr] md:items-start">
-                        <div className="space-y-5">
-                            <AnimalPhotoStorySlider
-                                animal={animal}
-                                images={images}
-                                selectedIndex={selectedIndex}
-                                onSelect={setSelectedIndex}
-                            />
+  return (
+    <main className="min-h-screen overflow-hidden bg-[#f7f8f5] text-gray-950">
+      <section className="border-b border-gray-200 bg-white">
+        <div className="mx-auto flex max-w-336 flex-col gap-5 px-4 py-5 sm:px-6 lg:px-8">
+          <LinkButton
+            href={SITE_ROUTES.animals}
+            variant="ghost"
+            size="sm"
+            className="w-fit bg-gray-50"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            До каталогу
+          </LinkButton>
 
-                            <div className="mt-6 grid grid-cols-2 gap-3">
-                                {animal.character.map((trait, index) => (
-                                    <TraitChip key={trait} icon={index % 2 === 0 ? Zap : Heart}>
-                                        {trait}
-                                    </TraitChip>
-                                ))}
-                            </div>
-                            {/*<section className="overflow-hidden rounded-[28px] bg-[#f8f6f1] p-5">*/}
-                            {/*    <p></p>*/}
-                            {/*</section>*/}
-                        </div>
-
-                        <section className="min-w-0 p-1 sm:p-3 md:p-5 lg:p-6">
-                            <p className="text-xl font-black leading-tight tracking-normal text-[#111827] sm:text-2xl md:text-3xl">
-            <span className="rounded-xl px-2 box-decoration-clone">
-              {animal.description}
-            </span>
-                            </p>
-
-                            <div className="mt-8 grid grid-cols-2 gap-3 md:grid-cols-4">
-                                {infoCards.map((card) => (
-                                    <InfoCard
-                                        key={`${card.label}+++${card.value} + ${animal.slug}`}
-                                        icon={card.icon}
-                                        label={card.label}
-                                        value={card.value}
-                                        isActive={card.isActive}
-                                    />
-                                ))}
-                            </div>
-
-                            <LinkButton
-                                href={SITE_ROUTES.contacts}
-                                variant="primary"
-                                size="lg"
-                                className="w-full mt-4"
-                            >
-                                <Heart className="h-5 w-5 fill-white/20" />
-                                Стати вірним другом
-                            </LinkButton>
-
-                            <section className="mt-8 rounded-[28px] bg-[#f8f6f1] p-6">
-                                <p className="mb-2 text-sm font-black uppercase tracking-wider text-orange-500">
-                                    Повна історія
-                                </p>
-                                <div className="mt-5 space-y-4 text-lg leading-8 text-gray-600">
-                                    <p>{animal.fullStory || buildStory(animal)}</p>
-                                    <p>{animal.description}</p>
-                                </div>
-                            </section>
-                        </section>
-                    </div>
-                </SectionFrame>
-            </section>
-
-            {relatedAnimals.length > 0 && (
-                <section className="mx-auto mt-10 max-w-336 px-4 sm:px-6 lg:px-8">
-                    <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-                        <div>
-                            <p className="text-sm font-black uppercase tracking-[0.18em] text-orange-500">
-                                Вони також шукають дім
-                            </p>
-                            <h2 className="mt-2 text-3xl font-black tracking-normal text-gray-950">
-                                Познайомтесь ще з кількома хвостиками
-                            </h2>
-                        </div>
-                        <LinkButton
-                            href={SITE_ROUTES.animals}
-                            variant="outline"
-                            className="w-full sm:w-auto"
-                        >
-                            Весь каталог
-                        </LinkButton>
-                    </div>
-
-                    <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-                        {relatedAnimals.map((item) => (
-                            <RelatedAnimalCard key={item.id} animal={item} />
-                        ))}
-                    </div>
-                </section>
-            )}
-        </main>
-    )
-}
-
-function RelatedAnimalCard({ animal }: { animal: Animal }) {
-    return (
-        <Link
-            href={buildAnimalHref(animal.id)}
-            className="group flex items-center gap-4 rounded-3xl border border-gray-100 bg-white p-3 shadow-soft transition-all hover:-translate-y-1 hover:border-primary/30 hover:shadow-primary/20"
-        >
-            <div className="relative h-24 w-24 shrink-0 overflow-hidden rounded-2xl bg-gray-100">
-                <img
-                    src={animal.imageUrl}
-                    alt={animal.name}
-                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                    referrerPolicy="no-referrer"
-                />
-            </div>
-
-            <div className="min-w-0 flex-1">
-                <h3 className="truncate text-xl font-black text-gray-950">
-                    {animal.name}
-                </h3>
-                <p className="mt-1 text-sm font-bold text-gray-500">
-                    {animal.age} • {animal.stayDuration}
-                </p>
-                <span className="mt-3 inline-flex text-sm font-black text-primary transition-colors group-hover:text-secondary">
-          Переглянути
-        </span>
-            </div>
-        </Link>
-    )
-}
-
-function AnimalPhotoStorySlider({
-                                    animal,
-                                    images,
-                                    selectedIndex,
-                                    onSelect,
-                                }: {
-    animal: Animal
-    images: string[]
-    selectedIndex: number
-    onSelect: (index: number) => void
-}) {
-    const showPrevious = () => {
-        if (selectedIndex > 0) {
-            onSelect(selectedIndex - 1)
-        }
-    }
-
-    const showNext = () => {
-        if (selectedIndex < images.length - 1) {
-            onSelect(selectedIndex + 1)
-        }
-    }
-
-    return (
-        <section className="relative h-125 min-h-87.5 overflow-hidden rounded-[30px] bg-zinc-900 shadow-[0_24px_70px_-52px_rgba(15,23,42,0.95)]">
-            <div className="absolute left-0 right-0 top-4 z-30 flex gap-1.5 px-4">
-                {images.map((_, idx) => (
-                    <button
-                        key={idx}
-                        type="button"
-                        onClick={() => onSelect(idx)}
-                        className="h-1.5 flex-1 cursor-pointer overflow-hidden rounded-full bg-white/20"
-                        aria-label={`Показати фото ${idx + 1}`}
-                        aria-pressed={idx === selectedIndex}
-                    >
-            <span
-                className="block h-full bg-white transition-all duration-300"
-                style={{
-                    width: idx <= selectedIndex ? '100%' : '0%',
-                }}
+          <div className="grid gap-5 lg:grid-cols-[minmax(0,1.08fr)_minmax(360px,0.92fr)] lg:items-stretch">
+            <PhotoJournal
+              animal={animal}
+              images={images}
+              selectedIndex={selectedIndex}
+              onSelect={setSelectedIndex}
             />
-                    </button>
-                ))}
-            </div>
 
-            <AnimatePresence mode="wait">
-                <motion.div
-                    key={selectedIndex}
-                    initial={{ opacity: 0, scale: 1.05 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.95 }}
-                    transition={{ duration: 0.5 }}
-                    className="absolute inset-0 h-full w-full"
-                >
-                    <img
-                        src={images[selectedIndex] ?? animal.imageUrl}
-                        alt={`${animal.name} - фото ${selectedIndex + 1}`}
-                        className="h-full w-full object-cover brightness-95"
-                        referrerPolicy="no-referrer"
-                    />
-                    <div className="absolute inset-x-0 bottom-0 z-10 h-40 bg-gradient-to-t from-black/85 via-black/40 to-transparent" />
-                </motion.div>
-            </AnimatePresence>
+            <aside className={cn(surfaceClass, 'flex min-w-0 flex-col p-5 sm:p-6')}>
+              <div className="flex flex-wrap items-center gap-2">
+                <StatusBadge
+                  icon={BadgeCheck}
+                  label={profile.status}
+                  tone={animal.adoptionStatus === 'needs_care' ? 'orange' : 'green'}
+                />
+                <StatusBadge icon={Camera} label={`${images.length} фото`} tone="slate" />
+              </div>
 
-            <div className="pointer-events-none absolute left-6 right-6 top-12 z-20 flex items-center justify-between gap-3">
-        <span className="inline-flex items-center gap-2 rounded-full bg-white/90 px-3 py-1.5 text-xs font-extrabold text-emerald-700 shadow-sm backdrop-blur">
-          <BadgeCheck className="h-4 w-4" />
-            {animal.badge ?? getReadinessLabel(animal)}
-        </span>
-                <span className="flex h-11 w-11 items-center justify-center rounded-full bg-white/90 text-orange-500 shadow-sm backdrop-blur">
-          <PawPrint className="h-5 w-5" />
-        </span>
-            </div>
-
-            <div className="absolute left-3 top-1/2 z-30 -translate-y-1/2">
-                {selectedIndex > 0 && (
-                    <button
-                        type="button"
-                        onClick={showPrevious}
-                        className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border border-white/10 bg-black/40 text-white transition-all hover:bg-black/60"
-                        aria-label="Попереднє фото"
-                    >
-                        <ChevronLeft className="h-5 w-5 pointer-events-none" />
-                    </button>
-                )}
-            </div>
-
-            <div className="absolute right-3 top-1/2 z-30 -translate-y-1/2">
-                {selectedIndex < images.length - 1 && (
-                    <button
-                        type="button"
-                        onClick={showNext}
-                        className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border border-white/10 bg-black/40 text-white transition-all hover:bg-black/60"
-                        aria-label="Наступне фото"
-                    >
-                        <ChevronRight className="h-5 w-5 pointer-events-none" />
-                    </button>
-                )}
-            </div>
-
-            <div className="pointer-events-none absolute bottom-0 left-0 right-0 z-20 p-7 text-white sm:p-9">
-                <h1 className="text-6xl font-black leading-none tracking-normal text-white sm:text-7xl">
-                    {animal.name}
+              <div className="mt-5">
+                <p className="text-xs font-extrabold uppercase tracking-[0.16em] text-primary">
+                  Картка знайомства
+                </p>
+                <h1 className="mt-2 break-words text-4xl font-extrabold leading-tight text-gray-950 sm:text-5xl">
+                  {displayName}
                 </h1>
-                <div className="mt-4 flex flex-wrap gap-2">
-                    <MetaPill icon={VenusAndMars}>{animal.gender}</MetaPill>
-                    <MetaPill icon={CalendarDays}>{animal.age}</MetaPill>
+                <p className="mt-4 max-w-2xl break-words text-base font-semibold leading-7 text-gray-600">
+                  {profile.intro}
+                </p>
+              </div>
+
+              <div className="mt-5 space-y-3">
+                <SoftInfoPanel
+                  icon={PawPrint}
+                  title="Паспорт"
+                  tone="slate"
+                  items={[
+                    {icon: CalendarDays, label: 'Вік', value: animal.age},
+                    {icon: VenusAndMars, label: 'Стать', value: animal.gender},
+                    {icon: Ruler, label: 'Розмір', value: animal.size},
+                    {icon: MapPin, label: 'У центрі', value: animal.stayDuration},
+                  ]}
+                />
+                <SoftInfoPanel
+                  icon={ShieldCheck}
+                  title="Здоров'я"
+                  tone={animal.isVaccinated && animal.isNeutered ? 'green' : 'orange'}
+                  items={[
+                    {
+                      icon: Syringe,
+                      label: 'Вакцинація',
+                      value: animal.isVaccinated ? 'Проведена' : 'У плані',
+                    },
+                    {
+                      icon: ShieldCheck,
+                      label: profile.neuterLabel,
+                      value: animal.isNeutered ? 'Проведена' : 'Запланована',
+                    },
+                  ]}
+                />
+              </div>
+
+              <div className="mt-auto pt-5">
+                <LinkButton
+                  href={SITE_ROUTES.contacts}
+                  size="lg"
+                  className="h-14 w-full rounded-2xl text-base shadow-[0_18px_42px_rgba(242,116,56,0.22)]"
+                >
+                  <HeartHandshake className="h-5 w-5" />
+                  Познайомитись
+                </LinkButton>
+
+                <div className="mt-2 grid grid-cols-[1fr_1fr] gap-2">
+                  <ShareMenu
+                    path={buildAnimalHref(animal.id)}
+                    title={`${displayName} шукає родину`}
+                    text={profile.intro}
+                    label="Поширити"
+                    variant="button"
+                    className="[&>button]:h-10 [&>button]:rounded-2xl [&>button]:bg-gray-50 [&>button]:text-xs"
+                  />
+                  <LinkButton
+                    href={donationHref}
+                    variant="secondary"
+                    size="sm"
+                    className="h-10 rounded-2xl bg-gray-50 text-xs"
+                  >
+                    <Heart className="h-4 w-4" />
+                    Підтримати
+                  </LinkButton>
                 </div>
+                <LinkButton
+                  href={SITE_ROUTES.contacts}
+                  variant="ghost"
+                  size="sm"
+                  className="mt-2 h-9 w-full rounded-2xl text-xs"
+                >
+                  <MessageCircleQuestion className="h-4 w-4" />
+                  Запитати деталі
+                </LinkButton>
+              </div>
+            </aside>
+          </div>
+        </div>
+      </section>
+
+      <section className="mx-auto grid max-w-336 gap-4 px-4 py-8 sm:px-6 lg:grid-cols-[0.9fr_1.1fr] lg:px-8">
+        <IntroPanel title="Про характер" eyebrow="Коротко без зайвого" text={profile.story} />
+        <div className="grid gap-4 sm:grid-cols-2">
+          {profile.characterCards.slice(0, 2).map((item) => (
+            <InsightCard key={item.title} {...item} />
+          ))}
+        </div>
+      </section>
+
+      <section className="border-y border-gray-200 bg-white">
+        <div className="mx-auto max-w-336 px-4 py-8 sm:px-6 lg:px-8">
+          <SectionHeading
+            eyebrow="План знайомства"
+            title="Три прості кроки"
+            text={`Для ${displayName} важливо не поспішати: спершу коротка розмова, потім спокійна зустріч і вже після цього рішення.`}
+          />
+
+          <div className="mt-5 grid gap-3 md:grid-cols-3">
+            {profile.steps.slice(0, 3).map((step, index) => (
+              <StepCard key={step.title} index={index + 1} {...step} />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {relatedAnimals.length > 0 ? (
+        <section className="border-t border-gray-200 bg-white">
+          <div className="mx-auto max-w-336 px-4 py-8 sm:px-6 lg:px-8">
+            <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+              <SectionHeading
+                eyebrow="Ще кілька знайомств"
+                title="Схожі анкети"
+                text="Якщо серце ще вагається, подивіться на інших тварин, які теж чекають на свою людину."
+              />
+              <LinkButton href={SITE_ROUTES.animals} variant="secondary" className="w-full rounded-2xl sm:w-auto">
+                Всі тварини
+              </LinkButton>
             </div>
+
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {relatedAnimals.map((relatedAnimal, index) => (
+                <AnimalCard key={relatedAnimal.id} animal={relatedAnimal} index={index} />
+              ))}
+            </div>
+          </div>
         </section>
-    )
+      ) : null}
+    </main>
+  )
 }
 
-function buildStory(animal: Animal) {
-    return `${animal.name} перебуває під опікою центру. Команда краще зрозуміла характер, потреби та темп життя, щоб підібрати родину, якій буде комфортно поруч із ним.`
+function PhotoJournal({
+  animal,
+  images,
+  selectedIndex,
+  onSelect,
+}: {
+  animal: Animal
+  images: string[]
+  selectedIndex: number
+  onSelect: (index: number) => void
+}) {
+  const selectedImage = images[selectedIndex] ?? animal.imageUrl
+  const canGoBack = selectedIndex > 0
+  const canGoForward = selectedIndex < images.length - 1
+
+  return (
+    <section className={cn(surfaceClass, 'max-w-full overflow-hidden bg-gray-950')}>
+      <div className="relative aspect-[4/3] min-h-[320px] overflow-hidden sm:min-h-[480px] lg:h-full">
+        <AnimatePresence mode="wait">
+          <motion.img
+            key={selectedImage}
+            src={selectedImage}
+            alt={`${animal.name} - фото ${selectedIndex + 1}`}
+            referrerPolicy="no-referrer"
+            initial={{opacity: 0, scale: 1.03}}
+            animate={{opacity: 1, scale: 1}}
+            exit={{opacity: 0, scale: 0.98}}
+            transition={{duration: 0.35}}
+            className="absolute inset-0 h-full w-full object-cover"
+          />
+        </AnimatePresence>
+        <div className="absolute inset-0 bg-linear-to-t from-gray-950/70 via-gray-950/8 to-transparent" />
+
+        <div className="absolute left-4 right-4 top-4 flex gap-1.5">
+          {images.map((_, index) => (
+            <button
+              key={index}
+              type="button"
+              onClick={() => onSelect(index)}
+              className="h-1.5 flex-1 cursor-pointer rounded-full bg-white/35"
+              aria-label={`Показати фото ${index + 1}`}
+              aria-pressed={index === selectedIndex}
+            >
+              <span
+                className={cn(
+                  'block h-full rounded-full transition-colors',
+                  index === selectedIndex ? 'bg-white' : 'bg-transparent',
+                )}
+              />
+            </button>
+          ))}
+        </div>
+
+        <div className="absolute bottom-4 left-4 right-4 flex flex-wrap items-end justify-between gap-3">
+          <div className="max-w-xl">
+            <p className="inline-flex items-center gap-2 rounded-lg bg-white/92 px-3 py-1.5 text-xs font-extrabold text-secondary shadow-sm backdrop-blur">
+              <PawPrint className="h-4 w-4 text-primary" />
+              Жива історія, не суха анкета
+            </p>
+            <p className="mt-3 hidden max-w-lg text-sm font-semibold leading-6 text-white/82 sm:block">
+              Фото лишається головним акцентом сторінки: люди спершу дивляться в очі, а вже потім читають факти.
+            </p>
+          </div>
+
+          <div className="flex gap-2">
+            <SliderButton
+              icon={ChevronLeft}
+              label="Попереднє фото"
+              disabled={!canGoBack}
+              onClick={() => canGoBack && onSelect(selectedIndex - 1)}
+            />
+            <SliderButton
+              icon={ChevronRight}
+              label="Наступне фото"
+              disabled={!canGoForward}
+              onClick={() => canGoForward && onSelect(selectedIndex + 1)}
+            />
+          </div>
+        </div>
+      </div>
+    </section>
+  )
 }
 
-function getReadinessLabel(animal: Animal) {
-    return animal.isVaccinated && animal.isNeutered
-        ? 'Готовий до адопції'
-        : 'Потребує підготовки'
+function SliderButton({
+  icon: Icon,
+  label,
+  disabled,
+  onClick,
+}: {
+  icon: LucideIcon
+  label: string
+  disabled: boolean
+  onClick: () => void
+}) {
+  return (
+    <button
+      type="button"
+      className="flex h-10 w-10 items-center justify-center rounded-lg border border-white/20 bg-white/90 text-gray-950 shadow-sm transition hover:bg-white disabled:cursor-not-allowed disabled:opacity-40"
+      aria-label={label}
+      title={label}
+      disabled={disabled}
+      onClick={onClick}
+    >
+      <Icon className="h-5 w-5" />
+    </button>
+  )
+}
+
+function StatusBadge({
+  icon: Icon,
+  label,
+  tone,
+}: {
+  icon: LucideIcon
+  label: string
+  tone: Tone
+}) {
+  return (
+    <span
+      className={cn(
+        'inline-flex min-h-9 max-w-full items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-extrabold',
+        toneClasses(tone),
+      )}
+    >
+      <Icon className="h-4 w-4 shrink-0" />
+      <span className="truncate">{label}</span>
+    </span>
+  )
+}
+
+type InfoItem = {
+  icon: LucideIcon
+  label: string
+  value: string
+}
+
+function SoftInfoPanel({
+  icon: Icon,
+  title,
+  items,
+  tone,
+}: {
+  icon: LucideIcon
+  title: string
+  items: InfoItem[]
+  tone: Tone
+}) {
+  return (
+    <section className={cn('rounded-[24px] border p-4', toneClasses(tone))}>
+      <div className="flex items-center gap-2">
+        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-white/80 shadow-sm">
+          <Icon className="h-5 w-5" />
+        </span>
+        <h2 className="text-base font-extrabold">{title}</h2>
+      </div>
+
+      <div className="mt-4 flex flex-wrap gap-2">
+        {items.map((item) => {
+          const ItemIcon = item.icon
+
+          return (
+            <div
+              key={`${item.label}-${item.value}`}
+              className="flex min-w-0 flex-[1_1_138px] items-center gap-2 rounded-2xl bg-white/72 px-3 py-2 shadow-sm"
+            >
+              <ItemIcon className="h-4 w-4 shrink-0 opacity-70" />
+              <span className="min-w-0">
+                <span className="block text-[10px] font-extrabold uppercase tracking-wide opacity-55">
+                  {item.label}
+                </span>
+                <span className="block truncate text-sm font-extrabold">
+                  {item.value}
+                </span>
+              </span>
+            </div>
+          )
+        })}
+      </div>
+    </section>
+  )
+}
+
+function IntroPanel({
+  eyebrow,
+  title,
+  text,
+}: {
+  eyebrow: string
+  title: string
+  text: string
+}) {
+  return (
+    <article className={cn(surfaceClass, 'p-5 sm:p-6')}>
+      <p className="text-xs font-extrabold uppercase tracking-[0.16em] text-primary">
+        {eyebrow}
+      </p>
+      <h2 className="mt-2 text-2xl font-extrabold leading-tight text-gray-950 sm:text-3xl">
+        {title}
+      </h2>
+      <p className="mt-4 text-base font-semibold leading-7 text-gray-600">
+        {text}
+      </p>
+    </article>
+  )
+}
+
+function InsightCard({
+  icon: Icon,
+  title,
+  text,
+  tone,
+}: {
+  icon: LucideIcon
+  title: string
+  text: string
+  tone: Tone
+}) {
+  return (
+    <article className={cn(surfaceClass, 'p-4')}>
+      <span
+        className={cn(
+          'flex h-10 w-10 items-center justify-center rounded-2xl border',
+          toneClasses(tone),
+        )}
+      >
+        <Icon className="h-5 w-5" />
+      </span>
+      <h3 className="mt-4 text-lg font-extrabold leading-tight text-gray-950">
+        {title}
+      </h3>
+      <p className="mt-2 text-sm font-semibold leading-6 text-gray-600">
+        {text}
+      </p>
+    </article>
+  )
+}
+
+function SectionHeading({
+  eyebrow,
+  title,
+  text,
+}: {
+  eyebrow: string
+  title: string
+  text: string
+}) {
+  return (
+    <div className="max-w-2xl">
+      <p className="text-xs font-extrabold uppercase tracking-[0.16em] text-primary">
+        {eyebrow}
+      </p>
+      <h2 className="mt-2 text-2xl font-extrabold leading-tight text-gray-950 sm:text-3xl">
+        {title}
+      </h2>
+      <p className="mt-3 text-sm font-semibold leading-6 text-gray-600">
+        {text}
+      </p>
+    </div>
+  )
+}
+
+function StepCard({
+  icon: Icon,
+  title,
+  text,
+  index,
+}: {
+  icon: LucideIcon
+  title: string
+  text: string
+  index: number
+}) {
+  return (
+    <article className="rounded-[24px] border border-gray-200 bg-gray-50 p-4">
+      <div className="flex items-center justify-between gap-3">
+        <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-white text-primary shadow-sm">
+          <Icon className="h-5 w-5" />
+        </span>
+        <span className="text-xs font-black text-gray-300">0{index}</span>
+      </div>
+      <h3 className="mt-4 text-base font-extrabold text-gray-950">{title}</h3>
+      <p className="mt-2 text-sm font-semibold leading-6 text-gray-600">{text}</p>
+    </article>
+  )
+}
+
+function buildProfile(animal: Animal, displayName: string) {
+  const character = animal.character.filter(Boolean)
+  const firstTrait = character[0] ?? 'Лагідний контакт'
+  const secondTrait = character[1] ?? 'Спокійне знайомство'
+
+  return {
+    status: getCareStatus(animal),
+    neuterLabel: animal.gender === 'Самець' ? 'Кастрація' : 'Стерилізація',
+    intro:
+      trimToSentence(animal.description, 190) ||
+      `${displayName} чекає на людину, яка готова знайомитися спокійно, уважно і без поспіху.`,
+    story:
+      trimToSentence(animal.fullStory || animal.description, 360) ||
+      `${displayName} вже має свій маленький ритм у центрі: придивляється до людей, радіє увазі й поступово вчиться довіряти. Найкращий старт для знайомства - тиха розмова, трохи терпіння і відчуття безпеки.`,
+    characterCards: [
+      {
+        icon: Sparkles,
+        title: firstTrait,
+        text: `${displayName} не потребує гучних обіцянок. Достатньо спокійної уваги, стабільності й доброго першого контакту.`,
+        tone: 'orange' as Tone,
+      },
+      {
+        icon: Heart,
+        title: secondTrait,
+        text: 'Найкраще знайомство проходить без поспіху: коротка зустріч, прогулянка або розмова з командою центру.',
+        tone: 'green' as Tone,
+      },
+    ],
+    steps: [
+      {
+        icon: MessageCircleQuestion,
+        title: 'Розмова',
+        text: 'Розкажіть про умови, досвід і очікування від нового друга.',
+      },
+      {
+        icon: PawPrint,
+        title: 'Знайомство',
+        text: 'Команда підкаже темп, поведінку і перший безпечний контакт.',
+      },
+      {
+        icon: ShieldCheck,
+        title: 'Підготовка',
+        text: 'Уточнюємо здоров’я, документи, догляд і базові рекомендації.',
+      },
+      {
+        icon: Home,
+        title: 'Переїзд',
+        text: 'Перші дні проходять у тиші, стабільності й без перевантаження.',
+      },
+    ],
+  }
+}
+
+function getCareStatus(animal: Animal) {
+  if (animal.adoptionStatus === 'needs_care') return 'Потребує турботи'
+  if (animal.adoptionStatus === 'ready') return 'Готовий до знайомства'
+  if (animal.isVaccinated && animal.isNeutered) return 'Можна знайомитись'
+
+  return 'Очікує родину'
+}
+
+function trimToSentence(value: string | undefined, limit: number) {
+  const text = value?.replace(/\s+/g, ' ').trim()
+
+  if (!text) return ''
+  if (text.length <= limit) return text
+
+  return `${text.slice(0, limit).replace(/[,\s]+$/g, '')}...`
+}
+
+function toneClasses(tone: Tone) {
+  return {
+    orange: 'border-orange-200 bg-orange-50 text-orange-800',
+    green: 'border-emerald-200 bg-emerald-50 text-emerald-800',
+    sky: 'border-sky-200 bg-sky-50 text-sky-800',
+    slate: 'border-gray-200 bg-gray-50 text-gray-700',
+  }[tone]
 }

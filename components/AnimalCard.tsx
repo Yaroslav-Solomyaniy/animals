@@ -4,19 +4,23 @@ import Link from 'next/link'
 import {
   ArrowRight,
   BadgeCheck,
+  CalendarHeart,
   Clock3,
-  Dog,
   PawPrint,
   Ruler,
+  Scissors,
+  ShieldCheck,
   Sparkles,
   VenusAndMars,
 } from 'lucide-react'
-import type { LucideIcon } from 'lucide-react'
-import { motion } from 'motion/react'
-import { LinkButton } from '@/components/ui/Button'
-import { buildDonateHref } from '@/lib/donate-search-params'
-import { buildAnimalHref } from '@/lib/site-config'
-import type { Animal } from '@/types'
+import type {LucideIcon} from 'lucide-react'
+import type {ReactNode} from 'react'
+import {motion} from 'motion/react'
+
+import {LinkButton} from '@/components/ui/Button'
+import {buildDonateHref} from '@/lib/donate-search-params'
+import {buildAnimalHref} from '@/lib/site-config'
+import type {Animal} from '@/types'
 
 type AnimalCardProps = {
   animal: Animal
@@ -31,19 +35,19 @@ export default function AnimalCard({
   detailsHref,
   index = 0,
 }: AnimalCardProps) {
-  const treatHref = buildDonateHref({ animalId: animal.id, gift: 'treat' })
+  const treatHref = buildDonateHref({animalId: animal.id, gift: 'treat'})
   const primaryHref = detailsHref ?? buildAnimalHref(animal.id)
 
   return (
     <motion.article
-      initial={{ opacity: 0, y: 18, rotate: -0.6 }}
-      animate={{ opacity: 1, y: 0, rotate: 0 }}
-      transition={{ duration: 0.45, delay: index * 0.03 }}
-      className={`group relative flex min-w-0 flex-col overflow-hidden rounded-3xl border border-gray-100 bg-white shadow-[0_22px_60px_-42px_rgba(31,41,55,0.52)] transition-all duration-500 md:hover:-translate-y-1 md:hover:border-primary/30 ${className}`}
+      initial={{opacity: 0, y: 18}}
+      animate={{opacity: 1, y: 0}}
+      transition={{duration: 0.42, delay: index * 0.03, ease: [0.22, 1, 0.36, 1]}}
+      className={`group relative flex min-w-0 flex-col overflow-hidden rounded-[28px] border border-gray-100 bg-white shadow-[0_22px_70px_-46px_rgba(15,23,42,0.62)] transition-all duration-500 md:hover:-translate-y-1 md:hover:border-primary/30 ${className}`}
     >
       <Link
         href={primaryHref}
-        className="relative block aspect-[1.12] overflow-hidden bg-gray-100"
+        className="relative block aspect-[10/11] overflow-hidden bg-gray-100 sm:aspect-[9/11]"
         aria-label={`Відкрити деталі для ${animal.name}`}
       >
         <img
@@ -53,66 +57,61 @@ export default function AnimalCard({
           referrerPolicy="no-referrer"
         />
 
+        <div className="absolute inset-0 bg-gradient-to-t from-gray-950/82 via-gray-950/18 to-transparent" />
+
         <div className="absolute top-4 right-4 left-4 flex items-start justify-between gap-3">
-          {animal.badge && (
-            <span className="max-w-[calc(100%-3rem)] rounded-full bg-white/95 px-3 py-1 text-[10px] font-extrabold tracking-wider text-orange-600 uppercase shadow-sm backdrop-blur">
+          {animal.badge ? (
+            <span className="max-w-[calc(100%-3.25rem)] rounded-full bg-white/95 px-3 py-1.5 text-[10px] font-extrabold tracking-wide text-primary uppercase shadow-sm backdrop-blur">
               {animal.badge}
             </span>
+          ) : (
+            <span aria-hidden="true" />
           )}
-          <span className="storybook-spark ml-auto inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-white/95 text-primary shadow-soft backdrop-blur">
-            <Sparkles className="h-4 w-4" />
+          <span className="ml-auto inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-white/95 text-primary shadow-soft backdrop-blur transition-colors group-hover:bg-primary group-hover:text-white">
+            <Sparkles className="h-4.5 w-4.5" />
           </span>
         </div>
 
-        <div className="pointer-events-none absolute right-0 bottom-0 left-0 h-3/4 bg-gradient-to-t from-gray-950/82 via-gray-950/28 to-transparent" />
-
-        <div className="absolute right-4 bottom-4 left-4 flex items-end justify-between gap-3">
-          <div className="min-w-0">
-            <h3 className="truncate text-3xl font-extrabold text-white">
-              {animal.name}
-            </h3>
-            <p className="mt-1 text-xs font-bold text-white/80">
-              {animal.age}
-            </p>
-          </div>
-
-          <span className="storybook-card-icon inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-white/95 text-primary shadow-lg backdrop-blur transition-colors group-hover:bg-primary group-hover:text-white">
-            <Dog className="h-5 w-5" />
-          </span>
+        <div className="absolute right-5 bottom-13 left-5">
+          <p className="mb-2 inline-flex items-center gap-1.5 rounded-full bg-white/16 px-3 py-1 text-[11px] font-extrabold text-white backdrop-blur">
+            <CalendarHeart className="h-3.5 w-3.5 text-orange-200" />
+            Анкета тварини
+          </p>
+          <h3 className="truncate text-3xl leading-none font-black text-white sm:text-[34px]">
+            {animal.name}
+          </h3>
         </div>
       </Link>
 
-      <div className="flex flex-1 flex-col p-4 sm:p-5">
-        <p className="mb-4 min-h-19 overflow-hidden text-sm leading-6 text-gray-500 [display:-webkit-box] [-webkit-box-orient:vertical] [-webkit-line-clamp:3]">
-          {animal.description}
-        </p>
+      <div className="relative z-10 -mt-7 flex flex-1 flex-col rounded-t-[26px] bg-white px-3.5 pt-4 pb-3.5 shadow-[0_-22px_50px_-36px_rgba(15,23,42,0.72)] sm:px-4 sm:pt-4.5 sm:pb-4">
+        <div className="mb-3 h-1 w-10 rounded-full bg-gray-200" aria-hidden="true" />
 
-        <div className="grid grid-cols-2 gap-2 text-[11px] font-bold text-gray-500">
-          <InfoPill icon={VenusAndMars} className="col-span-2">
-            {animal.gender}
-          </InfoPill>
-          <InfoPill icon={Ruler}>{animal.size}</InfoPill>
-          <InfoPill icon={Clock3}>{animal.stayDuration}</InfoPill>
+        <div className="grid grid-cols-2 gap-1.5">
+          <FactTile icon={VenusAndMars} label="Стать" value={animal.gender} />
+          <FactTile icon={Ruler} label="Розмір" value={animal.size} />
+          <FactTile icon={Clock3} label="Вік" value={animal.age} className="col-span-2" />
         </div>
 
-        <div className="mt-4 flex flex-wrap gap-2 border-t border-gray-100 pt-4">
-          <StatusPill isReady={animal.isVaccinated}>
-            {animal.isVaccinated
-              ? getVaccinationLabel(animal.gender)
-              : 'Щеплення уточнюється'}
-          </StatusPill>
-          <StatusPill isReady={animal.isNeutered}>
-            {animal.isNeutered
-              ? getNeuterLabel(animal.gender)
-              : getNeuterPendingLabel(animal.gender)}
-          </StatusPill>
+        <div className="mt-3 grid grid-cols-2 gap-1.5 border-t border-gray-100 pt-3">
+          <CareStatus
+            icon={ShieldCheck}
+            isReady={animal.isVaccinated}
+            label="Щеплення"
+            value={animal.isVaccinated ? 'Присутнє' : 'Відсутнє'}
+          />
+          <CareStatus
+            icon={animal.isNeutered ? BadgeCheck : Scissors}
+            isReady={animal.isNeutered}
+            label={getNeuterActionLabel(animal.gender)}
+            value={animal.isNeutered ? 'Проведена' : 'Заплановано'}
+          />
         </div>
 
-        <div className="mt-auto flex gap-2 pt-5">
+        <div className="mt-auto flex gap-2 pt-4">
           <LinkButton
             href={primaryHref}
             variant="dark"
-            className="h-12 flex-1 text-sm"
+            className="h-11 flex-1 rounded-xl text-sm"
           >
             Деталі
             <ArrowRight className="h-4 w-4" />
@@ -121,11 +120,11 @@ export default function AnimalCard({
             href={treatHref}
             variant="outline"
             size="icon"
-            className="h-12 w-12 shrink-0"
+            className="h-11 w-11 shrink-0 rounded-xl"
             aria-label={`Дати смаколик для ${animal.name}`}
             title="Дати смаколик"
           >
-            <PawPrint className="h-5 w-5" />
+            <PawPrint className="h-4.5 w-4.5" />
           </LinkButton>
         </div>
       </div>
@@ -133,58 +132,79 @@ export default function AnimalCard({
   )
 }
 
-function getVaccinationLabel(gender: Animal['gender']) {
-  return gender === 'Самець' ? 'Щеплений' : 'Щеплена'
+function getNeuterActionLabel(gender: Animal['gender']) {
+  return gender === 'Самець' ? 'Кастрація' : 'Стерилізація'
 }
 
-function getNeuterLabel(gender: Animal['gender']) {
-  return gender === 'Самець' ? 'Кастрований' : 'Стерилізована'
-}
-
-function getNeuterPendingLabel(gender: Animal['gender']) {
-  return gender === 'Самець'
-    ? 'Кастрація в плані'
-    : 'Стерилізація в плані'
-}
-
-function InfoPill({
+function FactTile({
   icon: Icon,
+  label,
+  value,
   className,
-  children,
 }: {
   icon: LucideIcon
+  label: string
+  value: string
   className?: string
-  children: React.ReactNode
 }) {
   return (
-    <span
+    <div
       className={[
-        'flex min-h-10 items-center gap-1.5 rounded-xl bg-neutral-base px-2.5 py-2',
+        'flex min-h-12 min-w-0 items-center gap-2.5 rounded-xl border border-gray-100 bg-gray-50/80 px-2.5 py-2',
         className ?? '',
       ].join(' ')}
     >
-      <Icon className="h-3.5 w-3.5 shrink-0 text-secondary" />
-      <span className="min-w-0 truncate">{children}</span>
-    </span>
+      <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-white text-secondary shadow-sm">
+        <Icon className="h-4 w-4" />
+      </span>
+      <span className="min-w-0">
+        <span className="block text-[9px] leading-none font-black tracking-wide text-gray-400 uppercase">
+          {label}
+        </span>
+        <span className="mt-1 block truncate text-[13px] leading-4 font-extrabold text-gray-700">
+          {value}
+        </span>
+      </span>
+    </div>
   )
 }
 
-function StatusPill({
+function CareStatus({
+  icon: Icon,
   isReady,
-  children,
+  label,
+  value,
 }: {
+  icon: LucideIcon
   isReady: boolean
-  children: React.ReactNode
+  label: string
+  value: ReactNode
 }) {
   return (
-    <span
+    <div
       className={[
-        'inline-flex min-h-8 items-center gap-1.5 rounded-full px-3 py-1 text-[11px] font-extrabold',
-        isReady ? 'bg-[#F1FFF8] text-secondary' : 'bg-orange-50 text-primary',
+        'flex min-h-13 min-w-0 items-center gap-2 rounded-xl border px-2 py-2',
+        isReady
+          ? 'border-emerald-100 bg-emerald-50 text-emerald-800'
+          : 'border-orange-100 bg-orange-50 text-orange-700',
       ].join(' ')}
     >
-      <BadgeCheck className="h-3.5 w-3.5" />
-      {children}
-    </span>
+      <span
+        className={[
+          'flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-white shadow-sm',
+          isReady ? 'text-secondary' : 'text-primary',
+        ].join(' ')}
+      >
+        <Icon className="h-3.5 w-3.5" />
+      </span>
+      <span className="min-w-0 flex-1">
+        <span className="block truncate text-[8.5px] leading-none font-black tracking-wide uppercase opacity-70">
+          {label}
+        </span>
+        <span className="mt-1 block truncate text-[12px] leading-4 font-extrabold">
+          {value}
+        </span>
+      </span>
+    </div>
   )
 }
