@@ -36,7 +36,7 @@ export async function getPublicAnimals( pagination: PaginationRange = {from: 0, 
     }
 
     if (filters?.care && filters.care !== 'all') {
-        query = query.eq('care', filters.care)
+        query = query.eq('adoption_status', filters.care)
     }
 
     if (filters?.q) {
