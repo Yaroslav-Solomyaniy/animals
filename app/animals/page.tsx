@@ -32,5 +32,11 @@ export default async function AnimalsPage({ searchParams }: Props) {
 
   const totalPages = Math.max(1, Math.ceil(count / ANIMALS_PAGE_ITEMS_LIMIT),)
 
-  return <AnimalsCatalogClient animals={animals}  pagination={{currentPage, totalPages}} />
+  return (
+    <AnimalsCatalogClient
+      animals={animals}
+      foundCount={count}
+      pagination={{currentPage, totalPages}}
+    />
+  )
 }

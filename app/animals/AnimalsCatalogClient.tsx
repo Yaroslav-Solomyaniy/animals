@@ -1,35 +1,21 @@
 'use client'
 
 import type {LucideIcon} from 'lucide-react'
-import {ArrowLeft, ArrowRight, Bone, BookOpen, Dog, PawPrint, Search, Sparkles,} from 'lucide-react'
+import {ArrowLeft, ArrowRight, BookOpen, Search, Sparkles,} from 'lucide-react'
 import PageHero from '@/components/ui/PageHero'
 import SectionFrame from '@/components/ui/SectionFrame'
 import StorybookDecorations from '@/components/ui/StorybookDecorations'
 import {Button} from '@/components/ui/Button'
 import type {Animal} from '@/types'
 import AnimalsFilter from "@/app/animals/_components/animalsFilter";
+import AnimalsHeroFriend from "@/app/animals/_components/animalsHeroFriend";
 import AnimalCard from "@/components/AnimalCard";
 import type {FC} from "react";
 import {useAnimalUrlFilters} from "@/hooks/useAnimalUrlFilters";
 
-
-const EMPTY_FEATURED_ANIMAL: Animal = {
-    id: 'empty',
-    name: 'Наші хвостики',
-    age: 'Чекають на знайомство',
-    gender: 'Самець',
-    size: 'Середній',
-    stayDuration: 'Анкета активна',
-    badge: 'Каталог оновлюється',
-    imageUrl: '/dog.png',
-    character: ['Шукає родину'],
-    adoptionStatus: null,
-    isVaccinated: false,
-    isNeutered: false,
-    description: 'У каталозі скоро зʼявляться тварини, які шукають дім.',
-}
 interface Props{
     animals: Animal[];
+    foundCount: number;
     pagination: {
         currentPage: number;
         totalPages: number;
@@ -37,8 +23,8 @@ interface Props{
 
 }
 
-export const AnimalsCatalogClient:FC<Props> = ({animals, pagination}) => {
-    const {filters, updateFilter}  = useAnimalUrlFilters()
+export const AnimalsCatalogClient:FC<Props> = ({animals, foundCount, pagination}) => {
+    const {updateFilter, resetFilters} = useAnimalUrlFilters()
 
     return (
         <main className="storybook-bg min-h-screen overflow-hidden text-text-main">
@@ -49,45 +35,13 @@ export const AnimalsCatalogClient:FC<Props> = ({animals, pagination}) => {
                 description="Кожна анкета тут як маленька казка: з фото, історією, турботою і шансом знайти свій дім."
                 icon={BookOpen}
             >
-                <div className="orange-neon relative overflow-hidden rounded-3xl bg-gray-950">
-                    <img
-                        src={animals[4].imageUrl}
-                        alt={animals[4].name}
-                        className="h-90 w-full object-cover opacity-75"
-                        referrerPolicy="no-referrer"
-                    />
-                    <div className="absolute inset-0 bg-linear-to-t from-gray-950 via-gray-950/20 to-transparent"/>
-                    <DecorativeIcon
-                        icon={PawPrint}
-                        className="left-7 top-8 text-primary-second"
-                    />
-                    <DecorativeIcon
-                        icon={Bone}
-                        className="right-8 top-10 text-white"
-                        delayClass="[animation-delay:700ms]"
-                    />
-                    <DecorativeIcon
-                        icon={Dog}
-                        className="bottom-24 right-16 text-primary"
-                        delayClass="[animation-delay:1000ms]"
-                    />
-                    <div className="absolute bottom-6 left-6 right-6">
-            <span
-                className="inline-flex items-center gap-2 rounded-full bg-white/90 px-3 py-1 text-xs font-extrabold text-text-main backdrop-blur">
-              <Sparkles className="h-3.5 w-3.5 text-primary"/>
-              Герой сторінки
-            </span>
-                        <h2 className="mt-3 text-4xl font-black text-white">
-                            {animals[4].name}
-                        </h2>
-                        <p className="mt-2 max-w-md text-sm leading-6 text-white/75">
-                            {animals[4].description}
-                        </p>
-                    </div>
-                </div>
+                <AnimalsHeroFriend />
             </PageHero>
 
-            <section className="relative z-20 mx-auto -mt-10 max-w-336 px-4 pb-12 sm:px-6 lg:px-8">
+            <section
+                id="animals-catalog"
+                className="relative z-20 mx-auto -mt-10 max-w-336 scroll-mt-24 px-4 pb-12 sm:px-6 lg:px-8"
+            >
                 <SectionFrame className="rounded-[28px] border-gray-100 p-4 sm:p-5">
                     <div className="relative flex flex-col gap-4">
                         <AnimalsFilter/>
@@ -182,7 +136,7 @@ export const AnimalsCatalogClient:FC<Props> = ({animals, pagination}) => {
                     <div>
                         <p className="inline-flex items-center gap-2 rounded-full bg-orange-50 px-3 py-1 text-xs font-extrabold uppercase tracking-wider text-primary">
                             <Sparkles className="h-3.5 w-3.5"/>
-                            Знайдено {animals.length}
+                            Знайдено {foundCount}
                         </p>
                         <h2 className="mt-3 text-4xl font-extrabold text-text-main">
                             Розділ пригод
@@ -204,8 +158,7 @@ export const AnimalsCatalogClient:FC<Props> = ({animals, pagination}) => {
                 </div>
 
                 {animals.length === 0 ? (
-                    <EmptyState onReset={() => console.log('reset')} />
-                    // onReset={() => resetFilters}
+                    <EmptyState onReset={resetFilters} />
                 ) : (
                     <>
                         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -228,22 +181,6 @@ export const AnimalsCatalogClient:FC<Props> = ({animals, pagination}) => {
                 )}
             </section>
         </main>
-    )
-}
-
-function DecorativeIcon({icon: Icon,
-                            className,
-                            delayClass = '',}: {
-    icon: LucideIcon
-    className: string
-    delayClass?: string
-}) {
-    return (
-        <span
-            className={`storybook-float pointer-events-none absolute hidden h-14 w-14 items-center justify-center rounded-2xl border border-white/15 bg-white/10 backdrop-blur md:flex ${className} ${delayClass}`}
-        >
-      <Icon className="h-7 w-7"/>
-    </span>
     )
 }
 

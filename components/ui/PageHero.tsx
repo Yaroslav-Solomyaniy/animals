@@ -38,7 +38,7 @@ export default function PageHero({eyebrow,
           'relative mx-auto max-w-336',
           isCentered
             ? 'text-center'
-            : 'grid items-center gap-12 lg:grid-cols-[0.92fr_1.08fr]',
+            : 'grid items-center gap-14 lg:grid-cols-[0.92fr_1.08fr]',
         ].join(' ')}
       >
         <div className={isCentered ? 'mx-auto max-w-4xl' : 'max-w-3xl'}>
