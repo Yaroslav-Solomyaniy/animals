@@ -164,13 +164,11 @@ function useMobileDetection() {
   return isMobile
 }
 
-function GlobalSpotlight({
-  gridRef,
+function GlobalSpotlight({gridRef,
   disableAnimations = false,
   enabled = true,
   spotlightRadius = DEFAULT_SPOTLIGHT_RADIUS,
-  glowColor = DEFAULT_GLOW_COLOR,
-}: {
+  glowColor = DEFAULT_GLOW_COLOR,}: {
   gridRef: React.RefObject<HTMLDivElement | null>
   disableAnimations?: boolean
   enabled?: boolean
@@ -180,7 +178,7 @@ function GlobalSpotlight({
   const spotlightRef = useRef<HTMLDivElement | null>(null)
 
   useEffect(() => {
-    if (disableAnimations || !gridRef.current || !enabled) return
+    if (disableAnimations || !gridRef.current || !enabled) {return}
 
     const spotlight = document.createElement('div')
     spotlight.style.cssText = `
@@ -204,7 +202,7 @@ function GlobalSpotlight({
     spotlightRef.current = spotlight
 
     const handleMouseMove = (event: MouseEvent) => {
-      if (!spotlightRef.current || !gridRef.current) return
+      if (!spotlightRef.current || !gridRef.current) {return}
 
       const section = gridRef.current.closest('.magic-bento-section')
       const rect = section?.getBoundingClientRect()
@@ -286,16 +284,14 @@ function GlobalSpotlight({
   return null
 }
 
-function ParticleCard({
-  card,
+function ParticleCard({card,
   shouldDisableAnimations,
   particleCount,
   glowColor,
   enableStars,
   enableTilt,
   clickEffect,
-  enableMagnetism,
-}: {
+  enableMagnetism,}: {
   card: BentoCard
   shouldDisableAnimations: boolean
   particleCount: number
@@ -328,13 +324,13 @@ function ParticleCard({
   }, [])
 
   const animateParticles = useCallback(() => {
-    if (!cardRef.current || !isHoveredRef.current || !enableStars) return
+    if (!cardRef.current || !isHoveredRef.current || !enableStars) {return}
 
     const { width, height } = cardRef.current.getBoundingClientRect()
 
     Array.from({ length: particleCount }).forEach((_, index) => {
       const timeoutId = window.setTimeout(() => {
-        if (!isHoveredRef.current || !cardRef.current) return
+        if (!isHoveredRef.current || !cardRef.current) {return}
 
         const particle = createParticleElement(
           Math.random() * width,
@@ -366,7 +362,7 @@ function ParticleCard({
 
   useEffect(() => {
     const element = cardRef.current
-    if (!element || shouldDisableAnimations) return
+    if (!element || shouldDisableAnimations) {return}
 
     const handleMouseEnter = () => {
       isHoveredRef.current = true
@@ -414,7 +410,7 @@ function ParticleCard({
     }
 
     const handleClick = (event: MouseEvent) => {
-      if (!clickEffect) return
+      if (!clickEffect) {return}
 
       const rect = element.getBoundingClientRect()
       const x = event.clientX - rect.left
@@ -533,8 +529,7 @@ function ParticleCard({
   )
 }
 
-export default function MagicBento({
-  disableAnimations = false,
+export default function MagicBento({disableAnimations = false,
   enableSpotlight = true,
   enableStars = true,
   enableTilt = true,
@@ -542,8 +537,7 @@ export default function MagicBento({
   clickEffect = true,
   particleCount = DEFAULT_PARTICLE_COUNT,
   spotlightRadius = DEFAULT_SPOTLIGHT_RADIUS,
-  glowColor = DEFAULT_GLOW_COLOR,
-}: MagicBentoProps) {
+  glowColor = DEFAULT_GLOW_COLOR,}: MagicBentoProps) {
   const gridRef = useRef<HTMLDivElement>(null)
   const isMobile = useMobileDetection()
   const shouldDisableAnimations = disableAnimations || isMobile

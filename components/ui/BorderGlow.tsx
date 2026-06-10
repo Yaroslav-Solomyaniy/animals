@@ -27,7 +27,7 @@ interface BorderGlowProps {
 
 function parseHSL(hslStr: string): { h: number; s: number; l: number } {
   const match = hslStr.match(/([\d.]+)\s*([\d.]+)%?\s*([\d.]+)%?/)
-  if (!match) return { h: 40, s: 80, l: 80 }
+  if (!match) {return { h: 40, s: 80, l: 80 }}
   return {
     h: parseFloat(match[1]),
     s: parseFloat(match[2]),
@@ -78,22 +78,20 @@ interface AnimateOpts {
   onEnd?: () => void
 }
 
-function animateValue({
-  start = 0,
+function animateValue({start = 0,
   end = 100,
   duration = 1000,
   delay = 0,
   ease = easeOutCubic,
   onUpdate,
-  onEnd,
-}: AnimateOpts) {
+  onEnd,}: AnimateOpts) {
   const t0 = performance.now() + delay
   function tick() {
     const elapsed = performance.now() - t0
     const t = Math.min(elapsed / duration, 1)
     onUpdate(start + (end - start) * ease(t))
-    if (t < 1) requestAnimationFrame(tick)
-    else if (onEnd) onEnd()
+    if (t < 1) {requestAnimationFrame(tick)}
+    else if (onEnd) {onEnd()}
   }
   setTimeout(() => requestAnimationFrame(tick), delay)
 }
@@ -121,8 +119,7 @@ function buildMeshGradients(colors: string[]): string[] {
   return gradients
 }
 
-export default function BorderGlow({
-  children,
+export default function BorderGlow({children,
   className = '',
   edgeSensitivity = 34,
   glowColor = '24 95 62',
@@ -133,8 +130,7 @@ export default function BorderGlow({
   coneSpread = 25,
   animated = false,
   colors = ['#fb923c', '#34d399', '#38bdf8'],
-  fillOpacity = 0.14,
-}: BorderGlowProps) {
+  fillOpacity = 0.14,}: BorderGlowProps) {
   const cardRef = useRef<HTMLDivElement>(null)
   const [isHovered, setIsHovered] = useState(false)
   const [cursorAngle, setCursorAngle] = useState(45)
@@ -153,8 +149,8 @@ export default function BorderGlow({
       const dy = y - cy
       let kx = Infinity
       let ky = Infinity
-      if (dx !== 0) kx = cx / Math.abs(dx)
-      if (dy !== 0) ky = cy / Math.abs(dy)
+      if (dx !== 0) {kx = cx / Math.abs(dx)}
+      if (dy !== 0) {ky = cy / Math.abs(dy)}
       return Math.min(Math.max(1 / Math.min(kx, ky), 0), 1)
     },
     [getCenterOfElement],
@@ -165,10 +161,10 @@ export default function BorderGlow({
       const [cx, cy] = getCenterOfElement(el)
       const dx = x - cx
       const dy = y - cy
-      if (dx === 0 && dy === 0) return 0
+      if (dx === 0 && dy === 0) {return 0}
       const radians = Math.atan2(dy, dx)
       let degrees = radians * (180 / Math.PI) + 90
-      if (degrees < 0) degrees += 360
+      if (degrees < 0) {degrees += 360}
       return degrees
     },
     [getCenterOfElement],
@@ -177,7 +173,7 @@ export default function BorderGlow({
   const handlePointerMove = useCallback(
     (e: PointerEvent<HTMLDivElement>) => {
       const card = cardRef.current
-      if (!card) return
+      if (!card) {return}
       const rect = card.getBoundingClientRect()
       const x = e.clientX - rect.left
       const y = e.clientY - rect.top
@@ -188,7 +184,7 @@ export default function BorderGlow({
   )
 
   useEffect(() => {
-    if (!animated) return
+    if (!animated) {return}
     const angleStart = 110
     const angleEnd = 465
 

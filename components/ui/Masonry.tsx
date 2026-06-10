@@ -11,7 +11,7 @@ const useMedia = (
   defaultValue: number,
 ): number => {
   const get = () => {
-    if (!canUseDOM) return defaultValue
+    if (!canUseDOM) {return defaultValue}
 
     const index = queries.findIndex((q) => window.matchMedia(q).matches)
     return values[index] ?? defaultValue
@@ -20,7 +20,7 @@ const useMedia = (
   const [value, setValue] = useState<number>(get)
 
   useEffect(() => {
-    if (!canUseDOM) return
+    if (!canUseDOM) {return}
 
     const handler = () => setValue(get)
     const mediaQueries = queries.map((q) => window.matchMedia(q))
@@ -40,7 +40,7 @@ const useMeasure = <T extends HTMLElement>() => {
   const [size, setSize] = useState({ width: 0, height: 0 })
 
   useLayoutEffect(() => {
-    if (!ref.current || !canUseDOM) return
+    if (!ref.current || !canUseDOM) {return}
 
     const ro = new ResizeObserver(([entry]) => {
       const { width, height } = entry.contentRect
@@ -55,7 +55,7 @@ const useMeasure = <T extends HTMLElement>() => {
 }
 
 const preloadImages = async (urls: Array<string>): Promise<void> => {
-  if (!canUseDOM) return
+  if (!canUseDOM) {return}
 
   await Promise.all(
     urls.map(
@@ -103,8 +103,7 @@ interface MasonryProps {
   colorShiftOnHover?: boolean
 }
 
-export default function Masonry({
-  items,
+export default function Masonry({items,
   columns: fixedColumns,
   maxColumns,
   autoScroll = false,
@@ -116,8 +115,7 @@ export default function Masonry({
   scaleOnHover = true,
   hoverScale = 0.95,
   blurToFocus = true,
-  colorShiftOnHover = false,
-}: MasonryProps) {
+  colorShiftOnHover = false,}: MasonryProps) {
   const queries = useMemo(
     () => [
       '(min-width:1500px)',
@@ -137,7 +135,7 @@ export default function Masonry({
 
   const getInitialPosition = (item: GridItem) => {
     const containerRect = containerRef.current?.getBoundingClientRect()
-    if (!containerRect || !canUseDOM) return { x: item.x, y: item.y }
+    if (!containerRect || !canUseDOM) {return { x: item.x, y: item.y }}
 
     let direction = animateFrom
     if (animateFrom === 'random') {
@@ -171,7 +169,7 @@ export default function Masonry({
   }, [items])
 
   const grid = useMemo<Array<GridItem>>(() => {
-    if (!width) return []
+    if (!width) {return []}
 
     const colHeights = new Array(columns).fill(0)
     const gap = 16
@@ -190,7 +188,7 @@ export default function Masonry({
   }, [columns, items, width])
 
   const contentHeight = useMemo(() => {
-    if (!grid.length) return 0
+    if (!grid.length) {return 0}
 
     return Math.max(...grid.map((item) => item.y + item.h)) + 16
   }, [grid])
@@ -198,7 +196,7 @@ export default function Masonry({
   const renderGrid = useMemo<Array<RenderGridItem>>(() => {
     const primary = grid.map((item) => ({ ...item, renderKey: item.id }))
 
-    if (!autoScroll || !contentHeight) return primary
+    if (!autoScroll || !contentHeight) {return primary}
 
     return [
       ...primary,
@@ -213,7 +211,7 @@ export default function Masonry({
   const hasMounted = useRef(false)
 
   useLayoutEffect(() => {
-    if (!imagesReady) return
+    if (!imagesReady) {return}
 
     renderGrid.forEach((item, index) => {
       const selector = `[data-key="${item.renderKey}"]`
@@ -290,7 +288,7 @@ export default function Masonry({
 
     if (colorShiftOnHover) {
       const overlay = element.querySelector('.color-overlay') as HTMLElement
-      if (overlay) gsap.to(overlay, { opacity: 0.3, duration: 0.3 })
+      if (overlay) {gsap.to(overlay, { opacity: 0.3, duration: 0.3 })}
     }
   }
 
@@ -305,7 +303,7 @@ export default function Masonry({
 
     if (colorShiftOnHover) {
       const overlay = element.querySelector('.color-overlay') as HTMLElement
-      if (overlay) gsap.to(overlay, { opacity: 0, duration: 0.3 })
+      if (overlay) {gsap.to(overlay, { opacity: 0, duration: 0.3 })}
     }
   }
 

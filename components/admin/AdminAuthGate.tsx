@@ -16,13 +16,11 @@ export function AdminAuthGate({ children }: { children: React.ReactNode }) {
     let mounted = true
 
     supabase.auth.getSession().then(({ data }: { data: { session: Session | null } }) => {
-      if (!mounted) return
+      if (!mounted) {return}
       setSessionState(data.session ? 'authorized' : 'unauthorized')
     })
 
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event: AuthChangeEvent, session: Session | null) => {
+    const {data: { subscription },} = supabase.auth.onAuthStateChange((_event: AuthChangeEvent, session: Session | null) => {
       setSessionState(session ? 'authorized' : 'unauthorized')
     })
 

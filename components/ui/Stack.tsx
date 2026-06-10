@@ -123,16 +123,16 @@ export default function Stack({ items, className, cardClassName }: StackProps) {
               }
             }}
             onKeyDown={(event) => {
-              if (event.key === 'ArrowRight') showNext()
-              if (event.key === 'ArrowLeft') showPrevious()
+              if (event.key === 'ArrowRight') {showNext()}
+              if (event.key === 'ArrowLeft') {showPrevious()}
             }}
             drag={isTop ? 'x' : false}
             dragConstraints={{ left: 0, right: 0 }}
             dragElastic={0.28}
             onDragEnd={(_, info) => {
               if (Math.abs(info.offset.x) > 80) {
-                if (info.offset.x > 0) showNext()
-                else showPrevious()
+                if (info.offset.x > 0) {showNext()}
+                else {showPrevious()}
               }
             }}
             initial={false}

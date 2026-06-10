@@ -9,7 +9,7 @@ export default async function EditReportPage(props: PageProps<'/admin/reports/[i
   const { id } = await props.params
   const supabase = await createClient()
   const { data, error } = await supabase.from('reports').select('*').eq('id', id).single()
-  if (error || !data) notFound()
+  if (error || !data) {notFound()}
 
   return (
     <AdminAuthGate>

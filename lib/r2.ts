@@ -117,7 +117,7 @@ function createR2PresignedUrl({ key, bucket, method = 'PUT', expiresIn = 300 }: 
 }
 
 function requiredEnv(value: string | undefined, name: string) {
-  if (!value) throw new Error(`${name} is not configured`)
+  if (!value) {throw new Error(`${name} is not configured`)}
   return value
 }
 

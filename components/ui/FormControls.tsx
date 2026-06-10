@@ -34,16 +34,14 @@ type SelectOption = {
   disabled: boolean
 }
 
-export function Select({
-  className,
+export function Select({className,
   children,
   value,
   defaultValue,
   onChange,
   disabled,
   name,
-  ...props
-}: SelectHTMLAttributes<HTMLSelectElement>) {
+  ...props}: SelectHTMLAttributes<HTMLSelectElement>) {
   const options = useMemo(() => extractOptions(children), [children])
   const initialValue = String(value ?? defaultValue ?? options[0]?.value ?? '')
   const [internalValue, setInternalValue] = useState(initialValue)
@@ -138,10 +136,8 @@ export function Select({
   )
 }
 
-export function Textarea({
-  className,
-  ...props
-}: TextareaHTMLAttributes<HTMLTextAreaElement>) {
+export function Textarea({className,
+  ...props}: TextareaHTMLAttributes<HTMLTextAreaElement>) {
   return <textarea className={cn(fieldClass, 'min-h-32 resize-none', className)} {...props} />
 }
 

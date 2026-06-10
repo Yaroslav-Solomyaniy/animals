@@ -1,9 +1,7 @@
-export default function AdminPageHeader({
-  eyebrow,
+export default function AdminPageHeader({eyebrow,
   title,
   description,
-  actions,
-}: {
+  actions,}: {
   eyebrow: string
   title: string
   description: string

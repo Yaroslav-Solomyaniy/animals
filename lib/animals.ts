@@ -3,7 +3,7 @@ import 'server-only'
 import type {Animal} from '@/types'
 import type {AnimalPhotoRow, AnimalRow} from '@/lib/admin-types'
 import {createClient} from '@/lib/supabase/server'
-import {AnimalFilters} from "@/lib/animal-filter-parsers";
+import type {AnimalFilters} from "@/lib/animal-filter-parsers";
 
 const fallbackAnimalImage = '/dog.png'
 const fallbackAnimalName = "Ім'я відсутнє"
@@ -194,8 +194,8 @@ function mapAnimalRow(row: AnimalRow, photos: AnimalPhotoRow[]): Animal {
 }
 
 function getAdoptionStatusLabel(status: AnimalRow['adoption_status']) {
-    if (status === 'ready') return 'Готовий до адопції'
-    if (status === 'needs_care') return 'Потребує турботи'
+    if (status === 'ready') {return 'Готовий до адопції'}
+    if (status === 'needs_care') {return 'Потребує турботи'}
     return null
 }
 
@@ -204,13 +204,13 @@ function mapGender(gender: AnimalRow['gender']): Animal['gender'] {
 }
 
 function mapSize(size: AnimalRow['size']): Animal['size'] {
-    if (size === 'small') return 'Малий'
-    if (size === 'large') return 'Великий'
+    if (size === 'small') {return 'Малий'}
+    if (size === 'large') {return 'Великий'}
     return 'Середній'
 }
 
 function getCatalogDuration(date: string | null) {
-    if (!date) return 'Анкета активна'
+    if (!date) {return 'Анкета активна'}
 
     const publicationDate = new Date(date)
     const now = new Date()
@@ -221,15 +221,15 @@ function getCatalogDuration(date: string | null) {
 
     const days = Math.max(0, Math.floor((now.getTime() - publicationDate.getTime()) / 86_400_000))
 
-    if (days < 1) return 'Опубліковано сьогодні'
+    if (days < 1) {return 'Опубліковано сьогодні'}
 
-    if (days < 7) return formatCount(days, ['день', 'дні', 'днів'])
+    if (days < 7) {return formatCount(days, ['день', 'дні', 'днів'])}
 
     const weeks = Math.floor(days / 7)
-    if (weeks < 5) return formatCount(weeks, ['тиждень', 'тижні', 'тижнів'])
+    if (weeks < 5) {return formatCount(weeks, ['тиждень', 'тижні', 'тижнів'])}
 
     const months = Math.max(1, monthDiff(publicationDate, now))
-    if (months < 12) return formatCount(months, ['місяць', 'місяці', 'місяців'])
+    if (months < 12) {return formatCount(months, ['місяць', 'місяці', 'місяців'])}
 
     const years = Math.floor(months / 12)
     return formatCount(years, ['рік', 'роки', 'років'])
@@ -250,8 +250,8 @@ function formatCount(value: number, forms: [string, string, string]) {
     const lastTwo = absolute % 100
     const last = absolute % 10
 
-    if (lastTwo > 10 && lastTwo < 20) return `${value} ${forms[2]}`
-    if (last === 1) return `${value} ${forms[0]}`
-    if (last >= 2 && last <= 4) return `${value} ${forms[1]}`
+    if (lastTwo > 10 && lastTwo < 20) {return `${value} ${forms[2]}`}
+    if (last === 1) {return `${value} ${forms[0]}`}
+    if (last >= 2 && last <= 4) {return `${value} ${forms[1]}`}
     return `${value} ${forms[2]}`
 }

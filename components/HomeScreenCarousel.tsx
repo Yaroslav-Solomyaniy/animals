@@ -19,9 +19,6 @@ import WelcomeCarousel from "@/components/WelcomeCarousel";
 
 export default function HomeScreenCarousel() {
 
-
-
-
   return (
     <section
 

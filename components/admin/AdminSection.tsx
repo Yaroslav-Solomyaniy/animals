@@ -10,14 +10,12 @@ type AdminSectionProps = {
   className?: string
 }
 
-export function AdminSection({
-  id,
+export function AdminSection({id,
   eyebrow,
   title,
   description,
   children,
-  className,
-}: AdminSectionProps) {
+  className,}: AdminSectionProps) {
   return (
     <section
       id={id}

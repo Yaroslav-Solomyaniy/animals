@@ -1,8 +1,6 @@
 import { AlertCircle } from 'lucide-react'
 
-export default function AdminNotice({
-  children,
-}: {
+export default function AdminNotice({children,}: {
   children: React.ReactNode
 }) {
   return (

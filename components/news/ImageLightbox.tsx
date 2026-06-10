@@ -17,11 +17,9 @@ type ImageLightboxProps = {
   children: (open: () => void) => ReactNode
 }
 
-export default function ImageLightbox({
-  images,
+export default function ImageLightbox({images,
   initialIndex = 0,
-  children,
-}: ImageLightboxProps) {
+  children,}: ImageLightboxProps) {
   const [activeIndex, setActiveIndex] = useState<number | null>(null)
   const activeImage = activeIndex === null ? null : images[activeIndex]
   const hasManyImages = images.length > 1
@@ -154,13 +152,11 @@ export default function ImageLightbox({
   )
 }
 
-export function LightboxImage({
-  image,
+export function LightboxImage({image,
   images,
   index = 0,
   buttonClassName = '',
-  imageClassName = '',
-}: {
+  imageClassName = '',}: {
   image: LightboxImageItem
   images?: LightboxImageItem[]
   index?: number

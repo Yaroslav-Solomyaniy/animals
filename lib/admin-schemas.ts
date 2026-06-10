@@ -1,7 +1,7 @@
 import { z } from 'zod'
 
 const emptyStringToNull = (value: unknown) => {
-  if (typeof value !== 'string') return value ?? null
+  if (typeof value !== 'string') {return value ?? null}
   const trimmed = value.trim()
   return trimmed === '' ? null : trimmed
 }
@@ -12,14 +12,14 @@ const nullableText = z
 const checkbox = z.preprocess((value) => value === 'on' || value === true, z.boolean())
 const adoptionStatus = z
   .preprocess((value) => {
-    if (value === 'ready' || value === 'needs_care') return value
+    if (value === 'ready' || value === 'needs_care') {return value}
     return null
   }, z.enum(['ready', 'needs_care']).nullable())
   .default(null)
 const textList = z
   .preprocess((value) => {
-    if (Array.isArray(value)) return value
-    if (typeof value !== 'string') return []
+    if (Array.isArray(value)) {return value}
+    if (typeof value !== 'string') {return []}
 
     return value
       .split(/\r?\n/)

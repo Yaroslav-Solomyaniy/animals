@@ -6,15 +6,13 @@ import { Button } from '@/components/ui/Button'
 import AdminNotice from '@/components/admin/AdminNotice'
 import { cn } from '@/lib/utils'
 
-export function EntityForm({
-  status = '',
+export function EntityForm({status = '',
   pending = false,
   submitLabel,
   onSubmit,
   action,
   formProps,
-  children,
-}: {
+  children,}: {
   status?: string
   pending?: boolean
   submitLabel: string
@@ -40,11 +38,9 @@ export function EntityForm({
   )
 }
 
-export function Field({
-  label,
+export function Field({label,
   errors,
-  children,
-}: {
+  children,}: {
   label: string
   errors?: string[]
   children: ReactNode
@@ -60,11 +56,9 @@ export function Field({
   )
 }
 
-export function Checkbox({
-  label,
+export function Checkbox({label,
   checked,
-  onChange,
-}: {
+  onChange,}: {
   label: string
   checked: boolean
   onChange: (checked: boolean) => void
@@ -80,13 +74,11 @@ export function Checkbox({
   )
 }
 
-export function IconTool({
-  label,
+export function IconTool({label,
   children,
   onClick,
   disabled,
-  danger,
-}: {
+  danger,}: {
   label: string
   children: ReactNode
   onClick: () => void
@@ -119,15 +111,15 @@ export function SmallAddButton({ children, onClick }: { children: ReactNode; onC
 }
 
 export function toDatetimeLocal(value: string | null | undefined) {
-  if (!value) return ''
+  if (!value) {return ''}
   const date = new Date(value)
-  if (Number.isNaN(date.getTime())) return ''
+  if (Number.isNaN(date.getTime())) {return ''}
   const offset = date.getTimezoneOffset()
   const local = new Date(date.getTime() - offset * 60000)
   return local.toISOString().slice(0, 16)
 }
 
 export function emptyToNull(value: string | null | undefined) {
-  if (value == null) return null
+  if (value == null) {return null}
   return value.trim() === '' ? null : value
 }

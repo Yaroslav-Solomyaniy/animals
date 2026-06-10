@@ -1,4 +1,4 @@
-import { StylesConfig } from 'react-select'
+import type { StylesConfig } from 'react-select'
 
 export function buildSelectStyles<Option>(isActive = false): StylesConfig<Option> {
     return {

@@ -1,8 +1,7 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {ArrowRight, CalendarHeart, ChevronLeft, ChevronRight,
-    LucideIcon, Newspaper, Pause, PawPrint, Phone, Play,
-    Stethoscope
-} from "lucide-react";
+import type {LucideIcon} from "lucide-react";
+import {ArrowRight, CalendarHeart, ChevronLeft, ChevronRight, Newspaper, Pause, PawPrint, Phone, Play,
+    Stethoscope} from "lucide-react";
 import {SITE_ROUTES} from "@/lib/site-config";
 import {LinkButton} from "@/components/ui/Button";
 import Image from "next/image";

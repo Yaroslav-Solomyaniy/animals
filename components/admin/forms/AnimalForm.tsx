@@ -98,10 +98,8 @@ export function AnimalForm({ initial, mode }: { initial?: AnimalRow; mode: 'crea
   )
 }
 
-function ConformCheckbox({
-  label,
-  inputProps,
-}: {
+function ConformCheckbox({label,
+  inputProps,}: {
   label: string
   inputProps: ComponentProps<'input'>
 }) {

@@ -6,11 +6,9 @@ type PuppyAnimationProps = {
   ariaLabel?: string
 }
 
-export default function PuppyAnimation({
-  className,
+export default function PuppyAnimation({className,
   size = 'md',
-  ariaLabel = 'Puppy animation',
-}: PuppyAnimationProps) {
+  ariaLabel = 'Puppy animation',}: PuppyAnimationProps) {
   return (
     <LottieAnimation
       src="/animation/puppy.lottie"

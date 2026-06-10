@@ -51,8 +51,7 @@ interface BorderBeamProps {
   borderWidth?: number
 }
 
-export const BorderBeam = ({
-  className,
+export const BorderBeam = ({className,
   size = 50,
   delay = 0,
   duration = 6,
@@ -62,8 +61,7 @@ export const BorderBeam = ({
   style,
   reverse = false,
   initialOffset = 0,
-  borderWidth = 1,
-}: BorderBeamProps) => {
+  borderWidth = 1,}: BorderBeamProps) => {
   return (
     <div
       className="pointer-events-none absolute inset-0 rounded-[inherit] border-(length:--border-beam-width) border-transparent mask-[linear-gradient(transparent,transparent),linear-gradient(#000,#000)] mask-intersect [mask-clip:padding-box,border-box]"

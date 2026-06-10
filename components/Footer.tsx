@@ -222,7 +222,7 @@ export default function Footer() {
 }
 
 function formatFooterNewsDate(value: string | null) {
-  if (!value) return 'Без дати'
+  if (!value) {return 'Без дати'}
   const date = new Date(value)
 
   if (Number.isNaN(date.getTime())) {
@@ -236,11 +236,9 @@ function formatFooterNewsDate(value: string | null) {
   }).format(date)
 }
 
-function FooterSection({
-  title,
+function FooterSection({title,
   icon: Icon,
-  children,
-}: {
+  children,}: {
   title: string
   icon: LucideIcon
   children: ReactNode
@@ -273,12 +271,10 @@ function FooterLink({ href, children }: { href: string; children: ReactNode }) {
   )
 }
 
-function FooterContact({
-  href,
+function FooterContact({href,
   icon: Icon,
   children,
-  external = false,
-}: {
+  external = false,}: {
   href: string
   icon: LucideIcon
   children: ReactNode

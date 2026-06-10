@@ -32,11 +32,9 @@ type DonateAnimal = {
   imageUrl: string
 }
 
-export function DonateClient({
-  animal,
+export function DonateClient({animal,
   gift,
-  initialAmount,
-}: {
+  initialAmount,}: {
   animal: DonateAnimal | null
   gift: string
   initialAmount: string
@@ -271,12 +269,10 @@ export function DonateClient({
   )
 }
 
-function RequisiteLine({
-  label,
+function RequisiteLine({label,
   value,
   copied,
-  onCopy,
-}: {
+  onCopy,}: {
   label: string
   value: string
   copied: string
@@ -301,18 +297,16 @@ function normalizeAmount(value: string) {
   return Number.isFinite(amount) && amount > 0 ? String(amount) : ''
 }
 
-function getPaymentHref({
-  amount,
+function getPaymentHref({amount,
   animalId,
   comment,
-  currency,
-}: {
+  currency,}: {
   amount: string
   animalId?: string
   comment: string
   currency: string
 }) {
-  if (!DONATION_PAYMENT_URL) return ''
+  if (!DONATION_PAYMENT_URL) {return ''}
 
   const url = new URL(DONATION_PAYMENT_URL)
   url.searchParams.set('amount', amount)
@@ -334,11 +328,9 @@ function InfoChip({ children }: { children: React.ReactNode }) {
   )
 }
 
-function SupportItem({
-  icon: Icon,
+function SupportItem({icon: Icon,
   title,
-  text,
-}: {
+  text,}: {
   icon: LucideIcon
   title: string
   text: string

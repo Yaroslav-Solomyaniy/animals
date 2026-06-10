@@ -247,10 +247,10 @@ async function getUniqueAnimalSlug(
       .map((animal) => animal.slug)
   )
 
-  if (!used.has(baseSlug)) return baseSlug
+  if (!used.has(baseSlug)) {return baseSlug}
 
   let index = 2
-  while (used.has(`${baseSlug}-${index}`)) index += 1
+  while (used.has(`${baseSlug}-${index}`)) {index += 1}
   return `${baseSlug}-${index}`
 }
 

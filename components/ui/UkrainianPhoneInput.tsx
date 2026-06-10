@@ -9,24 +9,22 @@ type UkrainianPhoneInputProps = Omit<
   'type' | 'value'
 >
 
-export default function UkrainianPhoneInput({
-  defaultValue,
+export default function UkrainianPhoneInput({defaultValue,
   onBlur,
   onChange,
   onFocus,
   placeholder = '+380 (__) ___-__-__',
-  ...props
-}: UkrainianPhoneInputProps) {
+  ...props}: UkrainianPhoneInputProps) {
   const [phone, setPhone] = useState(String(defaultValue ?? ''))
 
   function handleFocus(event: FocusEvent<HTMLInputElement>) {
     onFocus?.(event)
-    if (!phone) setPhone('+380 ')
+    if (!phone) {setPhone('+380 ')}
   }
 
   function handleBlur(event: FocusEvent<HTMLInputElement>) {
     onBlur?.(event)
-    if (!getUkrainianPhoneNationalDigits(phone)) setPhone('')
+    if (!getUkrainianPhoneNationalDigits(phone)) {setPhone('')}
   }
 
   return (
@@ -50,10 +48,10 @@ export default function UkrainianPhoneInput({
 function getUkrainianPhoneNationalDigits(value: string) {
   const digits = value.replace(/\D/g, '')
 
-  if (!digits) return ''
-  if (digits.startsWith('380')) return digits.slice(3, 12)
-  if (digits.startsWith('80')) return digits.slice(2, 11)
-  if (digits.startsWith('0')) return digits.slice(1, 10)
+  if (!digits) {return ''}
+  if (digits.startsWith('380')) {return digits.slice(3, 12)}
+  if (digits.startsWith('80')) {return digits.slice(2, 11)}
+  if (digits.startsWith('0')) {return digits.slice(1, 10)}
 
   return digits.slice(0, 9)
 }
@@ -65,14 +63,14 @@ function formatUkrainianPhone(value: string) {
   const second = nationalDigits.slice(5, 7)
   const third = nationalDigits.slice(7, 9)
 
-  if (!nationalDigits) return ''
+  if (!nationalDigits) {return ''}
 
   let formatted = '+380'
-  if (operator) formatted += ` (${operator}`
-  if (operator.length === 2) formatted += ')'
-  if (first) formatted += ` ${first}`
-  if (second) formatted += `-${second}`
-  if (third) formatted += `-${third}`
+  if (operator) {formatted += ` (${operator}`}
+  if (operator.length === 2) {formatted += ')'}
+  if (first) {formatted += ` ${first}`}
+  if (second) {formatted += `-${second}`}
+  if (third) {formatted += `-${third}`}
 
   return formatted
 }

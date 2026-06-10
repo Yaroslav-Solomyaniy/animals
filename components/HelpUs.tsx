@@ -291,12 +291,10 @@ const VolunteerForm = () => {
     )
 }
 
-function VolunteerSuccessModal({
-    open,
+function VolunteerSuccessModal({open,
     emailSent,
     message,
-    onClose,
-}: {
+    onClose,}: {
     open: boolean
     emailSent: boolean
     message?: string

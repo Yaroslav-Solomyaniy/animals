@@ -225,9 +225,7 @@ function BackLink() {
   )
 }
 
-function RelatedAnimalPreview({
-  relatedAnimal,
-}: {
+function RelatedAnimalPreview({relatedAnimal,}: {
   relatedAnimal:
     | {
         id: string
@@ -445,11 +443,9 @@ function getBlockHeightClass(height: NewsContentBlock['height']) {
   }
 }
 
-function InfoLine({
-  icon: Icon,
+function InfoLine({icon: Icon,
   label,
-  value,
-}: {
+  value,}: {
   icon: typeof Calendar
   label: string
   value: string

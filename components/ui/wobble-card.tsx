@@ -4,16 +4,14 @@ import { motion } from 'motion/react'
 import { cn } from '@/lib/utils'
 import { BorderBeam } from '@/components/ui/border-beam'
 
-export const WobbleCard = ({
-  children,
+export const WobbleCard = ({children,
   containerClassName,
   className,
   beamColorFrom = '#f97316',
   beamColorTo = '#10b981',
   beamDelay = 0,
   beamDuration = 7,
-  beamSize = 180,
-}: {
+  beamSize = 180,}: {
   children: React.ReactNode
   containerClassName?: string
   className?: string

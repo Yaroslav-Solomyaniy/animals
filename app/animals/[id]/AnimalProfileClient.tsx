@@ -42,11 +42,9 @@ type Tone = 'orange' | 'green' | 'sky' | 'slate'
 const surfaceClass =
   'rounded-[26px] border border-gray-200 bg-white shadow-[0_16px_48px_rgba(15,23,42,0.06)]'
 
-export default function AnimalProfileClient({
-  animal,
+export default function AnimalProfileClient({animal,
   galleryImages,
-  relatedAnimals,
-}: AnimalProfileClientProps) {
+  relatedAnimals,}: AnimalProfileClientProps) {
   const images = useMemo(
     () => Array.from(new Set([animal.imageUrl, ...galleryImages].filter(Boolean))).slice(0, 6),
     [animal.imageUrl, galleryImages],
@@ -226,12 +224,10 @@ export default function AnimalProfileClient({
   )
 }
 
-function PhotoJournal({
-  animal,
+function PhotoJournal({animal,
   images,
   selectedIndex,
-  onSelect,
-}: {
+  onSelect,}: {
   animal: Animal
   images: string[]
   selectedIndex: number
@@ -310,12 +306,10 @@ function PhotoJournal({
   )
 }
 
-function SliderButton({
-  icon: Icon,
+function SliderButton({icon: Icon,
   label,
   disabled,
-  onClick,
-}: {
+  onClick,}: {
   icon: LucideIcon
   label: string
   disabled: boolean
@@ -335,11 +329,9 @@ function SliderButton({
   )
 }
 
-function StatusBadge({
-  icon: Icon,
+function StatusBadge({icon: Icon,
   label,
-  tone,
-}: {
+  tone,}: {
   icon: LucideIcon
   label: string
   tone: Tone
@@ -363,12 +355,10 @@ type InfoItem = {
   value: string
 }
 
-function SoftInfoPanel({
-  icon: Icon,
+function SoftInfoPanel({icon: Icon,
   title,
   items,
-  tone,
-}: {
+  tone,}: {
   icon: LucideIcon
   title: string
   items: InfoItem[]
@@ -409,11 +399,9 @@ function SoftInfoPanel({
   )
 }
 
-function IntroPanel({
-  eyebrow,
+function IntroPanel({eyebrow,
   title,
-  text,
-}: {
+  text,}: {
   eyebrow: string
   title: string
   text: string
@@ -433,12 +421,10 @@ function IntroPanel({
   )
 }
 
-function InsightCard({
-  icon: Icon,
+function InsightCard({icon: Icon,
   title,
   text,
-  tone,
-}: {
+  tone,}: {
   icon: LucideIcon
   title: string
   text: string
@@ -464,11 +450,9 @@ function InsightCard({
   )
 }
 
-function SectionHeading({
-  eyebrow,
+function SectionHeading({eyebrow,
   title,
-  text,
-}: {
+  text,}: {
   eyebrow: string
   title: string
   text: string
@@ -488,12 +472,10 @@ function SectionHeading({
   )
 }
 
-function StepCard({
-  icon: Icon,
+function StepCard({icon: Icon,
   title,
   text,
-  index,
-}: {
+  index,}: {
   icon: LucideIcon
   title: string
   text: string
@@ -567,9 +549,9 @@ function buildProfile(animal: Animal, displayName: string) {
 }
 
 function getCareStatus(animal: Animal) {
-  if (animal.adoptionStatus === 'needs_care') return 'Потребує турботи'
-  if (animal.adoptionStatus === 'ready') return 'Готовий до знайомства'
-  if (animal.isVaccinated && animal.isNeutered) return 'Можна знайомитись'
+  if (animal.adoptionStatus === 'needs_care') {return 'Потребує турботи'}
+  if (animal.adoptionStatus === 'ready') {return 'Готовий до знайомства'}
+  if (animal.isVaccinated && animal.isNeutered) {return 'Можна знайомитись'}
 
   return 'Очікує родину'
 }
@@ -577,8 +559,8 @@ function getCareStatus(animal: Animal) {
 function trimToSentence(value: string | undefined, limit: number) {
   const text = value?.replace(/\s+/g, ' ').trim()
 
-  if (!text) return ''
-  if (text.length <= limit) return text
+  if (!text) {return ''}
+  if (text.length <= limit) {return text}
 
   return `${text.slice(0, limit).replace(/[,\s]+$/g, '')}...`
 }

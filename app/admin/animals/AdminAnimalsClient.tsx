@@ -66,13 +66,11 @@ const sortOptions: Array<{ value: AdminAnimalSort; label: string }> = [
   { value: 'name', label: 'Імʼя' },
 ]
 
-export default function AdminAnimalsClient({
-  animals,
+export default function AdminAnimalsClient({animals,
   totalCount,
   animalError,
   photosError,
-  filters,
-}: Props) {
+  filters,}: Props) {
   const hasFilters = hasAdminAnimalFilters(filters)
 
   return (
@@ -213,11 +211,9 @@ function AdminAnimalCard({ animal }: { animal: AdminAnimalCardData }) {
   )
 }
 
-function FilterSelect({
-  name,
+function FilterSelect({name,
   value,
-  options,
-}: {
+  options,}: {
   name: string
   value: string
   options: Array<{ value: string; label: string }>
@@ -320,7 +316,7 @@ function getAdoptionStatusLabel(status: NonNullable<AnimalRow['adoption_status']
 }
 
 function formatDate(value: string | null) {
-  if (!value) return 'Не вказано'
+  if (!value) {return 'Не вказано'}
   return new Intl.DateTimeFormat('uk-UA', {
     day: '2-digit',
     month: '2-digit',

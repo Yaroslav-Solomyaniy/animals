@@ -18,13 +18,11 @@ import { cn } from '@/lib/utils'
 
 type Step = 'details' | 'photos' | 'publish'
 
-export default function AnimalCreateModal({
-  initialAnimal,
+export default function AnimalCreateModal({initialAnimal,
   initialPhotos = [],
   initialStep = 'details',
   triggerLabel = 'Додати тварину',
-  triggerDisabled = false,
-}: {
+  triggerDisabled = false,}: {
   initialAnimal?: AnimalRow
   initialPhotos?: AnimalPhotoRow[]
   initialStep?: Step
@@ -77,7 +75,7 @@ export default function AnimalCreateModal({
     setPhotos([])
     setStatus('')
     setIsUploading(false)
-    if (fileInputRef.current) fileInputRef.current.value = ''
+    if (fileInputRef.current) {fileInputRef.current.value = ''}
   }
 
   function saveDetails(formData: FormData) {
@@ -152,7 +150,7 @@ export default function AnimalCreateModal({
   }
 
   async function uploadPhotos(files: FileList | null) {
-    if (!animalId || !files?.length) return
+    if (!animalId || !files?.length) {return}
     setStatus('')
     setIsUploading(true)
 
@@ -205,14 +203,14 @@ export default function AnimalCreateModal({
       }
     } finally {
       setIsUploading(false)
-      if (fileInputRef.current) fileInputRef.current.value = ''
+      if (fileInputRef.current) {fileInputRef.current.value = ''}
     }
 
     router.refresh()
   }
 
   function setMainPhoto(photoId: string) {
-    if (!animalId) return
+    if (!animalId) {return}
     setStatus('')
     startTransition(async () => {
       const result = await setMainAnimalPhotoAction(animalId, photoId)
@@ -233,7 +231,7 @@ export default function AnimalCreateModal({
   }
 
   function deletePhoto(photoId: string) {
-    if (!animalId) return
+    if (!animalId) {return}
     setStatus('')
     startTransition(async () => {
       const result = await deleteAnimalPhotoAction(animalId, photoId)
@@ -261,7 +259,7 @@ export default function AnimalCreateModal({
   }
 
   function publish() {
-    if (!animalId) return
+    if (!animalId) {return}
     setStatus('')
     const formData = new FormData()
     formData.set('animalId', animalId)
@@ -280,7 +278,7 @@ export default function AnimalCreateModal({
   }
 
   function savePublicationState(nextStatus: AnimalRow['status']) {
-    if (!animalId) return
+    if (!animalId) {return}
     setStatus('')
 
     const nextDetails = {
@@ -555,13 +553,11 @@ export default function AnimalCreateModal({
   )
 }
 
-function StepTab({
-  active,
+function StepTab({active,
   done,
   disabled = false,
   onClick,
-  children,
-}: {
+  children,}: {
   active: boolean
   done: boolean
   disabled?: boolean
@@ -584,13 +580,11 @@ function StepTab({
   )
 }
 
-function CheckboxField({
-  name,
+function CheckboxField({name,
   label,
   checked,
   onChange,
-  className,
-}: {
+  className,}: {
   name: string
   label: string
   checked: boolean
@@ -669,8 +663,8 @@ function getAnimalFormData(details: AnimalDetails) {
   formData.set('adoption_status', details.adoption_status ?? '')
   formData.set('published_at', details.published_at)
 
-  if (details.is_vaccinated) formData.set('is_vaccinated', 'on')
-  if (details.is_neutered) formData.set('is_neutered', 'on')
+  if (details.is_vaccinated) {formData.set('is_vaccinated', 'on')}
+  if (details.is_neutered) {formData.set('is_neutered', 'on')}
 
   return formData
 }
@@ -715,9 +709,9 @@ function getStatusLabel(status: AnimalRow['status']) {
 }
 
 function getPublicationStatusCopy(status: AnimalRow['status'], hasPublication: boolean) {
-  if (status === 'draft') return 'Чернетка не показується в публічному каталозі.'
-  if (status === 'available') return hasPublication ? 'Тварина доступна в публічному каталозі.' : 'Після збереження тварина буде доступна в каталозі.'
-  if (status === 'reserved') return 'Тварина має резерв і не повинна виглядати як вільна до адопції.'
-  if (status === 'adopted') return 'Тварину вже прилаштовано.'
+  if (status === 'draft') {return 'Чернетка не показується в публічному каталозі.'}
+  if (status === 'available') {return hasPublication ? 'Тварина доступна в публічному каталозі.' : 'Після збереження тварина буде доступна в каталозі.'}
+  if (status === 'reserved') {return 'Тварина має резерв і не повинна виглядати як вільна до адопції.'}
+  if (status === 'adopted') {return 'Тварину вже прилаштовано.'}
   return 'Прихований запис не показується на сайті.'
 }

@@ -50,7 +50,7 @@ export async function sendVolunteerRequestEmail(value: VolunteerFormValue): Prom
 }
 
 function formatResendError(error: unknown) {
-  if (typeof error === 'string') return error
+  if (typeof error === 'string') {return error}
   if (error && typeof error === 'object') {
     const message = 'message' in error ? error.message : null
     const name = 'name' in error ? error.name : null

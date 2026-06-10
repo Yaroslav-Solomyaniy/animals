@@ -37,7 +37,7 @@ export default function ContactForm({ animals }: ContactFormProps) {
     event.preventDefault()
 
     const form = formRef.current
-    if (!form || isSubmitting) return
+    if (!form || isSubmitting) {return}
 
     setIsSubmitting(true)
     setStatus(null)
@@ -87,7 +87,7 @@ export default function ContactForm({ animals }: ContactFormProps) {
 
       if (result.ok) {
         setSelectedFiles([])
-        if (fileInputRef.current) fileInputRef.current.value = ''
+        if (fileInputRef.current) {fileInputRef.current.value = ''}
       }
     } finally {
       setIsSubmitting(false)
@@ -148,7 +148,7 @@ export default function ContactForm({ animals }: ContactFormProps) {
             onChange={(event) => {
               const value = event.currentTarget.value
               setTopic(value)
-              if (value !== 'adoption') setSelectedAnimalId('')
+              if (value !== 'adoption') {setSelectedAnimalId('')}
             }}
           >
             <option value="">Оберіть тему звернення</option>
@@ -285,20 +285,18 @@ export default function ContactForm({ animals }: ContactFormProps) {
   )
 }
 
-function AnimalPickerModal({
-  animals,
+function AnimalPickerModal({animals,
   selectedAnimalId,
   isOpen,
   onClose,
-  onSelect,
-}: {
+  onSelect,}: {
   animals: Animal[]
   selectedAnimalId: string
   isOpen: boolean
   onClose: () => void
   onSelect: (animalId: string) => void
 }) {
-  if (!isOpen) return null
+  if (!isOpen) {return null}
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/45 p-4 backdrop-blur-sm">

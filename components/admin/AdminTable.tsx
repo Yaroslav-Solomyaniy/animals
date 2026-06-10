@@ -1,7 +1,5 @@
-export function AdminTable({
-  columns,
-  children,
-}: {
+export function AdminTable({columns,
+  children,}: {
   columns: string[]
   children: React.ReactNode
 }) {
@@ -20,9 +18,7 @@ export function AdminTable({
   )
 }
 
-export function AdminTableRow({
-  columns,
-}: {
+export function AdminTableRow({columns,}: {
   columns: React.ReactNode[]
 }) {
   return (

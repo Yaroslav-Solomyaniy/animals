@@ -7,7 +7,7 @@ import {
     type AnimalSort,
 } from '@/lib/animal-filter-parsers'
 import dynamic from "next/dynamic";
-import {SingleValue} from "react-select";
+import type {SingleValue} from "react-select";
 import {useAnimalUrlFilters} from "@/hooks/useAnimalUrlFilters";
 import {Button, LinkButton} from "@/components/ui/Button";
 import {buildSelectStyles} from "@/lib/selectStyles";
@@ -73,23 +73,23 @@ export default function AnimalsFilter() {
         sortOptions.find((option) => option.value === filters.sort) ?? sortOptions[0]
 
     function updateGenderSelect(option: SingleValue<SelectOption<AnimalGenderFilter>>) {
-        if (!option) return
+        if (!option) {return}
         updateFilter('gender', option.value)
     }
 
     function updateSizeSelect(option: SingleValue<SelectOption<AnimalSizeFilter>>) {
-        if (!option) return
+        if (!option) {return}
         updateFilter('size', option.value)
     }
 
     function updateCareSelect(option: SingleValue<SelectOption<AnimalCareFilter>>) {
-        if (!option) return
+        if (!option) {return}
         updateFilter('care', option.value)
     }
 
 
     function updateSortSelect(option: SingleValue<SelectOption<AnimalSort>>) {
-        if (!option) return
+        if (!option) {return}
         updateFilter('sort', option.value)
     }
 
@@ -150,7 +150,7 @@ export default function AnimalsFilter() {
             {/*/>*/}
 
             <Button
-                type={'reset'}
+                type="reset"
                 onClick={resetFilters}
             >
                 Скинути фільтри

@@ -47,11 +47,9 @@ const emptyNews = () => ({
   is_published: false,
 })
 
-export function NewsForm({
-  initial,
+export function NewsForm({initial,
   animals,
-  mode,
-}: {
+  mode,}: {
   initial?: NewsPostRow
   animals: AnimalRow[]
   mode: 'create' | 'edit'
@@ -96,13 +94,13 @@ export function NewsForm({
 
   async function uploadCover(files: FileList | null) {
     const file = files?.[0]
-    if (!file) return
+    if (!file) {return}
 
     setIsCoverUploading(true)
 
     try {
       const upload = await uploadNewsImage(file)
-      if (!upload) return
+      if (!upload) {return}
 
       const saved = await setNewsCoverAction({
         newsId: upload.newsId,
@@ -127,13 +125,13 @@ export function NewsForm({
       router.refresh()
     } finally {
       setIsCoverUploading(false)
-      if (coverInputRef.current) coverInputRef.current.value = ''
+      if (coverInputRef.current) {coverInputRef.current.value = ''}
     }
   }
 
   async function uploadNewsImage(file: File) {
     const currentNewsId = newsId ?? await createDraftForUpload()
-    if (!currentNewsId) return null
+    if (!currentNewsId) {return null}
 
     setStatus('')
     const upload = await createNewsImageUploadAction({
@@ -190,7 +188,7 @@ export function NewsForm({
   }
 
   async function deleteUploadedImage(r2Key: string | undefined) {
-    if (!newsId || !r2Key) return true
+    if (!newsId || !r2Key) {return true}
 
     const deleted = await deleteNewsImageAction({
       newsId,
@@ -206,7 +204,7 @@ export function NewsForm({
   }
 
   async function removeCover() {
-    if (!form.cover_url) return
+    if (!form.cover_url) {return}
     setStatus('')
 
     const cleared = newsId ? await clearNewsCoverAction(newsId) : { ok: true as const }
@@ -216,7 +214,7 @@ export function NewsForm({
     }
 
     const deleted = await deleteUploadedImage(form.cover_r2_key || undefined)
-    if (!deleted) return
+    if (!deleted) {return}
 
     setForm((current) => ({
       ...current,
@@ -246,7 +244,7 @@ export function NewsForm({
     setBlocks((current) => {
       const next = [...current]
       const target = index + direction
-      if (target < 0 || target >= next.length) return current
+      if (target < 0 || target >= next.length) {return current}
       const [item] = next.splice(index, 1)
       next.splice(target, 0, item)
       return next
@@ -388,15 +386,13 @@ const blockActions: Array<{
   { type: 'slider', label: 'Слайдер', icon: SlidersHorizontal },
 ]
 
-function RelatedAnimalPicker({
-  animals,
+function RelatedAnimalPicker({animals,
   selectedAnimal,
   isOpen,
   onOpen,
   onClose,
   onSelect,
-  onClear,
-}: {
+  onClear,}: {
   animals: AnimalRow[]
   selectedAnimal: AnimalRow | undefined
   isOpen: boolean
@@ -471,8 +467,7 @@ function RelatedAnimalPicker({
   )
 }
 
-function BlockEditor({
-  block,
+function BlockEditor({block,
   index,
   onUpdate,
   onRemove,
@@ -483,8 +478,7 @@ function BlockEditor({
   uploadingKey,
   setUploadingKey,
   canMoveUp,
-  canMoveDown,
-}: {
+  canMoveDown,}: {
   block: NewsContentBlock
   index: number
   onUpdate: (patch: Partial<NewsContentBlock>) => void
@@ -536,10 +530,8 @@ function BlockEditor({
   )
 }
 
-function BlockSizing({
-  block,
-  onUpdate,
-}: {
+function BlockSizing({block,
+  onUpdate,}: {
   block: NewsContentBlock
   onUpdate: (patch: Partial<NewsContentBlock>) => void
 }) {
@@ -568,15 +560,13 @@ function BlockSizing({
   )
 }
 
-function BlockFields({
-  block,
+function BlockFields({block,
   blockIndex,
   onUpdate,
   onUploadImage,
   onDeleteImage,
   uploadingKey,
-  setUploadingKey,
-}: {
+  setUploadingKey,}: {
   block: NewsContentBlock
   blockIndex: number
   onUpdate: (patch: Partial<NewsContentBlock>) => void
@@ -675,15 +665,13 @@ function BlockFields({
   }
 }
 
-function ImageListEditor({
-  images,
+function ImageListEditor({images,
   blockIndex,
   uploadingKey,
   setUploadingKey,
   onUploadImage,
   onDeleteImage,
-  onChange,
-}: {
+  onChange,}: {
   images: NewsImageValue[]
   blockIndex: number
   uploadingKey: string
@@ -728,14 +716,12 @@ type NewsImageValue = {
   r2Key?: string
 }
 
-function NewsImageUploader({
-  image,
+function NewsImageUploader({image,
   uploadKey,
   uploadingKey,
   setUploadingKey,
   onUpload,
-  onDelete,
-}: {
+  onDelete,}: {
   image: NewsImageValue
   uploadKey: string
   uploadingKey: string
@@ -769,7 +755,7 @@ function NewsImageUploader({
             disabled={isUploading}
             onChange={async (event) => {
               const file = event.target.files?.[0]
-              if (!file) return
+              if (!file) {return}
               setUploadingKey(uploadKey)
               try {
                 await onUpload(file)
@@ -825,7 +811,7 @@ async function deleteBlockImages(
 }
 
 function normalizeBlocks(value: unknown[] | null | undefined): NewsContentBlock[] {
-  if (!Array.isArray(value)) return []
+  if (!Array.isArray(value)) {return []}
   return value.filter((block): block is NewsContentBlock => {
     return Boolean(block && typeof block === 'object' && 'type' in block)
   })

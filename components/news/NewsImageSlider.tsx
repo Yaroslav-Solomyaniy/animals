@@ -16,13 +16,11 @@ type NewsImageSliderProps = {
   showCounter?: boolean
 }
 
-export default function NewsImageSlider({
-  images,
+export default function NewsImageSlider({images,
   className = '',
   imageClassName = '',
   controlsClassName = '',
-  showCounter = true,
-}: NewsImageSliderProps) {
+  showCounter = true,}: NewsImageSliderProps) {
   const [activeIndex, setActiveIndex] = useState(0)
   const activeImage = images[activeIndex]
 

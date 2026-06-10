@@ -45,14 +45,12 @@ const shareTargets = [
   },
 ]
 
-export default function ShareMenu({
-  path,
+export default function ShareMenu({path,
   title,
   text,
   label = 'Поділитися',
   variant = 'button',
-  className = '',
-}: ShareMenuProps) {
+  className = '',}: ShareMenuProps) {
   const [isOpen, setIsOpen] = useState(false)
   const [copied, setCopied] = useState(false)
   const rootRef = useRef<HTMLDivElement>(null)
@@ -131,7 +129,7 @@ export default function ShareMenu({
         type="button"
         onClick={() => setIsOpen((current) => !current)}
         variant="outline"
-        size={'md'}
+        size="md"
         className={variant === 'icon' ? 'min-h-12 w-full min-w-12 rounded-xl sm:w-14' : 'min-h-11 w-full'}
         aria-expanded={isOpen}
         aria-label={label}

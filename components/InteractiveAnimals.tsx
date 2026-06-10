@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { PetProfile } from '../types';
+import type { PetProfile } from '../types';
 import {
   ChevronLeft,
   ChevronRight,

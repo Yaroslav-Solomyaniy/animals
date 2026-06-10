@@ -9,7 +9,7 @@ import {Button} from '@/components/ui/Button'
 import type {Animal} from '@/types'
 import AnimalsFilter from "@/app/animals/_components/animalsFilter";
 import AnimalCard from "@/components/AnimalCard";
-import {FC} from "react";
+import type {FC} from "react";
 import {useAnimalUrlFilters} from "@/hooks/useAnimalUrlFilters";
 
 
@@ -231,11 +231,9 @@ export const AnimalsCatalogClient:FC<Props> = ({animals, pagination}) => {
     )
 }
 
-function DecorativeIcon({
-                            icon: Icon,
+function DecorativeIcon({icon: Icon,
                             className,
-                            delayClass = '',
-                        }: {
+                            delayClass = '',}: {
     icon: LucideIcon
     className: string
     delayClass?: string
@@ -249,11 +247,9 @@ function DecorativeIcon({
     )
 }
 
-function FilterGroup({
-                         label,
+function FilterGroup({label,
                          icon: Icon,
-                         children,
-                     }: {
+                         children,}: {
     label: string
     icon: LucideIcon
     children: React.ReactNode
@@ -269,11 +265,9 @@ function FilterGroup({
     )
 }
 
-function FilterButton({
-                          isActive,
+function FilterButton({isActive,
                           onClick,
-                          children,
-                      }: {
+                          children,}: {
     isActive: boolean
     onClick: () => void
     children: React.ReactNode
@@ -290,11 +284,9 @@ function FilterButton({
     )
 }
 
-function Pagination({
-                        currentPage,
+function Pagination({currentPage,
                         totalPages,
-                        onChange,
-                    }: {
+                        onChange,}: {
     currentPage: number
     totalPages: number
     onChange: (page: number) => void

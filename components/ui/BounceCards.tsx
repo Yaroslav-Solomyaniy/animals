@@ -17,8 +17,7 @@ interface BounceCardsProps {
   onSelect?: (index: number) => void
 }
 
-export default function BounceCards({
-  className = '',
+export default function BounceCards({className = '',
   images = [],
   selectedIndex = 0,
   containerWidth = 400,
@@ -34,8 +33,7 @@ export default function BounceCards({
     'rotate(2deg) translate(100px)',
   ],
   enableHover = false,
-  onSelect,
-}: BounceCardsProps) {
+  onSelect,}: BounceCardsProps) {
   const containerRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {

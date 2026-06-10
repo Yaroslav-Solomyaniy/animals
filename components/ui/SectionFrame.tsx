@@ -8,11 +8,9 @@ type SectionFrameProps<T extends ElementType = 'div'> = {
   className?: string
 }
 
-export default function SectionFrame<T extends ElementType = 'div'>({
-  as,
+export default function SectionFrame<T extends ElementType = 'div'>({as,
   children,
-  className,
-}: SectionFrameProps<T>) {
+  className,}: SectionFrameProps<T>) {
   const Component = as ?? 'div'
 
   return (

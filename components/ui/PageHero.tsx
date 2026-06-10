@@ -11,16 +11,14 @@ type PageHeroProps = {
   spacing?: 'default' | 'compact'
 }
 
-export default function PageHero({
-  eyebrow,
+export default function PageHero({eyebrow,
   title,
   description,
   icon: Icon,
   children,
   actions,
   align = 'split',
-  spacing = 'default',
-}: PageHeroProps) {
+  spacing = 'default',}: PageHeroProps) {
   const isCentered = align === 'center'
   const sectionSpacing =
     spacing === 'compact'

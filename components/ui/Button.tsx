@@ -49,11 +49,9 @@ const sizeClasses: Record<ButtonSize, string> = {
   icon: 'h-11 w-11 p-0',
 }
 
-export function buttonClassName({
-  variant = 'primary',
+export function buttonClassName({variant = 'primary',
   size = 'md',
-  className,
-}: {
+  className,}: {
   variant?: ButtonVariant
   size?: ButtonSize
   className?: string
@@ -105,15 +103,13 @@ type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   showIcon?: boolean
 }
 
-export function Button({
-  variant = 'primary',
+export function Button({variant = 'primary',
   size = 'md',
   className,
   type = 'button',
   showIcon = true,
   children,
-  ...props
-}: ButtonProps) {
+  ...props}: ButtonProps) {
   return (
     <button
       type={type}
@@ -133,15 +129,13 @@ type LinkButtonProps = AnchorHTMLAttributes<HTMLAnchorElement> & {
   showIcon?: boolean
 }
 
-export function LinkButton({
-  href,
+export function LinkButton({href,
   variant = 'primary',
   size = 'md',
   className,
   children,
   showIcon = true,
-  ...props
-}: LinkButtonProps) {
+  ...props}: LinkButtonProps) {
   const rel = props.target === '_blank' && !props.rel ? 'noopener noreferrer' : props.rel
   const isAppRoute = href.startsWith('/') || href.startsWith('#')
   const sharedProps = {
@@ -169,13 +163,11 @@ type IconButtonProps = ButtonProps & {
   label: string
 }
 
-export function IconButton({
-  label,
+export function IconButton({label,
   variant = 'light',
   size = 'icon',
   className,
-  ...props
-}: IconButtonProps) {
+  ...props}: IconButtonProps) {
   return (
     <Button
       variant={variant}

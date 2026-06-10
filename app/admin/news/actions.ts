@@ -80,12 +80,10 @@ export async function saveNewsPostAction(
   }
 }
 
-async function getAvailableSlug({
-  supabase,
+async function getAvailableSlug({supabase,
   requestedSlug,
   title,
-  currentId,
-}: {
+  currentId,}: {
   supabase: Awaited<ReturnType<typeof createClient>>
   requestedSlug: string
   title: string
@@ -150,7 +148,7 @@ function normalizePublishedAt(value: string | null, isPublished: boolean) {
 }
 
 function emptyToNull(value: string | null | undefined) {
-  if (value == null) return null
+  if (value == null) {return null}
   const trimmed = value.trim()
   return trimmed === '' ? null : trimmed
 }

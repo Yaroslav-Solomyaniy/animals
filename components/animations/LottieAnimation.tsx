@@ -20,12 +20,10 @@ type LottieAnimationProps = {
   src: string
 }
 
-export default function LottieAnimation({
-  ariaLabel,
+export default function LottieAnimation({ariaLabel,
   className,
   size = 'md',
-  src,
-}: LottieAnimationProps) {
+  src,}: LottieAnimationProps) {
   const pixelSize = typeof size === 'number' ? size : animationSizePixels[size]
 
   return (

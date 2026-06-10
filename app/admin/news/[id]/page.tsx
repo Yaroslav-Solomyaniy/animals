@@ -12,7 +12,7 @@ export default async function EditNewsPage(props: PageProps<'/admin/news/[id]'>)
     supabase.from('news_posts').select('*').eq('id', id).single(),
     supabase.from('animals').select('*').order('name'),
   ])
-  if (error || !post) notFound()
+  if (error || !post) {notFound()}
 
   return (
     <AdminAuthGate>

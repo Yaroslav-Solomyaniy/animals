@@ -6,11 +6,9 @@ type AngryAnimationProps = {
   ariaLabel?: string
 }
 
-export default function AngryAnimation({
-  className,
+export default function AngryAnimation({className,
   size = 'md',
-  ariaLabel = 'Angry animation',
-}: AngryAnimationProps) {
+  ariaLabel = 'Angry animation',}: AngryAnimationProps) {
   return (
     <LottieAnimation
       src="/animation/angry.lottie"

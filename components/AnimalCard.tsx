@@ -29,12 +29,10 @@ type AnimalCardProps = {
   index?: number
 }
 
-export default function AnimalCard({
-  animal,
+export default function AnimalCard({animal,
   className = '',
   detailsHref,
-  index = 0,
-}: AnimalCardProps) {
+  index = 0,}: AnimalCardProps) {
   const treatHref = buildDonateHref({animalId: animal.id, gift: 'treat'})
   const primaryHref = detailsHref ?? buildAnimalHref(animal.id)
 
@@ -135,12 +133,10 @@ function getNeuterActionLabel(gender: Animal['gender']) {
   return gender === 'Самець' ? 'Кастрація' : 'Стерилізація'
 }
 
-function FactTile({
-  icon: Icon,
+function FactTile({icon: Icon,
   label,
   value,
-  className,
-}: {
+  className,}: {
   icon: LucideIcon
   label: string
   value: string
@@ -168,12 +164,10 @@ function FactTile({
   )
 }
 
-function CareStatus({
-  icon: Icon,
+function CareStatus({icon: Icon,
   isReady,
   label,
-  value,
-}: {
+  value,}: {
   icon: LucideIcon
   isReady: boolean
   label: string

@@ -225,7 +225,7 @@ function renderEmailRow(label: string, value: string) {
 }
 
 function formatEmailError(error: unknown) {
-  if (typeof error === 'string') return error
+  if (typeof error === 'string') {return error}
   if (error && typeof error === 'object') {
     const message = 'message' in error ? error.message : null
     const name = 'name' in error ? error.name : null
