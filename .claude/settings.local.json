@@ -1,7 +1,35 @@
 {
   "permissions": {
     "allow": [
-      "Bash(dir *)"
+      "Bash(dir *)",
+      "Bash(npm run *)",
+      "Bash(git stash *)",
+      "Bash(git add *)",
+      "Bash(git commit -m 'Rework home screen carousel and unify catalog sort filter *)",
+      "Bash(git commit -m 'Fix broken ESLint flat config and missing Check icon import *)",
+      "Bash(git checkout *)",
+      "Bash(git merge *)",
+      "Bash(git push *)",
+      "Bash(sort -t'|' -k2 -rn)",
+      "Bash(git commit -m 'Apply ESLint auto-fixes across the codebase *)",
+      "Bash(git check-ignore *)",
+      "Bash(echo \"exit: $?\")",
+      "Bash(yarn --version)",
+      "Bash(yarn add *)",
+      "Bash(npx prettier *)",
+      "Bash(git commit -m 'Set up Prettier with format-on-save support *)",
+      "Bash(npx eslint *)",
+      "Bash(curl -s -o /tmp/animals.html -w \"HTTP %{http_code}, %{size_download} bytes\" http://localhost:3000/animals)",
+      "Read(//tmp/**)",
+      "Bash(curl -s -o /tmp/filtered.html -w \"HTTP %{http_code}\" \"http://localhost:3000/animals?size=small&gender=female\")",
+      "Bash(curl -s -o /tmp/animals2.html -w \"HTTP %{http_code}\" http://localhost:3000/animals)",
+      "Bash(curl -s \"http://localhost:3000/animals?care=ready\")",
+      "Bash(curl -s -o /tmp/hero3.html -w \"HTTP %{http_code}\" http://localhost:3000/animals)",
+      "Bash(curl -s -o /tmp/hero4.html -w \"HTTP %{http_code}\" http://localhost:3000/animals)",
+      "Bash(curl -s -o /tmp/book.html -w \"HTTP %{http_code}\" http://localhost:3000/animals)",
+      "Bash(curl -s -o /tmp/friend.html -w \"HTTP %{http_code}\" http://localhost:3000/animals)",
+      "Bash(curl -s -o /dev/null -w \"HTTP %{http_code}\" http://localhost:3000/animals)",
+      "Bash(git commit -m ' *)"
     ]
   }
 }
