@@ -13,7 +13,7 @@ export default function HomeScreenCarousel() {
     <section className="contacts-gradient-coral relative px-4 pt-8 pb-16 outline-none focus-visible:ring-4 focus-visible:ring-primary/20 sm:px-6 sm:pt-10 sm:pb-18 lg:px-8 lg:pt-12 lg:pb-14">
       <StorybookDecorations />
       <div className="relative mx-auto grid w-full max-w-336 grid-rows-[minmax(0,1fr)_320px] overflow-hidden rounded-[28px] border border-gray-200 bg-white shadow-[0_30px_100px_rgba(31,41,55,0.1)] sm:h-auto sm:grid-rows-[minmax(0,1fr)_330px] lg:grid-cols-[minmax(0,0.98fr)_minmax(420px,1.02fr)] lg:grid-rows-1">
-        <div className="flex min-h-[600px] flex-col justify-between gap-5 px-6 py-8 sm:px-10 sm:py-10 lg:px-14 lg:py-14 xl:p-16">
+        <div className="flex min-h-150 flex-col justify-between gap-5 px-6 py-8 sm:px-10 sm:py-10 lg:px-14 lg:py-14 xl:p-16">
           <div className="inline-flex items-center justify-center gap-2 rounded-full bg-[#edf6f1] px-4 py-2 text-xs font-extrabold text-secondary sm:text-sm">
             <ShieldCheck className="h-4 w-4" />
             За підтримки Черкаської служби чистоти
