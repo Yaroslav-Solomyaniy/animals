@@ -1,7 +1,7 @@
 'use client'
 
 import { useRef, useState, type FormEvent } from 'react'
-import { Loader2, Paperclip, PawPrint, Send, X } from 'lucide-react'
+import { Check, Loader2, Paperclip, PawPrint, Send, X } from 'lucide-react'
 
 import { createContactAttachmentUploadAction, submitContactFormAction, type ContactFormState } from './actions'
 import { Button } from '@/components/ui/Button'

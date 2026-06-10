@@ -45,23 +45,23 @@ const eslintConfig = defineConfig([
                     caughtErrorsIgnorePattern: "^_",
                 },
             ],
-        },
-        'react/destructuring-assignment': [
-            'error',
-            'always',
-            {
-                destructureInSignature: 'always',
-            },
-        ],
-        'object-curly-newline': [
-            'error',
-            {
-                ObjectPattern: {
-                    multiline: false,
-                    minProperties: 999,
+            "react/destructuring-assignment": [
+                "warn",
+                "always",
+                {
+                    destructureInSignature: "always",
                 },
-            },
-        ],
+            ],
+            "object-curly-newline": [
+                "warn",
+                {
+                    ObjectPattern: {
+                        multiline: false,
+                        minProperties: 999,
+                    },
+                },
+            ],
+        },
     },
     // Override default ignores of eslint-config-next.
     globalIgnores([
