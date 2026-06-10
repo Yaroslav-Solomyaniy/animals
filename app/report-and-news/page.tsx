@@ -11,20 +11,15 @@ import { Button, LinkButton } from '@/components/ui/Button'
 import { reports } from '@/lib/news'
 import { getPublishedNews } from '@/lib/public-news'
 import { buildNewsHref, SITE_ROUTES } from '@/lib/site-config'
-
-// const stats = [
-//   ['Усиновлення', '8', '80%', 'bg-orange-500'],
-//   ['Допомога тваринам', '15', '75%', 'bg-emerald-500'],
-//   ['Стерилізації', '12', '60%', 'bg-sky-500'],
-// ]
+import JoinMission from "@/components/JoinMission";
 
 export default async function ReportAndNewsPage() {
   const news = await getPublishedNews()
 
   return (
-    <main className="storybook-bg min-h-screen text-gray-950">
+    <main className=" min-h-screen text-gray-950">
       <StorybookDecorations />
-      <section className="px-4 pt-8 sm:px-6 lg:px-8">
+      <section className="px-4 pt-14 sm:px-6 lg:px-8">
         <div className="relative mx-auto max-w-336 overflow-hidden rounded-[44px] bg-[linear-gradient(135deg,#f27438_0%,#e76f51_58%,#2d6a4f_150%)] text-white shadow-[0_30px_110px_rgba(242,116,56,0.22)]">
           <div className="absolute -bottom-18 right-0 h-56 w-[74%] rounded-tl-[120px] bg-secondary/88" />
           <div className="absolute right-[7%] top-16 hidden h-60 w-[34rem] rounded-[999px] bg-secondary/84 lg:block" />
@@ -72,7 +67,7 @@ export default async function ReportAndNewsPage() {
         </div>
       </section>
 
-      <section className="px-4 py-14 sm:px-6 lg:px-8">
+      <section className="px-4 pt-14 sm:px-6 lg:px-8">
         <SectionFrame className="mx-auto max-w-336 p-4 sm:p-6 lg:p-8">
           <div>
             <div className="mb-6 flex items-end justify-between gap-4 border-b border-orange-100/70 pb-6">
@@ -140,81 +135,59 @@ export default async function ReportAndNewsPage() {
         </SectionFrame>
       </section>
 
-      <section className="px-4 pb-16 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-336 rounded-[36px] border border-orange-100 bg-white p-5 shadow-[0_24px_90px_rgba(15,23,42,0.08)] sm:p-7 lg:p-8">
-          <div className="mb-7 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-            <div>
-              <p className="text-sm font-semibold uppercase tracking-[0.18em] text-orange-600">
-                Прозорість
-              </p>
-              <h2 className="mt-2 text-3xl font-black text-gray-950">
-                Звіти центру
-              </h2>
-              <p className="mt-3 max-w-2xl leading-7 text-gray-600">
-                Окремо збираємо фінансові та діяльнісні звіти, щоб важливі
-                документи не губилися серед новин.
-              </p>
+      <section className="px-4 py-14 sm:px-6 lg:px-8">
+        <SectionFrame className="mx-auto max-w-336 p-4 sm:p-6 lg:p-8">
+            <div className="mb-6 flex items-end justify-between gap-4 border-b border-orange-100/70 pb-6">
+              <div>
+                <p className="text-sm font-semibold uppercase tracking-[0.18em] text-orange-600">
+                  Прозорість та відкритість
+                </p>
+                <h2 className="mt-2 text-3xl font-black text-gray-950">
+                  Звіти центру
+                </h2>
+                <p className="mt-3 max-w-2xl leading-7 text-gray-600">
+                  Окремо збираємо фінансові та діяльнісні звіти, щоб важливі
+                  документи не губилися серед новин.
+                </p>
+              </div>
             </div>
-            <span className="rounded-full border border-orange-100 bg-white px-4 py-2 text-sm font-bold text-orange-700 shadow-sm">
-              Гортайте горизонтально
-            </span>
-          </div>
 
-          <div className="-mx-2 flex snap-x gap-4 overflow-x-auto px-2 pb-4">
-            {reports.map((report) => (
-              <article
-                key={report.title}
-                className="min-w-[290px] snap-start rounded-[28px] border border-orange-100 bg-[linear-gradient(135deg,#fff7ed_0%,#ffffff_58%,#ecfeff_100%)] p-6 shadow-soft sm:min-w-[360px] lg:min-w-[400px]"
-              >
-                <div className="mb-6 flex items-start justify-between gap-4">
+            {reports.length > 0 ? (
+              <div className="grid gap-7 md:grid-cols-2 xl:grid-cols-3">
+                {reports.map((report) => (
+                    <article
+                        key={report.title}
+                        className="min-w-[290px] snap-start rounded-[28px] border border-orange-100 bg-[linear-gradient(135deg,#fff7ed_0%,#ffffff_58%,#ecfeff_100%)] p-6 shadow-soft sm:min-w-[360px] lg:min-w-[400px]"
+                    >
+                      <div className="mb-6 flex items-start justify-between gap-4">
                   <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white text-orange-600 shadow-sm">
                     <Download className="h-6 w-6" />
                   </span>
-                  <span className="rounded-full bg-white px-3 py-1 text-xs font-black uppercase tracking-[0.12em] text-gray-400">
+                        <span className="rounded-full bg-white px-3 py-1 text-xs font-black uppercase tracking-[0.12em] text-gray-400">
                     {report.date}
                   </span>
-                </div>
-                <h3 className="text-2xl font-black text-gray-950">
-                  {report.title}
-                </h3>
-                <p className="mt-3 leading-7 text-gray-600">
-                  {report.description}
+                      </div>
+                      <h3 className="text-2xl font-black text-gray-950">
+                        {report.title}
+                      </h3>
+                      <p className="mt-3 leading-7 text-gray-600">
+                        {report.description}
+                      </p>
+                      <Button type="button" variant="outline" size="sm" className="mt-6">
+                        <Download className="h-4 w-4" />
+                        Завантажити
+                      </Button>
+                    </article>
+                ))}
+              </div>
+            ) : (
+              <div className="rounded-[28px] border border-dashed border-orange-200 bg-orange-50/70 p-8 text-center">
+                <p className="text-lg font-black text-gray-950">Новин поки немає</p>
+                <p className="mt-2 text-gray-600">
+                  Опублікуй першу новину в адмінці, і вона зʼявиться тут автоматично.
                 </p>
-                <Button type="button" variant="outline" size="sm" className="mt-6">
-                  <Download className="h-4 w-4" />
-                  Завантажити
-                </Button>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="px-4 py-16 sm:px-6 lg:px-8">
-        <SectionFrame className="mx-auto max-w-336 rounded-[32px] p-8 text-center">
-          <Heart className="mx-auto mb-5 h-10 w-10 text-orange-500" />
-          <h2 className="text-3xl font-black text-gray-950">
-            Станьте частиною нашої історії
-          </h2>
-          <p className="mt-4 text-lg leading-8 text-gray-600">
-            Кожне усиновлення, донат і година волонтерства стають частиною
-            спільної історії порятунку.
-          </p>
-          <div className="mt-8 flex flex-col justify-center gap-4 sm:flex-row">
-            <LinkButton
-              href={SITE_ROUTES.animals}
-              size="md"
-            >
-              Усиновити тварину
-            </LinkButton>
-            <LinkButton
-              href={SITE_ROUTES.help}
-              variant="outline"
-              size="md"
-            >
-              Підтримати притулок
-            </LinkButton>
-          </div>
+              </div>
+            )}
         </SectionFrame>
       </section>
     </main>

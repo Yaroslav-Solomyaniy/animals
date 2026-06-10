@@ -1,5 +1,5 @@
 import React from 'react'
-import { ChevronRight, Heart } from 'lucide-react'
+import { ChevronRight, Heart, PawPrint} from 'lucide-react'
 
 import { LinkButton } from '@/components/ui/Button'
 import { SITE_ROUTES } from '@/lib/site-config'
@@ -18,7 +18,7 @@ const JoinMission = () => {
         <div className="min-w-0 max-w-3xl">
           <p className="mb-4 inline-flex h-10 items-center gap-2 rounded-full border border-white/18 bg-white/10 px-4 text-xs font-extrabold uppercase tracking-[0.12em] text-orange-100 shadow-[0_12px_36px_rgba(0,0,0,0.12)] sm:mb-5 sm:h-11 sm:px-5 sm:text-sm">
             <Heart className="h-4 w-4 text-orange-200" />
-            Один крок
+            Великий шлях починається з кроку
           </p>
 
           <h2 className="max-w-3xl text-3xl font-black leading-tight sm:text-4xl md:text-5xl lg:text-6xl">
@@ -29,6 +29,7 @@ const JoinMission = () => {
             Оберіть просту дію: познайомитись із тваринами, підтримати центр
             або залишити заявку на допомогу.
           </p>
+
 
           <div className="mt-6 flex flex-wrap gap-2 sm:mt-7 sm:gap-3">
             {missionSteps.map((step) => (
@@ -69,6 +70,15 @@ const JoinMission = () => {
             >
               Як допомогти
               <Heart className="h-4 w-4" />
+            </LinkButton>
+            <LinkButton
+              href={SITE_ROUTES.walks}
+              variant="outline"
+              size="md"
+              className="h-11 w-full justify-between rounded-xl px-4 text-sm sm:h-12"
+            >
+              Прогулянки з тваринами
+              <PawPrint className="h-4 w-4" />
             </LinkButton>
           </div>
 

@@ -23,7 +23,7 @@ const helpInputClass =
 const HelpUs = () => {
 
     return (
-        <section id="help" className="bg-transparent py-16 sm:py-20 lg:py-24">
+        <section id="help" className="contacts-gradient-honey py-16 sm:py-20 lg:py-24">
             <div className="mx-auto max-w-336 px-4 sm:px-6 lg:px-8">
                 <h2 className="mb-10 text-center text-3xl font-extrabold text-text-main sm:mb-14 sm:text-4xl md:text-5xl lg:mb-20">
                     Як ви можете нам допомогти

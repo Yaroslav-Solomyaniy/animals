@@ -43,11 +43,11 @@ export default function AnimalCard({
       initial={{opacity: 0, y: 18}}
       animate={{opacity: 1, y: 0}}
       transition={{duration: 0.42, delay: index * 0.03, ease: [0.22, 1, 0.36, 1]}}
-      className={`group relative flex min-w-0 flex-col overflow-hidden rounded-[28px] border border-gray-100 bg-white shadow-[0_22px_70px_-46px_rgba(15,23,42,0.62)] transition-all duration-500 md:hover:-translate-y-1 md:hover:border-primary/30 ${className}`}
+      className={`group relative flex min-w-0 flex-col overflow-hidden rounded-[28px] border border-primary/20 bg-white transition-all duration-500 md:hover:-translate-y-1 md:hover:border-primary/30 ${className}`}
     >
       <Link
         href={primaryHref}
-        className="relative block aspect-[10/11] overflow-hidden bg-gray-100 sm:aspect-[9/11]"
+        className="relative block aspect-[10/11] overflow-hidden bg-gray-100 sm:aspect-9/11"
         aria-label={`Відкрити деталі для ${animal.name}`}
       >
         <img
@@ -57,7 +57,7 @@ export default function AnimalCard({
           referrerPolicy="no-referrer"
         />
 
-        <div className="absolute inset-0 bg-gradient-to-t from-gray-950/82 via-gray-950/18 to-transparent" />
+        <div className="absolute inset-0 bg-linear-to-t from-gray-950/82 via-gray-950/18 to-transparent" />
 
         <div className="absolute top-4 right-4 left-4 flex items-start justify-between gap-3">
           {animal.badge ? (
@@ -83,8 +83,7 @@ export default function AnimalCard({
         </div>
       </Link>
 
-      <div className="relative z-10 -mt-7 flex flex-1 flex-col rounded-t-[26px] bg-white px-3.5 pt-4 pb-3.5 shadow-[0_-22px_50px_-36px_rgba(15,23,42,0.72)] sm:px-4 sm:pt-4.5 sm:pb-4">
-        <div className="mb-3 h-1 w-10 rounded-full bg-gray-200" aria-hidden="true" />
+      <div className="relative z-10 -mt-7 flex flex-1 flex-col rounded-t-[26px]  bg-white px-3.5 pt-4 pb-3.5 shadow-[0_-22px_50px_-36px_rgba(15,23,42,0.72)] sm:px-4 sm:pt-4.5 sm:pb-4">
 
         <div className="grid grid-cols-2 gap-1.5">
           <FactTile icon={VenusAndMars} label="Стать" value={animal.gender} />

@@ -1,11 +1,10 @@
 import {
   CheckCircle2,
   Clock,
-  DollarSign,
-  Heart, Icon,
+  Heart,
   Package,
   Phone,
-  Users,
+  Users, WalletIcon,
 } from 'lucide-react'
 import PageHero from '@/components/ui/PageHero'
 import SectionFrame from '@/components/ui/SectionFrame'
@@ -13,13 +12,11 @@ import StorybookDecorations from '@/components/ui/StorybookDecorations'
 import { Button, LinkButton } from '@/components/ui/Button'
 import helpDogsImage from '@/public/DogHelp.png'
 import { SITE_CONTACTS, SITE_ROUTES } from '@/lib/site-config'
-import {WobbleCard} from "@/components/ui/wobble-card";
-import {cardColors} from "@/contstants/colors";
 
 
 const helpWays = [
   {
-    icon: DollarSign,
+    icon: WalletIcon,
     title: 'Фінансова допомога',
     text: 'Донати закривають корм, лікування, вакцинацію, стерилізацію та щоденний догляд.',
     tone: 'bg-orange-50 text-orange-600 border-orange-100',
@@ -113,14 +110,14 @@ export default function HelpForUsPage() {
           description="Кожен внесок допомагає тваринам отримувати необхідний догляд, лікування, харчування та шанс знайти нову родину. Ви можете підтримати центр фінансово, стати волонтером або передати необхідні речі для щоденної турботи."
           icon={Heart}
       >
-        <div className="overflow-hidden rounded-[32px] border border-orange-100 bg-white p-3 shadow-[0_28px_80px_rgba(15,23,42,0.08)]">
-          <div className="relative min-h-[420px] overflow-hidden rounded-[26px] border border-orange-100 bg-gray-950">
+        <div className="overflow-hidden rounded-3xl border border-orange-100 bg-white p-3 shadow-[0_28px_80px_rgba(15,23,42,0.08)]">
+          <div className="relative min-h-105 overflow-hidden rounded-[26px] border border-orange-100 bg-gray-950">
             <img
               src={helpDogsImage.src}
               alt={heroGalleryItems.map((item) => item.text.replace('\n', ' ')).join(', ')}
               className="absolute inset-0 h-full w-full object-cover"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-gray-950/70 via-gray-950/10 to-transparent" />
+            <div className="absolute inset-0 bg-linear-to-t from-gray-950/70 via-gray-950/10 to-transparent" />
             <div className="absolute right-5 bottom-5 left-5">
               <p className="max-w-sm text-3xl font-black leading-tight text-white drop-shadow">
                 Вони потребують, ми допомагаємо
@@ -130,7 +127,7 @@ export default function HelpForUsPage() {
         </div>
       </PageHero>
 
-      <section className="px-4 py-8 sm:px-6 lg:px-8">
+      <section className="px-4 mt-14 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-336">
           <SectionFrame className="p-4 sm:p-6 lg:p-8">
             <div className="grid gap-6 md:grid-cols-3">
@@ -139,7 +136,7 @@ export default function HelpForUsPage() {
                 return (
                   <article
                     key={way.title}
-                    className="rounded-[32px] border border-gray-100 bg-white p-8 text-center transition hover:-translate-y-1 hover:border-orange-200 hover:shadow-[0_20px_70px_rgba(15,23,42,0.08)]"
+                    className="rounded-4xl border border-gray-100 bg-white p-8 text-center transition hover:-translate-y-1 hover:border-orange-200 hover:shadow-[0_20px_70px_rgba(15,23,42,0.08)]"
                   >
                     <span
                       className={`mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-2xl border ${way.tone}`}
@@ -156,7 +153,7 @@ export default function HelpForUsPage() {
             </div>
           </SectionFrame>
 
-          <SectionFrame as="section" className="mt-16 p-6 sm:p-8 lg:p-10">
+          <SectionFrame as="section" className="mt-14 p-6 sm:p-8 lg:p-10">
             <div className="mx-auto max-w-4xl text-center">
               <Heart
                 className="mx-auto mb-4 h-12 w-12 text-orange-500"
@@ -221,7 +218,7 @@ export default function HelpForUsPage() {
             </div>
           </SectionFrame>
 
-          <SectionFrame as="section" className="mt-16 grid gap-8 p-4 sm:p-6 lg:grid-cols-[1fr_0.9fr] lg:p-8">
+          <SectionFrame as="section" className="mt-14 grid gap-8 p-4 sm:p-6 lg:grid-cols-[1fr_0.9fr] lg:p-8">
             <div className="rounded-[36px] border border-gray-100 bg-white p-6 sm:p-8">
               <div className="mb-8 max-w-2xl">
                 <Users className="mb-4 h-10 w-10 text-orange-500" />
@@ -239,7 +236,7 @@ export default function HelpForUsPage() {
                 {volunteerRoles.map((role) => (
                   <article
                     key={role.title}
-                    className="rounded-[24px] border border-gray-100 bg-gray-50 p-5"
+                    className="rounded-3xl border border-gray-100 bg-gray-50 p-5"
                   >
                     <h3 className="text-xl font-bold text-gray-950">
                       {role.title}
@@ -284,7 +281,7 @@ export default function HelpForUsPage() {
             </div>
           </SectionFrame>
 
-          <SectionFrame as="section" className="mt-16 p-6 sm:p-8">
+          <SectionFrame as="section" className="mt-14 p-6 sm:p-8">
             <div id="necessary-things" className="scroll-mt-24" />
             <div className="mx-auto mb-8 max-w-3xl text-center">
               <Package className="mx-auto mb-4 h-11 w-11 text-orange-500" />
@@ -307,7 +304,7 @@ export default function HelpForUsPage() {
                 </div>
               ))}
             </div>
-            <div className="mt-8 rounded-[24px] bg-orange-50 p-6 text-center">
+            <div className="mt-8 rounded-3xl bg-orange-50 p-6 text-center">
               <p className="font-semibold text-gray-800">
                 Адреса для передачі допомоги: м. Черкаси, вул. Івана Мазепи, 117
               </p>
@@ -319,7 +316,7 @@ export default function HelpForUsPage() {
         </div>
       </section>
 
-      <section className="px-4 py-16 sm:px-6 lg:px-8">
+      <section className="px-4 py-14 sm:px-6 lg:px-8">
         <SectionFrame className="mx-auto max-w-336 p-6 text-center sm:p-8 lg:p-10">
           <h2 className="text-3xl font-black text-gray-950">Маєте питання?</h2>
           <p className="mt-4 text-lg leading-8 text-gray-600">

@@ -4,7 +4,6 @@ import TrustValues from '@/components/TrustValues'
 import JoinMission from "@/components/JoinMission";
 import HelpUs from "@/components/HelpUs";
 import HomeScreenCarousel from '@/components/HomeScreenCarousel'
-import WalkInvitePanel from '@/components/WalkInvitePanel'
 import {getPublicAnimals} from '@/lib/animals'
 
 
@@ -16,11 +15,12 @@ export default async function HomePage() {
             <HomeScreenCarousel/>
             <CityProgram/>
             <AnimalWaitCatalog animals={animals}/>
-
-            {/*<QuickContactCTA/>*/}
             <TrustValues/>
             <JoinMission/>
             <HelpUs/>
         </main>
     )
 }
+
+
+

@@ -27,7 +27,6 @@ export default async function AnimalsPage({ searchParams }: Props) {
     size: (params.size as any) ?? 'all',
     care: (params.care as any) ?? 'all',
     sort: (params.sort as any) ?? 'newest',
-    order: (params.order as any) ?? 'asc',
     page: (params.page as any) ?? 1
   })
 

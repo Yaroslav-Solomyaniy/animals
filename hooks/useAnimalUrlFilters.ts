@@ -1,7 +1,7 @@
 'use client'
 
 import {useQueryStates} from 'nuqs'
-import {AnimalFilterParsers, type AnimalFilters, AnimalSort,} from '@/lib/animal-filter-parsers'
+import {AnimalFilterParsers, type AnimalFilters} from '@/lib/animal-filter-parsers'
 
 export function useAnimalUrlFilters() {
 
@@ -21,15 +21,6 @@ export function useAnimalUrlFilters() {
         } as Partial<AnimalFilters>)
     }
 
-    function updateSort(value: AnimalSort) {
-        void setFilters({
-            sort: value,
-            order: value === 'name' ? filters.order : 'asc',
-            page: 1,
-        })
-    }
-
-
     function resetFilters() {
         void setFilters({
             q: '',
@@ -37,7 +28,6 @@ export function useAnimalUrlFilters() {
             size: 'all',
             care: 'all',
             sort: 'newest',
-            order: 'asc',
             page: 1,
         })
     }

@@ -43,10 +43,14 @@ export async function getPublicAnimals( pagination: PaginationRange = {from: 0, 
         query = query.ilike('name', `%${filters.q}%`)
     }
 
-    if (filters?.sort === 'name') {
-        query = query.order('name', {
-            ascending: filters.order === 'asc',
-        })
+    if (filters?.sort === 'name_asc') {
+        query = query.order('name', { ascending: true })
+    } else if (filters?.sort === 'name_desc') {
+        query = query.order('name', { ascending: false })
+    } else if (filters?.sort === 'oldest') {
+        query = query
+            .order('published_at', { ascending: true, nullsFirst: false })
+            .order('created_at', { ascending: true })
     } else {
         query = query
             .order('published_at', { ascending: false, nullsFirst: false })
