@@ -2,6 +2,7 @@ import {defineConfig, globalIgnores} from "eslint/config";
 import nextVitals from "eslint-config-next/core-web-vitals";
 import nextTs from "eslint-config-next/typescript";
 import prettierConfig from "eslint-config-prettier";
+import unusedImports from "eslint-plugin-unused-imports";
 
 const eslintConfig = defineConfig([
     ...nextVitals,
@@ -13,6 +14,9 @@ const eslintConfig = defineConfig([
     },
     {
         files: ["**/*.{js,jsx,ts,tsx}"],
+        plugins: {
+            "unused-imports": unusedImports,
+        },
         rules: {
             "curly": ["warn", "all"],
             "eqeqeq": ["error", "always", {null: "ignore"}],
@@ -38,9 +42,16 @@ const eslintConfig = defineConfig([
                 },
             ],
             "@typescript-eslint/no-explicit-any": "warn",
-            "@typescript-eslint/no-unused-vars": [
+            // unused-imports takes over: no-unused-imports is auto-fixable
+            // (removes unused imports on --fix / save), no-unused-vars keeps
+            // reporting the remaining unused variables.
+            "@typescript-eslint/no-unused-vars": "off",
+            "unused-imports/no-unused-imports": "warn",
+            "unused-imports/no-unused-vars": [
                 "warn",
                 {
+                    vars: "all",
+                    args: "after-used",
                     argsIgnorePattern: "^_",
                     varsIgnorePattern: "^_",
                     caughtErrorsIgnorePattern: "^_",
