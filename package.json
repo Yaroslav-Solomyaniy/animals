@@ -52,6 +52,7 @@
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-unused-imports": "^4.4.1",
     "prettier": "^3.8.4",
+    "shadcn": "^4.11.0",
     "tailwindcss": "^4",
     "typescript": "^5"
   }

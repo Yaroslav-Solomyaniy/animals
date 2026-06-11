@@ -11,34 +11,31 @@ type PageHeroProps = {
   spacing?: 'default' | 'compact'
 }
 
-export default function PageHero({eyebrow,
+export default function PageHero({
+  eyebrow,
   title,
   description,
   icon: Icon,
   children,
   actions,
   align = 'split',
-  spacing = 'default',}: PageHeroProps) {
+  spacing = 'default',
+}: PageHeroProps) {
   const isCentered = align === 'center'
-  const sectionSpacing =
-    spacing === 'compact'
-      ? 'px-4 py-10 sm:px-6 sm:py-14 lg:px-8 lg:py-20'
-      : 'px-4 py-16 sm:px-6 lg:px-8 lg:py-24'
+  const sectionSpacing = spacing === 'compact' ? 'px-4 py-10 sm:px-6 sm:py-14 lg:px-8 lg:py-20' : 'px-4 py-16 sm:px-6 lg:px-8 lg:py-24'
 
   return (
     <section className={`relative isolate overflow-hidden border-b border-gray-100/70 ${sectionSpacing}`}>
       <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(255,250,245,0.58),rgba(249,250,251,0.28))]" />
       <HeroTile className="left-6 top-10 hidden h-16 w-16 rotate-[-8deg] rounded-2xl border-orange-100 bg-white/75 sm:block" />
-      <HeroTile className="right-10 top-20 hidden h-12 w-12 rotate-[10deg] rounded-xl border-emerald-100 bg-white/75 lg:block [animation-delay:900ms]" />
-      <HeroTile className="bottom-10 left-[12%] hidden h-10 w-10 rotate-[16deg] rounded-xl border-sky-100 bg-white/75 md:block [animation-delay:1500ms]" />
-      <HeroTile className="bottom-16 right-[18%] hidden h-11 w-11 rotate-[-12deg] rounded-xl border-orange-100 bg-white/75 xl:block [animation-delay:2200ms]" />
+      <HeroTile className="right-10 top-20 hidden h-12 w-12 rotate-10 rounded-xl border-emerald-100 bg-white/75 lg:block [animation-delay:900ms]" />
+      <HeroTile className="bottom-10 left-[12%] hidden h-10 w-10 rotate-16 rounded-xl border-sky-100 bg-white/75 md:block [animation-delay:1500ms]" />
+      <HeroTile className="bottom-16 right-[18%] hidden h-11 w-11 -rotate-12 rounded-xl border-orange-100 bg-white/75 xl:block [animation-delay:2200ms]" />
 
       <div
         className={[
           'relative mx-auto max-w-336',
-          isCentered
-            ? 'text-center'
-            : 'grid items-center gap-14 lg:grid-cols-[0.92fr_1.08fr]',
+          isCentered ? 'text-center' : 'grid items-center gap-14 lg:grid-cols-[0.92fr_1.08fr]',
         ].join(' ')}
       >
         <div className={isCentered ? 'mx-auto max-w-4xl' : 'max-w-3xl'}>
@@ -46,38 +43,19 @@ export default function PageHero({eyebrow,
             <Icon className="h-4 w-4" />
             {eyebrow}
           </span>
-          <h1 className="text-4xl font-extrabold tracking-tight text-text-main sm:text-5xl lg:text-6xl">
-            {title}
-          </h1>
-          <p
-            className={[
-              'mt-6 text-lg leading-8 text-gray-600 sm:text-xl',
-              isCentered ? 'mx-auto max-w-3xl' : 'max-w-2xl',
-            ].join(' ')}
-          >
+          <h1 className="text-4xl font-extrabold tracking-tight text-text-main sm:text-5xl lg:text-6xl">{title}</h1>
+          <p className={['mt-6 text-lg leading-8 text-gray-600 sm:text-xl', isCentered ? 'mx-auto max-w-3xl' : 'max-w-2xl'].join(' ')}>
             {description}
           </p>
-          {actions && (
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-              {actions}
-            </div>
-          )}
+          {actions && <div className="mt-8 flex flex-col gap-3 sm:flex-row">{actions}</div>}
         </div>
 
-        {children && !isCentered && (
-          <div className="relative">
-            {children}
-          </div>
-        )}
+        {children && !isCentered && <div className="relative">{children}</div>}
       </div>
     </section>
   )
 }
 
 function HeroTile({ className }: { className: string }) {
-  return (
-    <span
-      className={`storybook-tile pointer-events-none absolute z-0 border shadow-soft ${className}`}
-    />
-  )
+  return <span className={`storybook-tile pointer-events-none absolute z-0 border shadow-soft ${className}`} />
 }

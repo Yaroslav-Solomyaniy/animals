@@ -3,16 +3,7 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import type { ReactNode } from 'react'
-import {
-  FilePlus2,
-  Footprints,
-  LayoutDashboard,
-  Newspaper,
-  PanelLeft,
-  PawPrint,
-  Rocket,
-  ScrollText,
-} from 'lucide-react'
+import { FilePlus2, Footprints, LayoutDashboard, Newspaper, PanelLeft, PawPrint, Rocket, ScrollText } from 'lucide-react'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import { LinkButton } from '@/components/ui/Button'
@@ -36,9 +27,7 @@ export default function AdminShell({ children }: { children: ReactNode }) {
     return (
       <div className="flex min-h-screen flex-col">
         <Header />
-        <div className="storybook-bg flex flex-1 flex-col">
-          {children}
-        </div>
+        <div className="flex flex-1 flex-col">{children}</div>
         <Footer />
       </div>
     )
@@ -46,7 +35,7 @@ export default function AdminShell({ children }: { children: ReactNode }) {
 
   return (
     <div className="flex min-h-screen bg-[#f6f8fb] text-slate-950">
-      <aside className="sticky top-0 hidden h-screen w-[292px] shrink-0 border-r border-slate-200 bg-white/92 xl:block">
+      <aside className="sticky top-0 hidden h-screen w-73 shrink-0 border-r border-slate-200 bg-white/92 xl:block">
         <div className="flex h-full flex-col p-5">
           <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-[0_18px_50px_rgba(15,23,42,0.06)]">
             <div className="flex items-center gap-3">
@@ -54,12 +43,8 @@ export default function AdminShell({ children }: { children: ReactNode }) {
                 <PanelLeft className="h-5 w-5" />
               </span>
               <div>
-                <p className="text-xs font-extrabold uppercase text-primary">
-                  Admin
-                </p>
-                <h1 className="text-xl font-extrabold text-slate-950">
-                  Shelter CMS
-                </h1>
+                <p className="text-xs font-extrabold uppercase text-primary">Admin</p>
+                <h1 className="text-xl font-extrabold text-slate-950">Shelter CMS</h1>
               </div>
             </div>
           </div>
@@ -68,9 +53,7 @@ export default function AdminShell({ children }: { children: ReactNode }) {
             {adminNavigation.map((item) => {
               const Icon = item.icon
               const isActive =
-                item.href === '/admin'
-                  ? pathname === item.href
-                  : pathname === item.href || pathname.startsWith(`${item.href}/`)
+                item.href === '/admin' ? pathname === item.href : pathname === item.href || pathname.startsWith(`${item.href}/`)
 
               return (
                 <Link
@@ -111,16 +94,10 @@ export default function AdminShell({ children }: { children: ReactNode }) {
                   <Rocket className="h-3.5 w-3.5" />
                   Адмін панель сайту
                 </p>
-                <h1 className="mt-3 text-2xl font-extrabold text-slate-950 md:text-3xl">
-                  Керування контентом і каталогом
-                </h1>
+                <h1 className="mt-3 text-2xl font-extrabold text-slate-950 md:text-3xl">Керування контентом і каталогом</h1>
               </div>
 
-              <LinkButton
-                href="/"
-                variant="outline"
-                size="sm"
-              >
+              <LinkButton href="/" variant="outline" size="sm">
                 На сайт
               </LinkButton>
             </div>
@@ -129,9 +106,7 @@ export default function AdminShell({ children }: { children: ReactNode }) {
               {adminNavigation.map((item) => {
                 const Icon = item.icon
                 const isActive =
-                  item.href === '/admin'
-                    ? pathname === item.href
-                    : pathname === item.href || pathname.startsWith(`${item.href}/`)
+                  item.href === '/admin' ? pathname === item.href : pathname === item.href || pathname.startsWith(`${item.href}/`)
 
                 return (
                   <Link
@@ -154,9 +129,7 @@ export default function AdminShell({ children }: { children: ReactNode }) {
         </header>
 
         <main className="flex-1 bg-[#f6f8fb] text-slate-950">
-          <div className="mx-auto max-w-[calc(100rem+4rem)] px-4 py-8 sm:px-6 lg:px-8">
-            {children}
-          </div>
+          <div className="mx-auto max-w-[calc(100rem+4rem)] px-4 py-8 sm:px-6 lg:px-8">{children}</div>
         </main>
       </div>
     </div>
@@ -165,12 +138,7 @@ export default function AdminShell({ children }: { children: ReactNode }) {
 
 function QuickLink({ href, label }: { href: string; label: string }) {
   return (
-    <LinkButton
-      href={href}
-      variant="outline"
-      size="sm"
-      className="w-full justify-start rounded-lg shadow-none"
-    >
+    <LinkButton href={href} variant="outline" size="sm" className="w-full justify-start rounded-lg shadow-none">
       <FilePlus2 className="h-4 w-4" />
       {label}
     </LinkButton>
