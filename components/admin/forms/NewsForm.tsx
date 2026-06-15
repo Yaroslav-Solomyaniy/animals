@@ -440,18 +440,20 @@ function RelatedAnimalPicker({animals,
                   const isSelected = selectedAnimal?.id === animal.id
 
                   return (
-                    <button
+                    <Button
                       key={animal.id}
                       type="button"
+                      variant="secondary"
+                      showIcon={false}
                       onClick={() => onSelect(animal.id)}
-                      className="flex items-center justify-between gap-3 rounded-xl border border-slate-200 bg-white p-4 text-left transition hover:border-orange-200 hover:bg-orange-50"
+                      className="h-auto w-full justify-between rounded-xl p-4 text-left font-normal hover:border-orange-200 hover:bg-orange-50"
                     >
                       <span>
                         <span className="block font-extrabold text-slate-950">{animal.name}</span>
                         <span className="mt-1 block text-sm text-slate-500">{animal.status}</span>
                       </span>
                       {isSelected ? <Check className="h-5 w-5 text-primary" /> : null}
-                    </button>
+                    </Button>
                   )
                 })
               ) : (

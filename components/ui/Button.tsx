@@ -1,7 +1,7 @@
 import Link from 'next/link'
-import { Children, isValidElement } from 'react'
+import { Children, forwardRef, isValidElement } from 'react'
 import type { AnchorHTMLAttributes, ButtonHTMLAttributes, ReactNode } from 'react'
-import { ArrowRight } from 'lucide-react'
+import { ArrowRight, type LucideIcon } from 'lucide-react'
 
 import { cn } from '@/lib/utils'
 
@@ -84,7 +84,7 @@ function hasIcon(children: ReactNode): boolean {
   })
 }
 
-function withButtonIcon(children: ReactNode, size: ButtonSize, showIcon: boolean) {
+function withButtonIcon(children: ReactNode, size: ButtonSize, showIcon: boolean, Icon: LucideIcon = ArrowRight) {
   if (!showIcon || size === 'icon' || hasIcon(children)) {
     return children
   }
@@ -92,7 +92,7 @@ function withButtonIcon(children: ReactNode, size: ButtonSize, showIcon: boolean
   return (
     <>
       {children}
-      <ArrowRight aria-hidden="true" className="h-4 w-4" />
+      <Icon aria-hidden="true" className="h-4 w-4" />
     </>
   )
 }
@@ -101,25 +101,28 @@ type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   variant?: ButtonVariant
   size?: ButtonSize
   showIcon?: boolean
+  icon?: LucideIcon
 }
 
-export function Button({variant = 'primary',
+export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button({variant = 'primary',
   size = 'md',
   className,
   type = 'button',
   showIcon = true,
+  icon,
   children,
-  ...props}: ButtonProps) {
+  ...props}, ref) {
   return (
     <button
+      ref={ref}
       type={type}
       className={buttonClassName({ variant, size, className })}
       {...props}
     >
-      {withButtonIcon(children, size, showIcon)}
+      {withButtonIcon(children, size, showIcon, icon)}
     </button>
   )
-}
+})
 
 type LinkButtonProps = AnchorHTMLAttributes<HTMLAnchorElement> & {
   href: string
@@ -127,15 +130,17 @@ type LinkButtonProps = AnchorHTMLAttributes<HTMLAnchorElement> & {
   size?: ButtonSize
   children: ReactNode
   showIcon?: boolean
+  icon?: LucideIcon
 }
 
-export function LinkButton({href,
+export const LinkButton = forwardRef<HTMLAnchorElement, LinkButtonProps>(function LinkButton({href,
   variant = 'primary',
   size = 'md',
   className,
   children,
   showIcon = true,
-  ...props}: LinkButtonProps) {
+  icon,
+  ...props}, ref) {
   const rel = props.target === '_blank' && !props.rel ? 'noopener noreferrer' : props.rel
   const isAppRoute = href.startsWith('/') || href.startsWith('#')
   const sharedProps = {
@@ -146,30 +151,31 @@ export function LinkButton({href,
 
   if (!isAppRoute) {
     return (
-      <a href={href} {...sharedProps}>
-        {withButtonIcon(children, size, showIcon)}
+      <a ref={ref} href={href} {...sharedProps}>
+        {withButtonIcon(children, size, showIcon, icon)}
       </a>
     )
   }
 
   return (
-    <Link href={href} {...sharedProps}>
-      {withButtonIcon(children, size, showIcon)}
+    <Link ref={ref} href={href} {...sharedProps}>
+      {withButtonIcon(children, size, showIcon, icon)}
     </Link>
   )
-}
+})
 
 type IconButtonProps = ButtonProps & {
   label: string
 }
 
-export function IconButton({label,
+export const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(function IconButton({label,
   variant = 'light',
   size = 'icon',
   className,
-  ...props}: IconButtonProps) {
+  ...props}, ref) {
   return (
     <Button
+      ref={ref}
       variant={variant}
       size={size}
       className={cn('rounded-full', className)}
@@ -179,4 +185,4 @@ export function IconButton({label,
       {...props}
     />
   )
-}
+})

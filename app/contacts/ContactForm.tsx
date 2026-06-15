@@ -5,7 +5,7 @@ import { Check, Loader2, Paperclip, PawPrint, Send, X } from 'lucide-react'
 
 import { createContactAttachmentUploadAction, submitContactFormAction, type ContactFormState } from './actions'
 import { Button } from '@/components/ui/Button'
-import { Input, Select } from '@/components/ui/FormControls'
+import { Input, Select, Textarea } from '@/components/ui/FormControls'
 import UkrainianPhoneInput from '@/components/ui/UkrainianPhoneInput'
 import type { Animal } from '@/types'
 
@@ -118,12 +118,12 @@ export default function ContactForm({ animals }: ContactFormProps) {
       <div className="grid gap-4 md:grid-cols-2">
         <label className="space-y-2">
           <span className="text-sm font-semibold text-gray-700">Ваше ім&#39;я</span>
-          <input
+          <Input
             name="name"
             type="text"
             required
             placeholder="Ім&#39;я та прізвище"
-            className="w-full rounded-2xl border border-gray-100 bg-gray-50 px-4 py-4 font-medium outline-none transition focus:border-orange-300 focus:bg-white"
+            className="rounded-2xl border-gray-100 bg-gray-50 py-4 font-medium shadow-none transition hover:border-gray-200 focus:border-orange-300 focus:bg-white focus:ring-0"
           />
         </label>
         <label className="space-y-2">
@@ -188,12 +188,12 @@ export default function ContactForm({ animals }: ContactFormProps) {
 
       <label className="mt-4 block space-y-2">
         <span className="text-sm font-semibold text-gray-700">Повідомлення</span>
-        <textarea
+        <Textarea
           name="message"
           rows={5}
           required
           placeholder="Коротко опишіть, чим можемо допомогти"
-          className="w-full resize-none rounded-2xl border border-gray-100 bg-gray-50 px-4 py-4 font-medium outline-none transition focus:border-orange-300 focus:bg-white"
+          className="min-h-0 rounded-2xl border-gray-100 bg-gray-50 py-4 font-medium shadow-none transition hover:border-gray-200 focus:border-orange-300 focus:bg-white focus:ring-0"
         />
       </label>
 
@@ -316,11 +316,13 @@ function AnimalPickerModal({animals,
               const isSelected = selectedAnimalId === animal.id
 
               return (
-                <button
+                <Button
                   key={animal.id}
                   type="button"
+                  variant="secondary"
+                  showIcon={false}
                   onClick={() => onSelect(animal.id)}
-                  className="flex items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-white p-4 text-left transition hover:border-orange-200 hover:bg-orange-50"
+                  className="h-auto w-full justify-between rounded-2xl p-4 text-left font-normal hover:border-orange-200 hover:bg-orange-50"
                 >
                   <span>
                     <span className="block font-extrabold text-text-main">{animal.name}</span>
@@ -329,7 +331,7 @@ function AnimalPickerModal({animals,
                     </span>
                   </span>
                   {isSelected ? <Check className="h-5 w-5 text-primary" /> : null}
-                </button>
+                </Button>
               )
             })
           ) : (

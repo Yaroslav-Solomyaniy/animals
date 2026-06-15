@@ -2,194 +2,200 @@
 
 import {
   Activity,
-  ArrowRight,
   BadgeCheck,
   BedDouble,
-  CalendarCheck,
   ClipboardCheck,
   HeartPulse,
+  Loader2,
   type LucideIcon,
+  Mail,
   MessageCircle,
   Microscope,
-  PawPrint,
   Phone,
   Receipt,
   Shield,
+  ShieldCheck,
+  SquarePen,
   Stethoscope,
   Syringe,
+  Tag,
 } from 'lucide-react'
-import { motion } from 'motion/react'
+import { AnimatePresence, motion } from 'motion/react'
+import { useState } from 'react'
 
 import PageHero from '@/components/ui/PageHero'
 import Stack from '@/components/ui/Stack'
 import StorybookDecorations from '@/components/ui/StorybookDecorations'
-import { LinkButton } from '@/components/ui/Button'
-import { SITE_CONTACTS, SITE_ROUTES } from '@/lib/site-config'
+import { Button, LinkButton } from '@/components/ui/Button'
+import { Input, Select, Textarea } from '@/components/ui/FormControls'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger
+} from '@/components/ui/Dialog'
+import { SITE_CONTACTS } from '@/lib/site-config'
 import { cn } from '@/lib/utils'
+import SectionFrame from '@/components/ui/SectionFrame'
+import UkrainianPhoneInput from '@/components/ui/UkrainianPhoneInput'
+import SuccessApplication from '@/components/SuccessApplication'
 
 type PriceItem = {
-  name: string
-  price: string
-  unit?: string
-  note?: string
+  label: string
+  price?: string
 }
+
+type Accent = {
+  icon: string
+  price: string
+  border: string
+  bar: string
+  button: string
+}
+
+const ACCENTS = {
+  sky: {
+    icon: 'bg-sky-50 text-sky-600 ring-sky-100',
+    price: 'text-sky-700',
+    border: 'hover:border-sky-200',
+    bar: 'from-sky-400/70',
+    button: 'bg-sky-50 text-sky-700 ring-sky-100 hover:bg-sky-100 hover:text-sky-800 hover:ring-sky-200',
+  },
+  violet: {
+    icon: 'bg-violet-50 text-violet-600 ring-violet-100',
+    price: 'text-violet-700',
+    border: 'hover:border-violet-200',
+    bar: 'from-violet-400/70',
+    button: 'bg-violet-50 text-violet-700 ring-violet-100 hover:bg-violet-100 hover:text-violet-800 hover:ring-violet-200',
+  },
+  emerald: {
+    icon: 'bg-emerald-50 text-emerald-600 ring-emerald-100',
+    price: 'text-emerald-700',
+    border: 'hover:border-emerald-200',
+    bar: 'from-emerald-400/70',
+    button: 'bg-emerald-50 text-emerald-700 ring-emerald-100 hover:bg-emerald-100 hover:text-emerald-800 hover:ring-emerald-200',
+  },
+  orange: {
+    icon: 'bg-orange-50 text-orange-600 ring-orange-100',
+    price: 'text-orange-700',
+    border: 'hover:border-orange-200',
+    bar: 'from-orange-400/70',
+    button: 'bg-orange-50 text-orange-700 ring-orange-100 hover:bg-orange-100 hover:text-orange-800 hover:ring-orange-200',
+  },
+  amber: {
+    icon: 'bg-amber-50 text-amber-600 ring-amber-100',
+    price: 'text-amber-700',
+    border: 'hover:border-amber-200',
+    bar: 'from-amber-400/70',
+    button: 'bg-amber-50 text-amber-700 ring-amber-100 hover:bg-amber-100 hover:text-amber-800 hover:ring-amber-200',
+  },
+  rose: {
+    icon: 'bg-rose-50 text-rose-600 ring-rose-100',
+    price: 'text-rose-700',
+    border: 'hover:border-rose-200',
+    bar: 'from-rose-400/70',
+    button: 'bg-rose-50 text-rose-700 ring-rose-100 hover:bg-rose-100 hover:text-rose-800 hover:ring-rose-200',
+  },
+  cyan: {
+    icon: 'bg-cyan-50 text-cyan-600 ring-cyan-100',
+    price: 'text-cyan-700',
+    border: 'hover:border-cyan-200',
+    bar: 'from-cyan-400/70',
+    button: 'bg-cyan-50 text-cyan-700 ring-cyan-100 hover:bg-cyan-100 hover:text-cyan-800 hover:ring-cyan-200',
+  },
+} satisfies Record<string, Accent>
 
 type ServiceCategory = {
   icon: LucideIcon
   title: string
   description: string
-  features: Array<string>
-  tone: string
-  priceClass: string
-  glow: string
-  pricePanel: string
-  beamFrom: string
-  beamTo: string
-  prices: Array<PriceItem>
+  items: Array<PriceItem>
+  accent: keyof typeof ACCENTS
+  gradient: string
 }
 
 const serviceCategories: Array<ServiceCategory> = [
   {
     icon: Stethoscope,
-    title: 'Первинний прийом і терапія',
-    description: 'Клінічний огляд, збір анамнезу, оцінка загального стану та складання плану лікування.',
-    features: [
-      'Аускультація серця та легень',
-      'Оцінка слизових, шкіри, шерсті та лімфовузлів',
-      'Вимірювання температури і базових показників',
-      'Призначення терапії та контроль динаміки',
+    title: 'Прийом, терапія та діагностика',
+    description: 'Клінічний огляд, збір анамнезу, призначення терапії та інструментальна діагностика, зокрема УЗД.',
+    accent: 'sky',
+    gradient: 'radial-gradient(115% 80% at 100% 0%, rgba(56,189,248,0.08), transparent 55%)',
+    items: [
+      { label: 'Огляд ветеринарного лікаря', price: '200 ₴' },
+      { label: 'Послуга УЗД', price: '250 ₴' },
+      { label: 'Ін’єкції', price: '5 ₴' },
+      { label: 'Дача лікувальних препаратів (без вартості препаратів)', price: '20 ₴' },
     ],
-    tone: 'border-sky-200/80 bg-sky-500/10 text-sky-700',
-    priceClass: 'text-sky-600',
-    glow: 'bg-sky-400',
-    pricePanel: 'bg-[linear-gradient(145deg,rgba(224,242,254,0.95)_0%,rgba(255,255,255,0.88)_48%,rgba(255,247,237,0.75)_100%)]',
-    beamFrom: '#38bdf8',
-    beamTo: '#f97316',
-    prices: [
-      { name: 'Огляд ветеринарного лікаря', price: '200 ₴' },
-      { name: 'Ін’єкція', price: '5 ₴' },
-      { name: 'Лікувальні препарати', price: '20 ₴', note: 'без вартості препаратів' },
-    ],
-  },
-  {
-    icon: Microscope,
-    title: 'Діагностика та обстеження',
-    description: 'Сучасний підхід до діагностики: від первинного огляду до інструментальних і лабораторних досліджень.',
-    features: [
-      'Базова лабораторна діагностика',
-      'Оцінка стану перед операціями',
-      'Контроль після лікування',
-      'Підбір подальшого маршруту обстеження',
-    ],
-    tone: 'border-violet-200/80 bg-violet-500/10 text-violet-700',
-    priceClass: 'text-violet-600',
-    glow: 'bg-violet-400',
-    pricePanel: 'bg-[linear-gradient(145deg,rgba(237,233,254,0.95)_0%,rgba(255,255,255,0.9)_55%,rgba(224,242,254,0.7)_100%)]',
-    beamFrom: '#a78bfa',
-    beamTo: '#38bdf8',
-    prices: [{ name: 'УЗД-діагностика', price: '250 ₴' }],
   },
   {
     icon: Syringe,
     title: 'Вакцинація і профілактика',
     description: 'Профілактичні щеплення, обробки від паразитів і формування індивідуального графіка догляду.',
-    features: [
-      'Вакцинація від сказу та інфекцій',
-      'Дегельмінтизація та протипаразитарний захист',
-      'Підбір графіка ревакцинації',
-      'Консультація щодо домашнього догляду',
+    accent: 'emerald',
+    gradient: 'radial-gradient(120% 90% at 100% 100%, rgba(16,185,129,0.07), transparent 55%)',
+    items: [
+      { label: 'Вакцинація (без вартості вакцини)', price: '20 ₴' },
+      { label: 'Дегельмінтизація та протипаразитарна обробка', price: 'за запитом' },
+      { label: 'Підбір графіка ревакцинації', price: 'за запитом' },
     ],
-    tone: 'border-emerald-200/80 bg-emerald-500/10 text-emerald-700',
-    priceClass: 'text-emerald-600',
-    glow: 'bg-emerald-400',
-    pricePanel: 'bg-[linear-gradient(145deg,rgba(209,250,229,0.95)_0%,rgba(255,255,255,0.9)_52%,rgba(224,242,254,0.65)_100%)]',
-    beamFrom: '#22c55e',
-    beamTo: '#38bdf8',
-    prices: [{ name: 'Вакцинація', price: '20 ₴', note: 'без вартості вакцини' }],
   },
   {
     icon: HeartPulse,
     title: 'Хірургія та стерилізація',
     description: 'Планові оперативні втручання, стерилізація, кастрація та післяопераційний супровід.',
-    features: [
-      'Передопераційний огляд',
-      'Стерильні умови та сучасний інструментарій',
-      'Контроль стану після наркозу',
-      'Рекомендації з реабілітації вдома',
-    ],
-    tone: 'border-orange-200/80 bg-orange-500/10 text-orange-700',
-    priceClass: 'text-orange-600',
-    glow: 'bg-orange-400',
-    pricePanel: 'bg-[linear-gradient(145deg,rgba(255,237,213,0.96)_0%,rgba(255,255,255,0.9)_42%,rgba(254,226,226,0.72)_100%)]',
-    beamFrom: '#fb923c',
-    beamTo: '#f43f5e',
-    prices: [
-      { name: 'Стерилізація, до 5 кг', price: '500 ₴' },
-      { name: 'Стерилізація, до 10 кг', price: '600 ₴' },
-      { name: 'Стерилізація, до 20 кг', price: '650 ₴' },
-      { name: 'Стерилізація, до 30 кг', price: '850 ₴' },
-      { name: 'Стерилізація, до 40 кг', price: '1000 ₴' },
-      { name: 'Стерилізація, від 41 кг', price: '1100 ₴' },
-      { name: 'Вимушена евтаназія', price: 'від 500 ₴' },
+    accent: 'orange',
+    gradient: 'radial-gradient(120% 85% at 0% 100%, rgba(249,115,22,0.07), transparent 55%)',
+    items: [
+      { label: 'Стерилізація (оваріогістеректомія), до 5 кг', price: '500 ₴' },
+      { label: 'Стерилізація (оваріогістеректомія), до 10 кг', price: '600 ₴' },
+      { label: 'Стерилізація (оваріогістеректомія), до 20 кг', price: '650 ₴' },
+      { label: 'Стерилізація (оваріогістеректомія), до 30 кг', price: '850 ₴' },
+      { label: 'Стерилізація (оваріогістеректомія), до 40 кг', price: '1 000 ₴' },
+      { label: 'Стерилізація (оваріогістеректомія), від 41 кг', price: '1 100 ₴' },
+      { label: 'Вимушена евтаназія', price: '500–800 ₴' },
     ],
   },
   {
     icon: BedDouble,
     title: 'Проживання та харчування',
     description: 'Стаціонарний догляд після операцій, лікування та реабілітації з індивідуальним харчуванням.',
-    features: [
-      'Проживання у стаціонарі під наглядом',
-      'Звичайне та лікувальне харчування',
-      'Контроль стану під час відновлення',
-      'Догляд після хірургічних втручань',
-    ],
-    tone: 'border-amber-200/80 bg-amber-500/10 text-amber-700',
-    priceClass: 'text-amber-600',
-    glow: 'bg-amber-400',
-    pricePanel: 'bg-[linear-gradient(145deg,rgba(254,243,199,0.96)_0%,rgba(255,255,255,0.9)_50%,rgba(209,250,229,0.68)_100%)]',
-    beamFrom: '#f59e0b',
-    beamTo: '#22c55e',
-    prices: [
-      { name: 'Проживання у стаціонарі, до 20 кг', price: '80 ₴', unit: '/ день' },
-      { name: 'Проживання у стаціонарі, понад 20 кг', price: '120 ₴', unit: '/ день' },
-      { name: 'Харчування, до 20 кг', price: '120 ₴', unit: '/ день' },
-      { name: 'Лікувальне харчування, до 20 кг', price: '150 ₴', unit: '/ день' },
-      { name: 'Харчування, понад 20 кг', price: '150 ₴', unit: '/ день' },
-      { name: 'Лікувальне харчування, понад 20 кг', price: '180 ₴', unit: '/ день' },
+    accent: 'amber',
+    gradient: 'radial-gradient(110% 80% at 50% 0%, rgba(245,158,11,0.08), transparent 55%)',
+    items: [
+      { label: 'Проживання у стаціонарі, до 20 кг / день', price: '80 ₴' },
+      { label: 'Проживання у стаціонарі, понад 20 кг / день', price: '120 ₴' },
+      { label: 'Харчування, до 20 кг / день', price: '120 ₴' },
+      { label: 'Харчування лікувальними кормами, до 20 кг / день', price: '150 ₴' },
+      { label: 'Харчування, понад 20 кг / день', price: '150 ₴' },
+      { label: 'Харчування лікувальними кормами, понад 20 кг / день', price: '180 ₴' },
     ],
   },
   {
     icon: ClipboardCheck,
-    title: 'Документи і супровід',
-    description: 'Допомога з ветеринарними записами, консультаціями після усиновлення та планом профілактики.',
-    features: [
-      'Ветеринарні рекомендації після прийому',
-      'Пам’ятка з догляду за твариною',
-      'Підготовка до вакцинації або операції',
-      'Пояснення діагнозу людською мовою',
+    title: 'Документи, ідентифікація та супровід',
+    description: 'Чіпування, ветеринарні записи, консультації після усиновлення та план профілактики.',
+    accent: 'rose',
+    gradient: 'radial-gradient(120% 80% at 0% 0%, rgba(244,63,94,0.06), transparent 55%)',
+    items: [
+      { label: 'Чіпування тварин', price: '300 ₴' },
+      { label: 'Ветеринарні рекомендації після прийому', price: 'за запитом' },
+      { label: 'Пам’ятка з догляду та підготовка до вакцинації/операції', price: 'за запитом' },
     ],
-    tone: 'border-rose-200/80 bg-rose-500/10 text-rose-700',
-    priceClass: 'text-rose-600',
-    glow: 'bg-rose-400',
-    pricePanel: 'bg-[linear-gradient(145deg,rgba(255,228,230,0.95)_0%,rgba(255,255,255,0.92)_55%,rgba(255,247,237,0.7)_100%)]',
-    beamFrom: '#fb7185',
-    beamTo: '#f97316',
-    prices: [],
   },
   {
     icon: Shield,
     title: 'Гуманний відлов і транспортування',
     description: 'Безпечна робота з безпритульними тваринами, транспортування до центру та первинний ветогляд.',
-    features: ['Гуманні методи відлову', 'Безпечна фіксація тварини', 'Транспортування до центру', 'Оцінка стану після прибуття'],
-    tone: 'border-cyan-200/80 bg-cyan-500/10 text-cyan-700',
-    priceClass: 'text-cyan-600',
-    glow: 'bg-cyan-400',
-    pricePanel: 'bg-[linear-gradient(145deg,rgba(207,250,254,0.96)_0%,rgba(255,255,255,0.9)_52%,rgba(209,250,229,0.68)_100%)]',
-    beamFrom: '#06b6d4',
-    beamTo: '#22c55e',
-    prices: [
-      { name: 'Доставка автомобілем по місту', price: '30 ₴', unit: '/ км' },
-      { name: 'Чіпування тварини', price: '300 ₴' },
+    accent: 'cyan',
+    gradient: 'radial-gradient(120% 90% at 100% 100%, rgba(6,182,212,0.07), transparent 55%)',
+    items: [
+      { label: 'Доставка автомобілем (по місту), за 1 км', price: '30 ₴' },
+      { label: 'Гуманний відлов та фіксація тварини', price: 'за запитом' },
+      { label: 'Первинний ветогляд після прибуття', price: 'за запитом' },
     ],
   },
 ]
@@ -240,130 +246,231 @@ const vetDirections = [
   'Підготовка до усиновлення',
 ]
 
-const statPills = [
-  { icon: PawPrint, label: 'напрямків', getValue: () => serviceCategories.length },
-  { icon: Receipt, label: 'позицій у прайсі', getValue: () => serviceCategories.reduce((t, c) => t + c.prices.length, 0) },
-  { icon: CalendarCheck, label: 'з ПДВ', getValue: () => '01.2026' },
-] as const
+const priceHighlights = [
+  { icon: Tag, text: 'Ціна на кожній картці — без прихованих платежів' },
+  { icon: ShieldCheck, text: 'Точну суму підтверджуємо під час огляду' },
+  { icon: Receipt, text: 'Залежить від ваги, стану та обраних препаратів' },
+]
 
-function ServicePricePanel({ service, stacked }: { service: ServiceCategory; stacked: boolean }) {
-  if (service.prices.length === 0) {
-    return (
-      <div className={cn('relative flex min-h-full flex-col justify-center p-6 sm:p-8', service.pricePanel)}>
-        <span className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl border border-white/80 bg-white/90 text-primary shadow-sm">
-          <MessageCircle className="h-5 w-5" />
-        </span>
-        <p className="text-lg font-black text-gray-950">Індивідуальний супровід</p>
-        <p className="mt-2 max-w-sm text-sm leading-6 text-gray-600">
-          Вартість залежить від обсягу допомоги — уточнюйте при записі або за телефоном.
-        </p>
-        <LinkButton href={SITE_ROUTES.contacts} size="lg" className="mt-5 w-fit justify-center rounded-2xl !h-auto min-h-12 px-6 py-3">
-          Уточнити вартість
-          <ArrowRight className="h-5 w-5" />
-        </LinkButton>
-      </div>
-    )
+type SubmitStatus = 'idle' | 'loading' | 'success' | 'error'
+
+function OrderDialogContent({ service, accent, icon: Icon }: { service: ServiceCategory; accent: Accent; icon: LucideIcon }) {
+  const [category, setCategory] = useState(service.title)
+  const [phone, setPhone] = useState('')
+  const [weight, setWeight] = useState('')
+  const [date, setDate] = useState('')
+  const [comment, setComment] = useState('')
+  const [status, setStatus] = useState<SubmitStatus>('idle')
+
+  const mailHref = `${SITE_CONTACTS.emailHref}?subject=${encodeURIComponent(`Замовлення послуги: ${category}`)}&body=${encodeURIComponent(
+    [
+      `Категорія послуги: ${category}`,
+      phone ? `Телефон: ${phone}` : null,
+      weight ? `Орієнтовна вага тварини: ${weight} кг` : null,
+      date ? `Бажана дата: ${date}` : null,
+      comment ? `Коментар: ${comment}` : null,
+    ]
+      .filter(Boolean)
+      .join('\n')
+  )}`
+
+  function handleSubmit() {
+    if (!phone.trim()) {
+      setStatus('error')
+      return
+    }
+
+    setStatus('loading')
+
+    window.setTimeout(() => {
+      setStatus('success')
+      window.open(mailHref, '_blank')
+    }, 1400)
   }
 
-  const priceGridClass = stacked
-    ? service.prices.length > 3
-      ? 'grid gap-2 sm:grid-cols-2'
-      : 'grid gap-2 sm:grid-cols-2 lg:max-w-xl'
-    : service.prices.length > 4
-      ? 'grid gap-2 sm:grid-cols-2'
-      : 'space-y-2'
-
   return (
-    <div className={cn('relative flex min-h-full flex-col p-6 sm:p-8', service.pricePanel)}>
-      <div className="mb-4 flex items-center justify-between gap-3">
-        <div className="flex items-center gap-2">
-          <Receipt className="h-4 w-4 text-gray-400" />
-          <p className="text-xs font-black uppercase tracking-[0.18em] text-gray-500">Вартість</p>
-        </div>
-        <span className="rounded-full border border-white/70 bg-white/70 px-3 py-1 text-xs font-bold text-gray-500 backdrop-blur-sm">
-          {service.prices.length} {service.prices.length === 1 ? 'позиція' : 'позицій'}
-        </span>
-      </div>
+    <DialogContent
+      className={cn('transition-[max-width] duration-300 ease-out', status === 'success' ? 'max-w-2xl sm:max-w-3xl' : 'max-w-lg')}
+    >
+      {status !== 'success' && (
+        <DialogHeader>
+          <span className={cn('mb-3 inline-flex h-12 w-12 items-center justify-center rounded-2xl ring-1', accent.icon)}>
+            <Icon className="h-6 w-6" />
+          </span>
+          <DialogTitle>Замовлення послуги</DialogTitle>
+          <DialogDescription>Заповніть коротку форму — ми зв&apos;яжемося з вами, щоб узгодити деталі та точну вартість.</DialogDescription>
+        </DialogHeader>
+      )}
 
-      <div className={priceGridClass}>
-        {service.prices.map((item) => (
-          <div
-            key={item.name}
-            className="rounded-2xl border border-white/50 bg-white/60 px-4 py-3.5 backdrop-blur-sm transition duration-300 hover:border-orange-200/80 hover:bg-white/90 hover:shadow-[0_12px_32px_rgba(15,23,42,0.06)]"
+      <AnimatePresence mode="wait" initial={false}>
+        {status === 'success' ? (
+          <SuccessApplication />
+        ) : (
+          <motion.div
+            key="form"
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.25, ease: 'easeOut' }}
           >
-            <p className="hyphens-none text-sm font-bold leading-relaxed text-gray-700">{item.name}</p>
-            <p className={cn('mt-2 text-xl font-black tabular-nums', service.priceClass)}>
-              {item.price}
-              {item.unit && <span className="ml-1.5 text-sm font-bold text-gray-400">{item.unit}</span>}
-            </p>
-            {item.note && <p className="mt-1.5 text-xs font-medium text-gray-400">{item.note}</p>}
-          </div>
-        ))}
-      </div>
-    </div>
+            <form className="space-y-4" onSubmit={(event) => event.preventDefault()}>
+              <div>
+                <label className="mb-1.5 block text-sm font-bold text-gray-900" htmlFor="order-category">
+                  Категорія послуги
+                </label>
+                <Select id="order-category" value={category} onChange={(event) => setCategory(event.target.value)}>
+                  {serviceCategories.map((item) => (
+                    <option key={item.title} value={item.title}>
+                      {item.title}
+                    </option>
+                  ))}
+                </Select>
+              </div>
+
+              <div>
+                <label className="mb-1.5 block text-sm font-bold text-gray-900" htmlFor="order-phone">
+                  Ваш телефон
+                </label>
+                <UkrainianPhoneInput
+                  id="order-phone"
+                  onChange={(event) => {
+                    setPhone(event.target.value)
+                    if (status === 'error') {
+                      setStatus('idle')
+                    }
+                  }}
+                />
+                {status === 'error' && (
+                  <p className="mt-1.5 text-sm font-semibold text-rose-500">Вкажіть номер телефону для зв&apos;язку.</p>
+                )}
+              </div>
+
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div>
+                  <label className="mb-1.5 block text-sm font-bold text-gray-900" htmlFor="order-weight">
+                    Вага тварини, кг
+                  </label>
+                  <Input
+                    id="order-weight"
+                    type="number"
+                    min={0}
+                    step="0.1"
+                    inputMode="decimal"
+                    placeholder="наприклад, 12"
+                    value={weight}
+                    onChange={(event) => setWeight(event.target.value)}
+                  />
+                </div>
+
+                <div>
+                  <label className="mb-1.5 block text-sm font-bold text-gray-900" htmlFor="order-date">
+                    Бажана дата <span className="font-medium text-gray-400">(необов&apos;язково)</span>
+                  </label>
+                  <Input id="order-date" type="date" value={date} onChange={(event) => setDate(event.target.value)} />
+                </div>
+              </div>
+
+              <div>
+                <label className="mb-1.5 block text-sm font-bold text-gray-900" htmlFor="order-comment">
+                  Коментар
+                </label>
+                <Textarea
+                  id="order-comment"
+                  placeholder="Опишіть стан тварини, побажання або додаткові деталі"
+                  value={comment}
+                  onChange={(event) => setComment(event.target.value)}
+                />
+              </div>
+            </form>
+
+            <DialogFooter className="flex-col sm:flex-row sm:justify-end">
+              <Button
+                type="button"
+                variant="primary"
+                size="md"
+                className="w-full sm:w-auto"
+                disabled={status === 'loading'}
+                onClick={handleSubmit}
+              >
+                {status === 'loading' ? (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    Надсилаємо...
+                  </>
+                ) : (
+                  <>
+                    <Mail className="h-4 w-4" />
+                    Надіслати заявку
+                  </>
+                )}
+              </Button>
+            </DialogFooter>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </DialogContent>
   )
 }
 
 function ServiceCard({ service, index }: { service: ServiceCategory; index: number }) {
   const Icon = service.icon
-  const isFeatured = index === 0
-  const useSideBySide = isFeatured
+  const accent = ACCENTS[service.accent]
 
   return (
     <motion.article
-      initial={{ opacity: 0, y: 36 }}
+      initial={{ opacity: 0, y: 28 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-80px' }}
-      transition={{ duration: 0.55, delay: Math.min(index * 0.05, 0.25) }}
+      transition={{ duration: 0.5, delay: Math.min(index * 0.05, 0.25) }}
       className={cn(
-        'group relative overflow-hidden rounded-[40px] border border-white/80 bg-white/75 shadow-[0_32px_90px_-42px_rgba(15,23,42,0.22)] backdrop-blur-md transition duration-500 hover:border-orange-200/70 hover:shadow-[0_42px_110px_-36px_rgba(242,116,56,0.18)]',
-        isFeatured ? 'lg:col-span-2' : ''
+        'group relative flex h-full flex-col overflow-hidden rounded-[28px] border border-gray-200/80 bg-white shadow-[0_22px_60px_-40px_rgba(15,23,42,0.25)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_34px_80px_-44px_rgba(15,23,42,0.28)]',
+        accent.border
       )}
     >
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0" style={{ background: service.gradient }} />
       <div
         aria-hidden="true"
-        className={cn('pointer-events-none absolute -right-16 -top-16 h-56 w-56 rounded-full opacity-30 blur-3xl', service.glow)}
-      />
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0 opacity-[0.22] mix-blend-multiply"
-        style={{
-          backgroundImage: 'url(/noise.webp)',
-          backgroundRepeat: 'repeat',
-          backgroundSize: '140px 140px',
-        }}
+        className={cn('pointer-events-none absolute inset-x-0 top-0 h-[3px] bg-gradient-to-r to-transparent', accent.bar)}
       />
 
-      <div className={cn('relative grid', useSideBySide ? 'lg:grid-cols-[1.15fr_minmax(300px,0.85fr)]' : 'grid-cols-1')}>
-        <div className="relative p-7 sm:p-9 lg:p-10">
-          <div className="mb-6 flex items-start justify-between gap-4">
-            <span
-              className={cn('flex h-[4.5rem] w-[4.5rem] items-center justify-center rounded-[22px] border backdrop-blur-sm', service.tone)}
-            >
-              <Icon className="h-8 w-8" />
-            </span>
-            <span className="rounded-full border border-gray-100 bg-gray-50/90 px-3 py-1.5 text-[11px] font-black uppercase tracking-[0.2em] text-gray-400">
-              {String(index + 1).padStart(2, '0')}
-            </span>
-          </div>
-
-          <h3 className="text-2xl font-black tracking-tight text-gray-950 sm:text-[1.75rem]">{service.title}</h3>
-          <p className="mt-3 max-w-xl text-[15px] leading-7 text-gray-600">{service.description}</p>
-
-          <div className="mt-7 flex flex-wrap gap-2">
-            {service.features.map((feature) => (
-              <span
-                key={feature}
-                className="rounded-full border border-gray-100/90 bg-gray-50/80 px-3.5 py-2 text-xs font-bold text-gray-600 backdrop-blur-sm transition group-hover:border-orange-100 group-hover:bg-orange-50/70 group-hover:text-orange-800"
-              >
-                {feature}
-              </span>
-            ))}
+      <div className="relative flex flex-1 flex-col p-6 sm:p-8">
+        <div className="flex items-center gap-4">
+          <span className={cn('flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl ring-1', accent.icon)}>
+            <Icon className="h-7 w-7" />
+          </span>
+          <div>
+            <h3 className="text-xl font-black tracking-tight text-gray-900 sm:text-[1.4rem]">{service.title}</h3>
           </div>
         </div>
 
-        <div className={cn('border-t border-white/70', useSideBySide ? 'lg:border-l lg:border-t-0' : '')}>
-          <ServicePricePanel service={service} stacked={!useSideBySide} />
+        <p className="mt-3 text-sm leading-6 text-gray-600">{service.description}</p>
+
+        <ul className="mt-5 divide-y divide-gray-100 border-t border-gray-100 pt-1">
+          {service.items.map((item) => (
+            <li key={item.label} className="flex items-baseline justify-between gap-4 py-2.5">
+              <span className="text-sm leading-5 text-gray-600">{item.label}</span>
+              <span className={cn('shrink-0 text-sm font-black tabular-nums whitespace-nowrap', accent.price)}>{item.price}</span>
+            </li>
+          ))}
+        </ul>
+
+        <div className="mt-auto flex justify-end pt-6">
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button
+                variant="ghost"
+                size="md"
+                className={cn(
+                  'w-fit min-w-[12rem] justify-center rounded-full px-5 font-bold ring-1 ring-inset transition-colors',
+                  accent.button
+                )}
+              >
+                Замовити
+              </Button>
+            </DialogTrigger>
+
+            <OrderDialogContent service={service} accent={accent} icon={Icon} />
+          </Dialog>
         </div>
       </div>
     </motion.article>
@@ -381,10 +488,19 @@ export default function ServicesPage() {
         icon={BadgeCheck}
         actions={
           <>
-            <LinkButton href={SITE_ROUTES.contacts} size="lg">
-              Записатися на послугу
-              <ArrowRight className="h-5 w-5" />
-            </LinkButton>
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button size="lg" icon={SquarePen}>
+                  Записатися на послугу
+                </Button>
+              </DialogTrigger>
+
+              <OrderDialogContent
+                service={serviceCategories[0]}
+                accent={ACCENTS[serviceCategories[0].accent]}
+                icon={serviceCategories[0].icon}
+              />
+            </Dialog>
             <LinkButton href={SITE_CONTACTS.phoneHref} variant="outline" size="lg">
               <Phone className="h-5 w-5" />
               {SITE_CONTACTS.phoneDisplay}
@@ -413,7 +529,7 @@ export default function ServicesPage() {
         />
       </PageHero>
 
-      <section className="px-4 pb-16 sm:px-6 lg:px-8">
+      <section className="px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 22 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -461,7 +577,7 @@ export default function ServicesPage() {
         </motion.div>
       </section>
 
-      <section className="relative px-4 py-16 sm:px-6 lg:px-8">
+      <section className="relative px-4 pb-16 pt-14 sm:px-6 lg:px-8">
         <div
           aria-hidden="true"
           className="pointer-events-none absolute left-1/2 top-0 h-[520px] w-[min(92vw,1100px)] -translate-x-1/2 rounded-full bg-[radial-gradient(circle,rgba(242,116,56,0.12)_0%,transparent_68%)] blur-3xl"
@@ -471,58 +587,90 @@ export default function ServicesPage() {
           className="pointer-events-none absolute right-[8%] top-32 h-72 w-72 rounded-full bg-[radial-gradient(circle,rgba(45,106,79,0.1)_0%,transparent_70%)] blur-3xl"
         />
 
-        <div className="relative mx-auto max-w-336">
+        <SectionFrame className="mx-auto max-w-336 p-6 sm:p-8 lg:p-10">
           <motion.div
             initial={{ opacity: 0, y: 24 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: '-60px' }}
             transition={{ duration: 0.5 }}
-            className="mb-14 lg:mb-16"
+            className="mb-8 sm:mb-10 md:mb-12 lg:mb-14"
           >
-            <p className="text-sm font-black uppercase tracking-[0.22em] text-primary">Прайс-лист</p>
-            <h2 className="mt-4 max-w-4xl text-4xl font-black tracking-tight text-gray-950 sm:text-5xl lg:text-[3.35rem] lg:leading-[1.04]">
-              Прозорі ціни.{' '}
-              <span className="bg-linear-to-r from-primary via-orange-500 to-emerald-600 bg-clip-text text-transparent">
-                Чесна допомога.
-              </span>
-            </h2>
-            <p className="mt-5 max-w-2xl text-base leading-7 text-gray-600 sm:text-lg">
-              Кожен напрямок — це опис послуги та актуальна вартість в одній картці. Без прихованих доплат і зайвих перемикань між
-              розділами.
-            </p>
+            <div className="grid gap-10 lg:grid-cols-[1fr_1.15fr] lg:items-center lg:gap-12">
+              <div className="max-w-3xl">
+                <span className="inline-flex items-center gap-2 rounded-full border border-primary/15 bg-primary/8 px-4 py-1.5 text-sm font-black uppercase tracking-[0.22em] text-primary">
+                  <Receipt className="h-4 w-4" />
+                  Прайс-лист
+                </span>
+                <h2 className="mt-5 text-4xl uppercase font-black tracking-tight text-gray-950 sm:text-5xl lg:text-[3rem] lg:leading-[1.04]">
+                  З радістю допоможемо{' '}
+                  <span className="bg-linear-to-r from-primary via-orange-500 to-primary-second bg-clip-text text-transparent">
+                    Вашим улюбленцям
+                  </span>
+                </h2>
+                <p className="mt-5 max-w-2xl text-base leading-7 text-gray-600 sm:text-lg">
+                  Орієнтовна вартість кожної послуги — одразу на картці. Точну суму підтверджуємо під час огляду: вона залежить від ваги,
+                  стану тварини та обраних препаратів.
+                </p>
 
-            <div className="mt-8 flex flex-wrap items-center gap-3">
-              {statPills.map((pill) => {
-                const Icon = pill.icon
-                const value = pill.getValue()
-                return (
-                  <div
-                    key={pill.label}
-                    className="inline-flex items-center gap-3 rounded-2xl border border-white/80 bg-white/70 px-4 py-3 shadow-[0_16px_40px_-28px_rgba(15,23,42,0.35)] backdrop-blur-md"
-                  >
-                    <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-orange-50 text-primary">
-                      <Icon className="h-4 w-4" />
+                <div className="mt-7 flex flex-wrap gap-3">
+                  {priceHighlights.map((item) => {
+                    const Icon = item.icon
+                    return (
+                      <span
+                        key={item.text}
+                        className="inline-flex items-center gap-2 rounded-full border border-gray-200/80 bg-white px-4 py-2 text-sm font-semibold text-gray-700 shadow-[0_8px_24px_-18px_rgba(15,23,42,0.4)]"
+                      >
+                        <Icon className="h-4 w-4 text-primary" />
+                        {item.text}
+                      </span>
+                    )
+                  })}
+                </div>
+              </div>
+
+              <motion.div
+                initial={{ opacity: 0, scale: 0.94 }}
+                whileInView={{ opacity: 1, scale: 1, transition: { duration: 0.6, ease: 'easeOut' } }}
+                whileHover={{ rotate: 0, transition: { duration: 0.15, ease: 'easeOut' } }}
+                viewport={{ once: true }}
+                style={{ rotate: -3 }}
+                className="relative mx-auto w-full max-w-3xl lg:mx-0"
+              >
+                <div
+                  aria-hidden="true"
+                  className="absolute -inset-8 -z-10 rounded-[36px] bg-[radial-gradient(circle,rgba(242,116,56,0.16)_0%,transparent_70%)] blur-2xl"
+                />
+                <div className="rounded-[32px] border border-gray-200/80 bg-white p-8 shadow-[0_30px_70px_-40px_rgba(15,23,42,0.35)] sm:p-10">
+                  <div className="flex items-end gap-4">
+                    <span className="text-pink-600 bg-clip-text text-[6.5rem] font-black leading-none tabular-nums sm:text-[8.5rem]">
+                      {serviceCategories.length}
                     </span>
-                    <div>
-                      <p className="text-lg font-black leading-none text-gray-950">{value}</p>
-                      <p className="mt-1 text-xs font-bold text-gray-500">{pill.label}</p>
-                    </div>
+                    <span className="pb-3 text-[42px] font-black leading-tight text-gray-900">
+                      категорій
+                      <br />
+                      послуг
+                    </span>
                   </div>
-                )
-              })}
-              <LinkButton href={SITE_ROUTES.contacts} size="lg" className="ml-auto rounded-2xl">
-                Записатися на послугу
-                <ArrowRight className="h-5 w-5" />
-              </LinkButton>
+                  <p className="mt-5 text-base leading-7 text-gray-500">
+                    Від профілактики й вакцинації до хірургії та стаціонарного догляду — для кожної категорії одразу вказана орієнтовна
+                    ціна.
+                  </p>
+                  <div className="mt-6 h-px w-full bg-gray-100" />
+                  <div className="mt-5 flex items-center gap-2 text-sm font-semibold text-gray-400">
+                    <ShieldCheck className="h-4 w-4 text-emerald-500" />
+                    Без прихованих платежів
+                  </div>
+                </div>
+              </motion.div>
             </div>
           </motion.div>
 
-          <div className="grid gap-6 lg:grid-cols-2">
+          <div className="grid gap-4 sm:grid-cols-2">
             {serviceCategories.map((service, index) => (
               <ServiceCard key={service.title} service={service} index={index} />
             ))}
           </div>
-        </div>
+        </SectionFrame>
       </section>
     </main>
   )

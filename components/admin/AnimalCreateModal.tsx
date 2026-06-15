@@ -472,19 +472,18 @@ export default function AnimalCreateModal({initialAnimal,
                             >
                               <Trash2 className="h-5 w-5" />
                             </IconButton>
-                            <button
-                              type="button"
+                            <IconButton
+                              label="Зробити головним"
+                              variant="light"
                               onClick={() => setMainPhoto(photo.id)}
                               disabled={isPending}
                               className={cn(
-                                'absolute right-3 top-3 inline-flex h-10 w-10 items-center justify-center rounded-full border bg-white/90 shadow-sm transition disabled:pointer-events-none disabled:opacity-50',
+                                'absolute right-3 top-3 h-10 w-10 border',
                                 photo.is_main ? 'border-amber-300 text-amber-500' : 'border-slate-200 text-slate-400 hover:text-amber-500'
                               )}
-                              aria-label="Зробити головним"
-                              title="Зробити головним"
                             >
                               <Star className={cn('h-5 w-5', photo.is_main && 'fill-current')} />
-                            </button>
+                            </IconButton>
                           </div>
                         </div>
                       ))}
