@@ -12,6 +12,7 @@ export interface Animal {
   imageUrl: string
   galleryImages?: string[]
   character: string[]
+  color?: string
   isVaccinated: boolean
   isNeutered: boolean
   description: string

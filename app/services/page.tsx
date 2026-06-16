@@ -40,6 +40,7 @@ import {
 import { SITE_CONTACTS } from '@/lib/site-config'
 import { cn } from '@/lib/utils'
 import SectionFrame from '@/components/ui/SectionFrame'
+import Section from '@/components/ui/Section'
 import UkrainianPhoneInput from '@/components/ui/UkrainianPhoneInput'
 import SuccessApplication from '@/components/SuccessApplication'
 
@@ -529,13 +530,13 @@ export default function ServicesPage() {
         />
       </PageHero>
 
-      <section className="px-4 sm:px-6 lg:px-8">
+      <Section>
         <motion.div
           initial={{ opacity: 0, y: 22 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: '-80px' }}
           transition={{ duration: 0.5 }}
-          className="orange-neon relative mx-auto max-w-336 overflow-hidden rounded-[40px] bg-gray-950 p-6 text-white sm:p-8 lg:p-10"
+          className="orange-neon relative overflow-hidden rounded-[40px] bg-gray-950 p-6 text-white sm:p-8 lg:p-10"
         >
           <div
             aria-hidden="true"
@@ -575,7 +576,7 @@ export default function ServicesPage() {
             </div>
           </div>
         </motion.div>
-      </section>
+      </Section>
 
       <section className="relative px-4 pb-16 pt-14 sm:px-6 lg:px-8">
         <div

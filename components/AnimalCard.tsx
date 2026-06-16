@@ -21,6 +21,7 @@ import {LinkButton} from '@/components/ui/Button'
 import {buildDonateHref} from '@/lib/donate-search-params'
 import {buildAnimalHref} from '@/lib/site-config'
 import type {Animal} from '@/types'
+import {cn} from '@/lib/utils'
 
 type AnimalCardProps = {
   animal: Animal
@@ -29,10 +30,12 @@ type AnimalCardProps = {
   index?: number
 }
 
-export default function AnimalCard({animal,
+export default function AnimalCard({
+  animal,
   className = '',
   detailsHref,
-  index = 0,}: AnimalCardProps) {
+  index = 0,
+}: AnimalCardProps) {
   const treatHref = buildDonateHref({animalId: animal.id, gift: 'treat'})
   const primaryHref = detailsHref ?? buildAnimalHref(animal.id)
 
@@ -81,8 +84,7 @@ export default function AnimalCard({animal,
         </div>
       </Link>
 
-      <div className="relative z-10 -mt-7 flex flex-1 flex-col rounded-t-[26px]  bg-white px-3.5 pt-4 pb-3.5 shadow-[0_-22px_50px_-36px_rgba(15,23,42,0.72)] sm:px-4 sm:pt-4.5 sm:pb-4">
-
+      <div className="relative z-10 -mt-7 flex flex-1 flex-col rounded-t-[26px] bg-white px-3.5 pt-4 pb-3.5 shadow-[0_-22px_50px_-36px_rgba(15,23,42,0.72)] sm:px-4 sm:pt-4.5 sm:pb-4">
         <div className="grid grid-cols-2 gap-1.5">
           <FactTile icon={VenusAndMars} label="Стать" value={animal.gender} />
           <FactTile icon={Ruler} label="Розмір" value={animal.size} />
@@ -105,11 +107,7 @@ export default function AnimalCard({animal,
         </div>
 
         <div className="mt-auto flex gap-2 pt-4">
-          <LinkButton
-            href={primaryHref}
-            variant="dark"
-            className="h-11 flex-1 rounded-xl text-sm"
-          >
+          <LinkButton href={primaryHref} variant="dark" className="h-11 flex-1 rounded-xl text-sm">
             Деталі
             <ArrowRight className="h-4 w-4" />
           </LinkButton>
@@ -133,70 +131,37 @@ function getNeuterActionLabel(gender: Animal['gender']) {
   return gender === 'Самець' ? 'Кастрація' : 'Стерилізація'
 }
 
-function FactTile({icon: Icon,
-  label,
-  value,
-  className,}: {
-  icon: LucideIcon
-  label: string
-  value: string
-  className?: string
+function FactTile({icon: Icon, label, value, className}: {
+  icon: LucideIcon; label: string; value: string; className?: string
 }) {
   return (
-    <div
-      className={[
-        'flex min-h-12 min-w-0 items-center gap-2.5 rounded-xl border border-gray-100 bg-gray-50/80 px-2.5 py-2',
-        className ?? '',
-      ].join(' ')}
-    >
+    <div className={cn('flex min-h-12 min-w-0 items-center gap-2.5 rounded-xl border border-gray-100 bg-gray-50/80 px-2.5 py-2', className)}>
       <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-white text-secondary shadow-sm">
         <Icon className="h-4 w-4" />
       </span>
       <span className="min-w-0">
-        <span className="block text-[9px] leading-none font-black tracking-wide text-gray-400 uppercase">
-          {label}
-        </span>
-        <span className="mt-1 block truncate text-[13px] leading-4 font-extrabold text-gray-700">
-          {value}
-        </span>
+        <span className="block text-[9px] leading-none font-black tracking-wide text-gray-400 uppercase">{label}</span>
+        <span className="mt-1 block truncate text-[13px] leading-4 font-extrabold text-gray-700">{value}</span>
       </span>
     </div>
   )
 }
 
-function CareStatus({icon: Icon,
-  isReady,
-  label,
-  value,}: {
-  icon: LucideIcon
-  isReady: boolean
-  label: string
-  value: ReactNode
+function CareStatus({icon: Icon, isReady, label, value}: {
+  icon: LucideIcon; isReady: boolean; label: string; value: ReactNode
 }) {
   return (
-    <div
-      className={[
-        'flex min-h-13 min-w-0 items-center gap-2 rounded-xl border px-2 py-2',
-        isReady
-          ? 'border-emerald-100 bg-emerald-50 text-emerald-800'
-          : 'border-orange-100 bg-orange-50 text-orange-700',
-      ].join(' ')}
-    >
-      <span
-        className={[
-          'flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-white shadow-sm',
-          isReady ? 'text-secondary' : 'text-primary',
-        ].join(' ')}
-      >
+    <div className={cn('flex min-h-13 min-w-0 items-center gap-2 rounded-xl border px-2 py-2',
+      isReady ? 'border-emerald-100 bg-emerald-50 text-emerald-800' : 'border-orange-100 bg-orange-50 text-orange-700'
+    )}>
+      <span className={cn('flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-white shadow-sm',
+        isReady ? 'text-secondary' : 'text-primary'
+      )}>
         <Icon className="h-3.5 w-3.5" />
       </span>
       <span className="min-w-0 flex-1">
-        <span className="block truncate text-[8.5px] leading-none font-black tracking-wide uppercase opacity-70">
-          {label}
-        </span>
-        <span className="mt-1 block truncate text-[12px] leading-4 font-extrabold">
-          {value}
-        </span>
+        <span className="block truncate text-[8.5px] leading-none font-black tracking-wide uppercase opacity-70">{label}</span>
+        <span className="mt-1 block truncate text-[12px] leading-4 font-extrabold">{value}</span>
       </span>
     </div>
   )

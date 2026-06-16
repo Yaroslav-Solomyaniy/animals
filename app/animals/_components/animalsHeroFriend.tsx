@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import type { LucideIcon } from 'lucide-react'
 import { ArrowDown, HeartHandshake, PawPrint, ShieldCheck, Smile, Sparkles, Stethoscope } from 'lucide-react'
-import { AnimatePresence, motion, useMotionTemplate, useMotionValue, useReducedMotion, useSpring, useTransform } from 'motion/react'
+import { AnimatePresence, animate, motion, useMotionTemplate, useMotionValue, useReducedMotion, useSpring, useTransform } from 'motion/react'
 import { LinkButton } from '@/components/ui/Button'
 
 type Benefit = {
@@ -19,7 +19,7 @@ type Benefit = {
 const benefits: Benefit[] = [
   {
     id: 'health',
-    short: 'Здоровʼя',
+    short: 'Здоров\'я',
     hint: 'огляд, щеплення',
     title: 'Оглянутий і вакцинований',
     text: 'Кожен хвостик проходить огляд ветеринара, щеплення та лікування ще до знайомства з вами.',
@@ -31,7 +31,7 @@ const benefits: Benefit[] = [
     short: 'Турбота',
     hint: 'стерилізація',
     title: 'Стерилізований відповідально',
-    text: 'Ми наперед дбаємо про здоровʼя тварини — це безпечно для неї та спокійно для вас.',
+    text: 'Ми наперед дбаємо про здоров\'я тварини — це безпечно для неї та спокійно для вас.',
     icon: ShieldCheck,
     accent: 'bg-emerald-50 text-secondary ring-emerald-100',
   },
@@ -60,26 +60,44 @@ const AUTO_ADVANCE = 4200
 export default function AnimalsHeroFriend() {
   const [index, setIndex] = useState(0)
   const [isPaused, setIsPaused] = useState(false)
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null)
   const prefersReducedMotion = useReducedMotion()
 
-  // Cursor spotlight + subtle 3D tilt.
   const pointerX = useMotionValue(50)
   const pointerY = useMotionValue(50)
   const spotlight = useMotionTemplate`radial-gradient(420px circle at ${pointerX}% ${pointerY}%, rgba(242,116,56,0.08), transparent 72%)`
   const tiltX = useSpring(useTransform(pointerY, [0, 100], [3, -3]), { stiffness: 150, damping: 20 })
   const tiltY = useSpring(useTransform(pointerX, [0, 100], [-3.5, 3.5]), { stiffness: 150, damping: 20 })
 
-  useEffect(() => {
-    if (isPaused || prefersReducedMotion) {
-      return
-    }
+  const barWidth = useMotionValue('0%')
 
+  useEffect(() => {
+    if (isPaused || prefersReducedMotion) return
     const timer = window.setInterval(() => {
       setIndex((current) => (current + 1) % benefits.length)
     }, AUTO_ADVANCE)
-
     return () => window.clearInterval(timer)
   }, [isPaused, prefersReducedMotion])
+
+  // Auto-advance bar
+  useEffect(() => {
+    if (hoveredIndex !== null) return
+    barWidth.set('0%')
+    if (isPaused || prefersReducedMotion) return
+    const controls = animate(barWidth, '100%', { duration: AUTO_ADVANCE / 1000, ease: 'linear' })
+    return () => controls.stop()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [index, isPaused, prefersReducedMotion, hoveredIndex])
+
+  // Hover: bar reaches hovered tab
+  useEffect(() => {
+    if (hoveredIndex === null) return
+    animate(barWidth, `${((hoveredIndex + 1) / benefits.length) * 100}%`, {
+      duration: 0.4,
+      ease: [0.22, 1, 0.36, 1],
+    })
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [hoveredIndex])
 
   function handlePointerMove(event: React.PointerEvent<HTMLDivElement>) {
     const rect = event.currentTarget.getBoundingClientRect()
@@ -112,7 +130,7 @@ export default function AnimalsHeroFriend() {
         <PawPrint aria-hidden="true" className="storybook-float pointer-events-none absolute -top-8 -right-8 h-36 w-36 text-primary/6" />
 
         <div className="relative flex items-center justify-between gap-4" style={{ transform: 'translateZ(24px)' }}>
-          <span className="inline-flex items-center gap-2 rounded-full bg-orange-50 px-8 py-4 border  text-xs font-extrabold tracking-wider text-primary uppercase">
+          <span className="inline-flex items-center gap-2 rounded-full bg-orange-50 px-8 py-4 border text-xs font-extrabold tracking-wider text-primary uppercase">
             <Sparkles className="storybook-spark h-3.5 w-3.5" />
             тут на тебе вже чекає друг
           </span>
@@ -148,9 +166,9 @@ export default function AnimalsHeroFriend() {
           </AnimatePresence>
         </div>
 
-        {/* Benefit icons */}
+        {/* Benefit tabs */}
         <div
-          className="relative  flex items-start justify-between gap-2 border-t border-gray-100 pt-5 sm:gap-4"
+          className="relative flex items-start justify-between gap-2 border-t border-gray-100 pt-5 sm:gap-4"
           style={{ transform: 'translateZ(12px)' }}
         >
           {benefits.map((benefit, i) => {
@@ -162,6 +180,8 @@ export default function AnimalsHeroFriend() {
                 key={benefit.id}
                 type="button"
                 onClick={() => setIndex(i)}
+                onMouseEnter={() => setHoveredIndex(i)}
+                onMouseLeave={() => setHoveredIndex(null)}
                 aria-pressed={isActive}
                 className="group flex flex-1 flex-col items-center gap-2 rounded-2xl outline-none focus-visible:ring-4 focus-visible:ring-primary/20"
               >
@@ -175,18 +195,10 @@ export default function AnimalsHeroFriend() {
                 >
                   <BenefitIcon className="h-5 w-5 sm:h-6 sm:w-6" />
                 </motion.span>
-                <span
-                  className={`text-center text-[16px] leading-tight font-extrabold transition-colors ${
-                    isActive ? 'text-primary' : 'text-gray-400 group-hover:text-gray-500'
-                  }`}
-                >
+                <span className={`text-center text-[16px] leading-tight font-extrabold transition-colors ${isActive ? 'text-primary' : 'text-gray-400 group-hover:text-gray-500'}`}>
                   {benefit.short}
                 </span>
-                <span
-                  className={`text-center text-[14px] leading-tight font-semibold transition-colors ${
-                    isActive ? 'text-gray-500' : 'text-gray-400'
-                  }`}
-                >
+                <span className={`text-center text-[14px] leading-tight font-semibold transition-colors ${isActive ? 'text-gray-500' : 'text-gray-400'}`}>
                   {benefit.hint}
                 </span>
               </button>
@@ -194,17 +206,9 @@ export default function AnimalsHeroFriend() {
           })}
         </div>
 
+        {/* Progress bar */}
         <div className="relative mt-4 h-1 w-full overflow-hidden rounded-full bg-gray-100" style={{ transform: 'translateZ(12px)' }}>
-          <motion.span
-            key={index}
-            className="block h-full rounded-full bg-primary"
-            initial={{ width: '0%' }}
-            animate={{ width: isPaused || prefersReducedMotion ? '40%' : '100%' }}
-            transition={{
-              duration: isPaused || prefersReducedMotion ? 0.3 : AUTO_ADVANCE / 1000,
-              ease: 'linear',
-            }}
-          />
+          <motion.span className="block h-full rounded-full bg-primary" style={{ width: barWidth }} />
         </div>
 
         <div className="relative mt-5" style={{ transform: 'translateZ(12px)' }}>

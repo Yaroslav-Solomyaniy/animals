@@ -9,6 +9,7 @@ import {
   sanitizeDonationAmount,
 } from '@/lib/donate-search-params'
 import { SITE_ROUTES } from '@/lib/site-config'
+import Section from '@/components/ui/Section'
 
 type DonatePageProps = {
   searchParams: Promise<{
@@ -24,7 +25,7 @@ export default async function DonatePage({ searchParams }: DonatePageProps) {
     <main className="storybook-bg min-h-screen text-text-main">
       <StorybookDecorations />
 
-      <section className="relative z-10 mx-auto max-w-336 px-4 py-10 sm:px-6 lg:px-8 lg:py-14">
+      <Section contained={false} className="relative z-10 py-10 lg:py-14">
         <LinkButton
           href={SITE_ROUTES.animals}
           variant="light"
@@ -40,7 +41,7 @@ export default async function DonatePage({ searchParams }: DonatePageProps) {
           gift={gift}
           initialAmount={sanitizeDonationAmount(amount)}
         />
-      </section>
+      </Section>
     </main>
   )
 }

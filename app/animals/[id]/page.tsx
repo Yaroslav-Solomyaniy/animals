@@ -1,3 +1,4 @@
+import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import AnimalProfileClient from './AnimalProfileClient'
 import { getPublicAnimalBySlugOrId, getRelatedPublicAnimals } from '@/lib/animals'
@@ -8,7 +9,7 @@ type AnimalPageProps = {
   }>
 }
 
-export async function generateMetadata({ params }: AnimalPageProps) {
+export async function generateMetadata({ params }: AnimalPageProps): Promise<Metadata> {
   const { id } = await params
   const animal = await getPublicAnimalBySlugOrId(id)
 
@@ -26,7 +27,7 @@ export default async function AnimalPage({ params }: AnimalPageProps) {
   }
 
   const galleryImages = animal.galleryImages ?? [animal.imageUrl]
-  const relatedAnimals = await getRelatedPublicAnimals(animal, 3)
+  const relatedAnimals = await getRelatedPublicAnimals(animal, 15)
 
   return (
     <AnimalProfileClient

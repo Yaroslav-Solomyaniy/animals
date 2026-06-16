@@ -4,6 +4,7 @@ import { ArrowRight, HeartHandshake, Leaf, PawPrint, ShieldCheck, Smile, Sparkle
 import { LinkButton } from '@/components/ui/Button'
 import DotGrid from '@/components/ui/DotGrid'
 import { SITE_CONTACTS, SITE_ROUTES } from '@/lib/site-config'
+import Section from '@/components/ui/Section'
 import BorderGlow from '@/components/ui/BorderGlow'
 import GoWalks from '@/components/GoWalks'
 
@@ -82,8 +83,7 @@ export default async function WalksPage() {
           returnDuration={1.2}
         />
       </div>
-      <section className="overflow-hidden px-4 py-10 sm:px-6 sm:py-14 lg:px-8 lg:py-18">
-        <div className="mx-auto grid max-w-336 min-w-0 items-center gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:gap-12">
+      <Section className="overflow-hidden py-10 sm:py-14 lg:py-18" innerClassName="grid min-w-0 items-center gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:gap-12">
           <div className="min-w-0">
             <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-orange-200 bg-white px-4 py-2 text-xs font-extrabold uppercase tracking-[0.16em] text-primary shadow-sm">
               <PawPrint className="h-4 w-4" />
@@ -143,11 +143,9 @@ export default async function WalksPage() {
               </div>
             </div>
           </div>
-        </div>
-      </section>
+      </Section>
 
-      <section className="px-4 pb-8 pt-8 sm:px-6 lg:px-8">
-        <div className="mx-auto grid max-w-336 gap-4 md:grid-cols-3">
+      <Section className="pb-8 pt-8" innerClassName="grid gap-4 md:grid-cols-3">
           {benefits.map((benefit) => {
             const Icon = benefit.icon
 
@@ -163,11 +161,9 @@ export default async function WalksPage() {
               </BorderGlow>
             )
           })}
-        </div>
-      </section>
+      </Section>
 
-      <section className="px-4 py-8 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-336 rounded-3xl border border-orange-100 bg-white p-5 shadow-[0_24px_80px_rgba(31,41,55,0.06)] sm:p-8 lg:p-10">
+      <Section className="py-8" innerClassName="rounded-3xl border border-orange-100 bg-white p-5 shadow-[0_24px_80px_rgba(31,41,55,0.06)] sm:p-8 lg:p-10">
           <div className="grid gap-8 lg:grid-cols-[0.75fr_1.25fr] lg:items-start">
             <div>
               <p className="text-sm font-extrabold uppercase tracking-[0.16em] text-primary">Як це працює</p>
@@ -195,11 +191,9 @@ export default async function WalksPage() {
               ))}
             </div>
           </div>
-        </div>
-      </section>
+      </Section>
 
-      <section className="px-4 py-8 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-336">
+      <Section className="py-8">
           <div className="mb-6 flex flex-col justify-between gap-4 md:flex-row md:items-end">
             <div>
               <p className="text-sm font-extrabold uppercase tracking-[0.16em] text-primary">Оберіть формат</p>
@@ -225,8 +219,7 @@ export default async function WalksPage() {
               )
             })}
           </div>
-        </div>
-      </section>
+      </Section>
 
       <GoWalks />
     </main>

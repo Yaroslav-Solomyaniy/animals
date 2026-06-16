@@ -2,6 +2,7 @@
 
 import useEmblaCarousel from 'embla-carousel-react'
 import {ArrowRight, ChevronLeft, ChevronRight} from 'lucide-react'
+import Section from '@/components/ui/Section'
 
 import AnimalCard from '@/components/AnimalCard'
 import {LinkButton} from '@/components/ui/Button'

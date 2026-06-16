@@ -12,6 +12,7 @@ import { reports } from '@/lib/news'
 import { getPublishedNews } from '@/lib/public-news'
 import { buildNewsHref, SITE_ROUTES } from '@/lib/site-config'
 import JoinMission from "@/components/JoinMission";
+import Section from '@/components/ui/Section'
 
 export default async function ReportAndNewsPage() {
   const news = await getPublishedNews()
@@ -19,8 +20,7 @@ export default async function ReportAndNewsPage() {
   return (
     <main className=" min-h-screen text-gray-950">
       <StorybookDecorations />
-      <section className="px-4 pt-14 sm:px-6 lg:px-8">
-        <div className="relative mx-auto max-w-336 overflow-hidden rounded-[44px] bg-[linear-gradient(135deg,#f27438_0%,#e76f51_58%,#2d6a4f_150%)] text-white shadow-[0_30px_110px_rgba(242,116,56,0.22)]">
+      <Section className="pt-14" innerClassName="relative overflow-hidden rounded-[44px] bg-[linear-gradient(135deg,#f27438_0%,#e76f51_58%,#2d6a4f_150%)] text-white shadow-[0_30px_110px_rgba(242,116,56,0.22)]">
           <div className="absolute -bottom-18 right-0 h-56 w-[74%] rounded-tl-[120px] bg-secondary/88" />
           <div className="absolute right-[7%] top-16 hidden h-60 w-[34rem] rounded-[999px] bg-secondary/84 lg:block" />
           <div className="absolute right-[25%] top-12 hidden h-36 w-36 rounded-full bg-secondary/84 lg:block" />
@@ -64,11 +64,10 @@ export default async function ReportAndNewsPage() {
               </div>
             </div>
           </div>
-        </div>
-      </section>
+      </Section>
 
-      <section className="px-4 pt-14 sm:px-6 lg:px-8">
-        <SectionFrame className="mx-auto max-w-336 p-4 sm:p-6 lg:p-8">
+      <Section className="pt-14">
+        <SectionFrame className="p-4 sm:p-6 lg:p-8">
           <div>
             <div className="mb-6 flex items-end justify-between gap-4 border-b border-orange-100/70 pb-6">
               <div>
@@ -133,10 +132,10 @@ export default async function ReportAndNewsPage() {
             )}
           </div>
         </SectionFrame>
-      </section>
+      </Section>
 
-      <section className="px-4 py-14 sm:px-6 lg:px-8">
-        <SectionFrame className="mx-auto max-w-336 p-4 sm:p-6 lg:p-8">
+      <Section className="py-14">
+        <SectionFrame className="p-4 sm:p-6 lg:p-8">
             <div className="mb-6 flex items-end justify-between gap-4 border-b border-orange-100/70 pb-6">
               <div>
                 <p className="text-sm font-semibold uppercase tracking-[0.18em] text-orange-600">
@@ -189,7 +188,7 @@ export default async function ReportAndNewsPage() {
               </div>
             )}
         </SectionFrame>
-      </section>
+      </Section>
     </main>
   )
 }

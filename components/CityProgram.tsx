@@ -17,6 +17,7 @@ import {motion} from 'motion/react'
 
 import {LinkButton} from '@/components/ui/Button'
 import {SITE_ROUTES} from '@/lib/site-config'
+import Section from '@/components/ui/Section'
 
 const services = [
     {
@@ -115,9 +116,7 @@ const cards: Array<Card> = [
 
 export default function CityProgram() {
     return (
-        <section id="services" className="bg-white py-12 sm:py-16 md:py-20 lg:py-24">
-            <div
-                className="mx-auto grid max-w-336 items-center gap-10 px-4 sm:px-6 md:gap-12 lg:grid-cols-[0.95fr_1.05fr] lg:gap-x-14 lg:gap-y-0 lg:px-8">
+        <Section id="services" className="bg-white py-12 sm:py-16 md:py-20 lg:py-24" innerClassName="grid items-center gap-10 md:gap-12 lg:grid-cols-[0.95fr_1.05fr] lg:gap-x-14 lg:gap-y-0">
                 <div className="relative order-2 lg:order-1 lg:row-span-2 lg:min-h-190">
                     <div
                         className="relative mx-auto h-115 max-w-85.75 sm:h-130 sm:max-w-130 md:h-170 md:max-w-3xl lg:h-190 lg:max-w-180">
@@ -223,7 +222,6 @@ export default function CityProgram() {
                         <ArrowRight className="h-4 w-4"/>
                     </LinkButton>
                 </div>
-            </div>
-        </section>
+        </Section>
     )
 }

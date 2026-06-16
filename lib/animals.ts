@@ -119,12 +119,11 @@ export async function getPublicAnimalBySlugOrId(slugOrId: string): Promise<Anima
     return mapAnimalRow(animal, photos.get(animal.id) ?? [])
 }
 
-export async function getRelatedPublicAnimals(animal: Animal, limit = 3): Promise<Animal[]> {
-    const {animals} = await getPublicAnimals({from: 0, to: 1000}, 3)
+export async function getRelatedPublicAnimals(animal: Animal, limit = 15): Promise<Animal[]> {
+    const {animals} = await getPublicAnimals({from: 0, to: 1000})
 
     return animals
         .filter((item) => item.id !== animal.id)
-        .filter((item) => item.size === animal.size || item.gender === animal.gender)
         .slice(0, limit)
 }
 

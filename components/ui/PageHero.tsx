@@ -25,7 +25,7 @@ export default function PageHero({
   const sectionSpacing = spacing === 'compact' ? 'py-10 sm:py-14 lg:py-20' : 'py-16 lg:py-24'
 
   return (
-    <section className={`relative isolate overflow-hidden border-b border-gray-100/70 ${sectionSpacing}`}>
+    <section className={`relative isolate overflow-hidden border-b border-gray-100/70 px-4 sm:px-6 lg:px-8 ${sectionSpacing}`}>
       <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(255,250,245,0.58),rgba(249,250,251,0.28))]" />
       <HeroTile className="left-6 top-10 hidden h-16 w-16 rotate-[-8deg] rounded-2xl border-orange-100 bg-white/75 sm:block" />
       <HeroTile className="right-10 top-20 hidden h-12 w-12 rotate-10 rounded-xl border-emerald-100 bg-white/75 lg:block [animation-delay:900ms]" />
@@ -34,7 +34,7 @@ export default function PageHero({
 
       <div
         className={[
-          'relative mx-auto max-w-336 px-4 sm:px-6 lg:px-8',
+          'relative mx-auto max-w-336',
           isCentered ? 'text-center' : 'grid items-center gap-14 lg:grid-cols-[0.92fr_1.08fr]',
         ].join(' ')}
       >

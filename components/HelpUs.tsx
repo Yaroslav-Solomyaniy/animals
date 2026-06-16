@@ -6,7 +6,8 @@ import {AnimatePresence, motion} from "motion/react";
 import {CheckCircle2, ChevronRight, Footprints, Gift, Heart, MapPin, PhoneCall, X} from "lucide-react";
 import {getFormProps, getInputProps, useForm} from "@conform-to/react";
 import {parseWithZod} from "@conform-to/zod/v4";
-import {createVolunteerRequestAction} from "@/app/volunteer/actions";
+import {createVolunteerRequestAction} from "@/app/volunteer/actions"
+import Section from '@/components/ui/Section';
 import {volunteerFormSchema} from "@/lib/admin-schemas";
 import {Field} from "@/components/admin/forms/shared";
 import {Input} from "@/components/ui/FormControls";
@@ -23,8 +24,7 @@ const helpInputClass =
 const HelpUs = () => {
 
     return (
-        <section id="help" className="contacts-gradient-honey py-16 sm:py-20 lg:py-24">
-            <div className="mx-auto max-w-336 px-4 sm:px-6 lg:px-8">
+        <Section id="help" className="contacts-gradient-honey py-16 sm:py-20 lg:py-24">
                 <h2 className="mb-10 text-center text-3xl font-extrabold text-text-main sm:mb-14 sm:text-4xl md:text-5xl lg:mb-20">
                     Як ви можете нам допомогти
                 </h2>
@@ -36,8 +36,7 @@ const HelpUs = () => {
                         <VolunteerForm/>
                     </div>
                 </div>
-            </div>
-        </section>
+        </Section>
     );
 };
 

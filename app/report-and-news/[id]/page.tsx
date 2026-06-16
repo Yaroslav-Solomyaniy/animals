@@ -19,6 +19,7 @@ import { getPublicAnimalBySlugOrId } from '@/lib/animals'
 import type { NewsContentBlock } from '@/lib/news'
 import { getPublishedNewsBySlugOrId, getRelatedPublishedNews } from '@/lib/public-news'
 import { buildAnimalHref, buildNewsHref, SITE_ROUTES } from '@/lib/site-config'
+import Section from '@/components/ui/Section'
 
 type NewsPageProps = {
   params: Promise<{
@@ -26,7 +27,7 @@ type NewsPageProps = {
   }>
 }
 
-export async function generateMetadata({ params }: NewsPageProps) {
+export async function generateMetadata({ params }: NewsPageProps): Promise<Metadata> {
   const { id } = await params
   const article = await getPublishedNewsBySlugOrId(id)
 
@@ -54,9 +55,9 @@ export default async function NewsDetailsPage({ params }: NewsPageProps) {
     <main className="storybook-bg min-h-screen text-gray-950">
       <StorybookDecorations />
 
-      <div className="mx-auto max-w-336 px-4 pt-8 sm:px-6 lg:px-8">
+      <Section contained={false} className="pt-8" as="div">
         <BackLink />
-      </div>
+      </Section>
 
       <section className="px-4 pb-8 pt-5 sm:px-6 lg:px-8">
         <article className="mx-auto grid max-w-336 gap-5 overflow-hidden rounded-[28px] border border-orange-100 bg-white p-3 shadow-[0_28px_90px_rgba(15,23,42,0.10)] transition hover:border-orange-200 hover:shadow-[0_32px_100px_rgba(242,116,56,0.14)] lg:grid-cols-[minmax(0,1fr)_380px]">

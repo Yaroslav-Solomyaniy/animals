@@ -9,6 +9,7 @@ import {
 import PageHero from '@/components/ui/PageHero'
 import SectionFrame from '@/components/ui/SectionFrame'
 import StorybookDecorations from '@/components/ui/StorybookDecorations'
+import Section from '@/components/ui/Section'
 import { Button, LinkButton } from '@/components/ui/Button'
 import helpDogsImage from '@/public/DogHelp.png'
 import { SITE_CONTACTS, SITE_ROUTES } from '@/lib/site-config'
@@ -127,8 +128,7 @@ export default function HelpForUsPage() {
         </div>
       </PageHero>
 
-      <section className="px-4 mt-14 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-336">
+      <Section className="mt-14">
           <SectionFrame className="p-4 sm:p-6 lg:p-8">
             <div className="grid gap-6 md:grid-cols-3">
               {helpWays.map((way) => {
@@ -313,11 +313,10 @@ export default function HelpForUsPage() {
               </p>
             </div>
           </SectionFrame>
-        </div>
-      </section>
+      </Section>
 
-      <section className="px-4 py-14 sm:px-6 lg:px-8">
-        <SectionFrame className="mx-auto max-w-336 p-6 text-center sm:p-8 lg:p-10">
+      <Section className="py-14">
+        <SectionFrame className="p-6 text-center sm:p-8 lg:p-10">
           <h2 className="text-3xl font-black text-gray-950">Маєте питання?</h2>
           <p className="mt-4 text-lg leading-8 text-gray-600">
             Зв’яжіться з нами, і ми підкажемо, який формат допомоги буде
@@ -340,7 +339,7 @@ export default function HelpForUsPage() {
             </LinkButton>
           </div>
         </SectionFrame>
-      </section>
+      </Section>
     </main>
   )
 }

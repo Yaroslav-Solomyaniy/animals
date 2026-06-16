@@ -27,6 +27,7 @@ import {
   SITE_SOCIAL_LINKS,
 } from '@/lib/site-config'
 import { getSupabaseBrowserClient } from '@/lib/supabase/client'
+import Section from '@/components/ui/Section'
 
 const socialLinks = [
   {
@@ -94,7 +95,7 @@ export default function Footer() {
 
   return (
     <footer className="bg-text-main text-white">
-      <div className="mx-auto max-w-336 px-4 py-9 sm:px-6 sm:py-10 lg:px-8 lg:py-12">
+      <Section as="div" contained={false} className="py-9 sm:py-10 lg:py-12">
         <div className="grid grid-cols-1 gap-y-10 sm:grid-cols-2 sm:gap-x-8 lg:grid-cols-[minmax(0,1.25fr)_minmax(0,0.8fr)_minmax(0,0.85fr)_minmax(0,1fr)] lg:gap-x-8 xl:grid-cols-[360px_220px_240px_300px] xl:justify-between">
           <section className="min-w-0 overflow-hidden">
             <Link href={SITE_ROUTES.home} className="flex items-start gap-3">
@@ -216,7 +217,7 @@ export default function Footer() {
           </p>
           <p className="shrink-0">Розробка та дизайн by Yaroslav Solomianyi.</p>
         </div>
-      </div>
+      </Section>
     </footer>
   )
 }

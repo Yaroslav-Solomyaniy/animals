@@ -1,3 +1,4 @@
+import Section from '@/components/ui/Section'
 import {
   HeartHandshake,
   ShieldCheck,
@@ -61,8 +62,7 @@ const trustCards: Array<TrustCard> = [
 
 export default function TrustValues() {
   return (
-    <section className="bg-white py-12 sm:py-16 md:py-20 lg:py-24">
-      <div className="mx-auto max-w-336 px-4 sm:px-6 lg:px-8">
+    <Section className="bg-white py-12 sm:py-16 md:py-20 lg:py-24">
         <div className="mb-8 max-w-3xl sm:mb-10 md:mb-12 lg:mb-14">
           <p className="mb-3 text-xs font-extrabold uppercase tracking-[0.14em] text-primary sm:text-sm">
             Відкрита допомога
@@ -122,7 +122,6 @@ export default function TrustValues() {
             )
           })}
         </div>
-      </div>
-    </section>
+    </Section>
   )
 }

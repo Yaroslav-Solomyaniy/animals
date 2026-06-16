@@ -3,11 +3,11 @@ import { ChevronRight, Clock3, Phone, Stethoscope } from 'lucide-react'
 
 import { LinkButton } from '@/components/ui/Button'
 import { SITE_CONTACTS, SITE_ROUTES } from '@/lib/site-config'
+import Section from '@/components/ui/Section'
 
 const QuickContactCTA = () => {
   return (
-    <section id="quick_contacts" className="pb-12 sm:pb-16 lg:pb-24">
-      <div className="mx-auto max-w-336 px-4 sm:px-6 lg:px-8">
+    <Section id="quick_contacts" className="pb-12 sm:pb-16 lg:pb-24">
         <div className="grid gap-4 md:gap-5 lg:grid-cols-[0.85fr_1.15fr] lg:gap-6">
           <div className="grid gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-1">
             <LinkButton
@@ -45,10 +45,9 @@ const QuickContactCTA = () => {
 
           <Link
             href={SITE_ROUTES.services}
-            className="group relative overflow-hidden rounded-3xl border border-primary/20 bg-linear-to-br from-[#fff7ed] via-white to-[#ecfeff] p-4 text-left text-text-main shadow-sm transition duration-300 hover:-translate-y-0.5 hover:border-primary/35 hover:shadow-[0_18px_55px_rgba(15,23,42,0.08)] sm:rounded-4xl sm:p-6 md:p-8"
+            className="group relative overflow-hidden rounded-3xl border border-orange-200/60 bg-gradient-to-br from-orange-50 to-white p-4 text-left text-text-main shadow-sm transition duration-300 hover:-translate-y-0.5 hover:border-orange-300/60 hover:shadow-[0_18px_55px_rgba(15,23,42,0.08)] sm:rounded-4xl sm:p-6 md:p-8"
           >
-            <span className="absolute -top-14 right-4 h-24 w-24 rounded-full bg-primary/15 blur-2xl transition-transform group-hover:scale-125 sm:right-8 sm:h-28 sm:w-28" />
-            <span className="absolute -bottom-16 left-1/4 h-28 w-28 rounded-full bg-sky-300/20 blur-2xl transition-transform group-hover:scale-125 sm:left-1/3 sm:h-32 sm:w-32" />
+            <span className="absolute -top-10 -right-10 h-40 w-40 rounded-full bg-orange-100/60 transition-transform group-hover:scale-110" />
 
             <span className="relative z-10 flex flex-col gap-4 md:flex-row md:items-center md:gap-5">
               <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-primary text-white sm:h-14 sm:w-14 md:h-16 md:w-16 md:rounded-3xl">
@@ -73,8 +72,7 @@ const QuickContactCTA = () => {
             </span>
           </Link>
         </div>
-      </div>
-    </section>
+    </Section>
   )
 }
 

@@ -1,17 +1,25 @@
 'use client'
 
-import type { LucideIcon } from 'lucide-react'
-import { ArrowLeft, ArrowRight, BookOpen, Search, Sparkles } from 'lucide-react'
+import {
+  ArrowLeft,
+  ArrowRight,
+  BookOpen,
+  Search,
+  Sparkles,
+} from 'lucide-react'
+import type { FC } from 'react'
+
 import PageHero from '@/components/ui/PageHero'
 import SectionFrame from '@/components/ui/SectionFrame'
+import Section from '@/components/ui/Section'
 import StorybookDecorations from '@/components/ui/StorybookDecorations'
 import { Button } from '@/components/ui/Button'
 import type { Animal } from '@/types'
 import AnimalsFilter from '@/app/animals/_components/animalsFilter'
 import AnimalsHeroFriend from '@/app/animals/_components/animalsHeroFriend'
 import AnimalCard from '@/components/AnimalCard'
-import type { FC } from 'react'
 import { useAnimalUrlFilters } from '@/hooks/useAnimalUrlFilters'
+import GoWalks from '@/components/GoWalks'
 
 interface Props {
   animals: Animal[]
@@ -28,6 +36,7 @@ export const AnimalsCatalogClient: FC<Props> = ({ animals, foundCount, paginatio
   return (
     <main className="storybook-bg min-h-screen overflow-hidden text-text-main">
       <StorybookDecorations />
+
       <PageHero
         eyebrow="Книга хвостиків"
         title="Вітаємо на сторінці, де починається дружба"
@@ -37,98 +46,37 @@ export const AnimalsCatalogClient: FC<Props> = ({ animals, foundCount, paginatio
         <AnimalsHeroFriend />
       </PageHero>
 
-      <section id="animals-catalog" className="relative z-20 mx-auto -mt-10 max-w-336 scroll-mt-24 px-4 pb-12 sm:px-6 lg:px-8">
+      {/* Catalog */}
+      <Section id="animals-catalog" className="relative z-20 scroll-mt-24 pb-16">
+        {/* Filters */}
         <SectionFrame className="rounded-[28px] border-gray-100 p-4 sm:p-5">
-          <div className="relative flex flex-col gap-4">
-            <AnimalsFilter />
-
-            <div className="grid gap-4 lg:grid-cols-3">
-              {/*<FilterGroup label="Стать" icon={Dog}>*/}
-              {/*    {genderOptions.map((option) => (*/}
-              {/*        <FilterButton*/}
-              {/*            key={option.value}*/}
-              {/*            isActive={filters.gender === option.value}*/}
-              {/*            onClick={() => updateFilter('gender', option.value)}*/}
-              {/*        >*/}
-              {/*            {option.label}*/}
-              {/*        </FilterButton>*/}
-              {/*    ))}*/}
-              {/*</FilterGroup>*/}
-
-              {/*<FilterGroup label="Розмір" icon={PawPrint}>*/}
-              {/*    {sizeOptions.map((option) => (*/}
-              {/*        <FilterButton*/}
-              {/*            key={option.value}*/}
-              {/*            isActive={filters.size === option.value}*/}
-              {/*            onClick={() => updateFilter('size', option.value)}*/}
-              {/*        >*/}
-              {/*            {option.label}*/}
-              {/*        </FilterButton>*/}
-              {/*    ))}*/}
-              {/*</FilterGroup>*/}
-
-              {/*<FilterGroup label="Готовність" icon={Sparkles}>*/}
-              {/*    {careOptions.map((option) => (*/}
-              {/*        <FilterButton*/}
-              {/*            key={option.value}*/}
-              {/*            isActive={filters.care === option.value}*/}
-              {/*            onClick={() => updateFilter('care', option.value)}*/}
-              {/*        >*/}
-              {/*            {option.label}*/}
-              {/*        </FilterButton>*/}
-              {/*    ))}*/}
-              {/*</FilterGroup>*/}
-
-              {/*{filters.sort === 'name' ? (*/}
-              {/*    <FilterGroup label="Порядок імені" icon={SlidersHorizontal}>*/}
-              {/*        {sortOrderOptions.map((option) => (*/}
-              {/*            <FilterButton*/}
-              {/*                key={option.value}*/}
-              {/*                isActive={filters.order === option.value}*/}
-              {/*                onClick={() => updateFilter('order', option.value)}*/}
-              {/*            >*/}
-              {/*                {option.label}*/}
-              {/*            </FilterButton>*/}
-              {/*        ))}*/}
-              {/*    </FilterGroup>*/}
-              {/*) : null}*/}
-            </div>
-          </div>
+          <AnimalsFilter />
         </SectionFrame>
 
-        <div className="mb-8 mt-12 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-          <div>
-            <p className="inline-flex items-center gap-2 rounded-full bg-orange-50 px-3 py-1 text-xs font-extrabold uppercase tracking-wider text-primary">
-              <Sparkles className="h-3.5 w-3.5" />
-              Знайдено {foundCount}
-            </p>
-            <h2 className="mt-3 text-4xl font-extrabold text-text-main">Розділ пригод</h2>
-          </div>
-
-          {/*{activeFiltersCount > 0 && (*/}
-          {/*    <Button*/}
-          {/*        type="button"*/}
-          {/*        // onClick={resetFilters}*/}
-          {/*        variant="outline"*/}
-          {/*        size="sm"*/}
-          {/*        className="h-11 w-full sm:w-auto"*/}
-          {/*    >*/}
-          {/*        <PawPrint className="h-4 w-4"/>*/}
-          {/*        Скинути фільтри ({activeFiltersCount})*/}
-          {/*    </Button>*/}
-          {/*)}*/}
+        {/* Catalog header */}
+        <div className="mb-7 mt-10">
+          <p className="inline-flex items-center gap-2 rounded-full bg-orange-50 px-3 py-1 text-xs font-extrabold uppercase tracking-wider text-primary">
+            <Sparkles className="h-3.5 w-3.5" />
+            Знайдено {foundCount}
+          </p>
+          <h2 className="mt-3 text-4xl font-extrabold text-text-main">Розділ пригод</h2>
         </div>
 
+        {/* Output */}
         {animals.length === 0 ? (
           <EmptyState onReset={resetFilters} />
         ) : (
           <>
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {animals.map((animal, index) => (
-                <AnimalCard key={animal.id} animal={animal} index={index} className="shadow-soft" />
+                <AnimalCard
+                  key={animal.id}
+                  animal={animal}
+                  index={index}
+                  className="shadow-soft"
+                />
               ))}
             </div>
-
             <Pagination
               currentPage={pagination.currentPage}
               totalPages={pagination.totalPages}
@@ -136,69 +84,35 @@ export const AnimalsCatalogClient: FC<Props> = ({ animals, foundCount, paginatio
             />
           </>
         )}
-      </section>
+      </Section>
+
+      <GoWalks />
     </main>
   )
 }
 
-function FilterGroup({ label, icon: Icon, children }: { label: string; icon: LucideIcon; children: React.ReactNode }) {
-  return (
-    <div>
-      <div className="mb-2 flex items-center gap-2 text-xs font-bold tracking-wider text-gray-400 uppercase">
-        <Icon className="h-3.5 w-3.5 text-primary" />
-        {label}
-      </div>
-      <div className="flex flex-wrap gap-2">{children}</div>
-    </div>
-  )
-}
-
-function FilterButton({ isActive, onClick, children }: { isActive: boolean; onClick: () => void; children: React.ReactNode }) {
-  return (
-    <Button type="button" onClick={onClick} variant={isActive ? 'primary' : 'outline'} size="sm">
-      {children}
-    </Button>
-  )
-}
-
-function Pagination({ currentPage, totalPages, onChange }: { currentPage: number; totalPages: number; onChange: (page: number) => void }) {
-  const pages = Array.from({ length: totalPages }, (_, index) => index + 1)
-
+function Pagination({
+  currentPage,
+  totalPages,
+  onChange,
+}: {
+  currentPage: number
+  totalPages: number
+  onChange: (page: number) => void
+}) {
+  const pages = Array.from({ length: totalPages }, (_, i) => i + 1)
   return (
     <nav className="mt-10 flex flex-wrap items-center justify-center gap-2">
-      <Button
-        type="button"
-        disabled={currentPage === 1}
-        onClick={() => onChange(currentPage - 1)}
-        variant="primary"
-        size="sm"
-        className="h-11"
-      >
+      <Button type="button" disabled={currentPage === 1} onClick={() => onChange(currentPage - 1)} variant="primary" size="sm" className="h-11">
         <ArrowLeft className="h-4 w-4" />
         Назад
       </Button>
-
       {pages.map((page) => (
-        <Button
-          key={page}
-          type="button"
-          onClick={() => onChange(page)}
-          variant={currentPage === page ? 'primary' : 'outline'}
-          size="icon"
-          className="h-11 w-11"
-        >
+        <Button key={page} type="button" onClick={() => onChange(page)} variant={currentPage === page ? 'primary' : 'outline'} size="icon" className="h-11 w-11">
           {page}
         </Button>
       ))}
-
-      <Button
-        type="button"
-        disabled={currentPage === totalPages}
-        onClick={() => onChange(currentPage + 1)}
-        variant="primary"
-        size="sm"
-        className="h-11"
-      >
+      <Button type="button" disabled={currentPage === totalPages} onClick={() => onChange(currentPage + 1)} variant="primary" size="sm" className="h-11">
         Далі
         <ArrowRight className="h-4 w-4" />
       </Button>
@@ -214,14 +128,7 @@ function EmptyState({ onReset }: { onReset: () => void }) {
       </div>
       <h3 className="mt-5 text-2xl font-extrabold text-text-main">Цю сторінку ще треба знайти</h3>
       <p className="mx-auto mt-2 max-w-xl text-gray-500">Спробуйте змінити розмір, стать або статус готовності.</p>
-      <Button type="button" onClick={onReset} className="mt-6">
-        Показати всіх
-      </Button>
+      <Button type="button" onClick={onReset} className="mt-6">Показати всіх</Button>
     </SectionFrame>
   )
-}
-
-function getDateScore(animal: Animal) {
-  const value = Date.parse(animal.publishedAt ?? animal.createdAt ?? '')
-  return Number.isNaN(value) ? 0 : value
 }

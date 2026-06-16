@@ -67,7 +67,7 @@ export default function StoryView({ data, onDonateTreat, onOpenAdopt, treatCount
   ];
 
   return (
-    <div className="w-full max-w-4xl mx-auto px-4 font-sans space-y-12">
+    <div className="mx-auto w-full max-w-336 space-y-12 px-4 font-sans sm:px-6 lg:px-8">
       
       {/* 1. EMOTIONAL SEQUENTIAL SLIDER (Top rated visual module) */}
       <div className="bg-white rounded-3xl overflow-hidden shadow-xl border border-zinc-100 flex flex-col md:flex-row min-h-[580px]">
