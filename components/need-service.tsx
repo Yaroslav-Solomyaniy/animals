@@ -38,7 +38,6 @@ const NeedService = () => {
             <div className="rounded-[26px] bg-gray-50 p-4 text-gray-950">
               <div className="mb-4 flex items-center justify-between gap-4 px-1">
                 <p className="text-sm font-black uppercase tracking-[0.16em] text-gray-500">Швидкий контакт</p>
-                <span className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-black text-emerald-700">Завжди поряд</span>
               </div>
               <div className="flex flex-col gap-3">
                 <LinkButton href={SITE_CONTACTS.phoneHref} size="lg" className="w-full justify-between rounded-2xl">

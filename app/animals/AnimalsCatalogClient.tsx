@@ -41,38 +41,6 @@ export const AnimalsCatalogClient: FC<Props> = ({ animals, foundCount, paginatio
         <SectionFrame className="rounded-[28px] border-gray-100 p-4 sm:p-5">
           <div className="relative flex flex-col gap-4">
             <AnimalsFilter />
-            <div className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_250px]">
-              <label className="relative block">
-                <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
-                {/*<input*/}
-                {/*    type="search"*/}
-                {/*    placeholder="Знайти героя за іменем або історією"*/}
-                {/*    value={filters.q}*/}
-                {/*    onChange={(event) => updateFilter('q', event.target.value)}*/}
-                {/*    className="h-13 w-full rounded-2xl border border-gray-100 bg-gray-50 pl-12 pr-4 text-sm font-bold text-text-main outline-none transition-all placeholder:text-gray-400 focus:border-primary/30 focus:bg-white focus:ring-4 focus:ring-primary/10"*/}
-                {/*/>*/}
-              </label>
-
-              {/*<label className="relative block">*/}
-              {/*    <SlidersHorizontal*/}
-              {/*        className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400"/>*/}
-              {/*    <select*/}
-              {/*        value={filters.sort}*/}
-              {/*        onChange={(event) =>*/}
-              {/*            updateSort(event.target.value as AnimalSort)*/}
-              {/*        }*/}
-              {/*        className="h-13 w-full appearance-none rounded-2xl border border-gray-100 bg-gray-50 px-12 text-sm font-bold text-text-main outline-none transition-all focus:border-primary/30 focus:bg-white focus:ring-4 focus:ring-primary/10"*/}
-              {/*    >*/}
-              {/*        {sortOptions.map((option) => (*/}
-              {/*            <option key={option.value} value={option.value}>*/}
-              {/*                {option.label}*/}
-              {/*            </option>*/}
-              {/*        ))}*/}
-              {/*    </select>*/}
-              {/*    <ChevronDown*/}
-              {/*        className="pointer-events-none absolute right-4 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400"/>*/}
-              {/*</label>*/}
-            </div>
 
             <div className="grid gap-4 lg:grid-cols-3">
               {/*<FilterGroup label="Стать" icon={Dog}>*/}

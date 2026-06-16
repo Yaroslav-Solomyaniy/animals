@@ -22,7 +22,7 @@ export default function PageHero({
   spacing = 'default',
 }: PageHeroProps) {
   const isCentered = align === 'center'
-  const sectionSpacing = spacing === 'compact' ? 'px-4 py-10 sm:px-6 sm:py-14 lg:px-8 lg:py-20' : 'px-4 py-16 sm:px-6 lg:px-8 lg:py-24'
+  const sectionSpacing = spacing === 'compact' ? 'py-10 sm:py-14 lg:py-20' : 'py-16 lg:py-24'
 
   return (
     <section className={`relative isolate overflow-hidden border-b border-gray-100/70 ${sectionSpacing}`}>
@@ -34,7 +34,7 @@ export default function PageHero({
 
       <div
         className={[
-          'relative mx-auto max-w-336',
+          'relative mx-auto max-w-336 px-4 sm:px-6 lg:px-8',
           isCentered ? 'text-center' : 'grid items-center gap-14 lg:grid-cols-[0.92fr_1.08fr]',
         ].join(' ')}
       >

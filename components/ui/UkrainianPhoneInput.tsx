@@ -38,7 +38,18 @@ export default function UkrainianPhoneInput({defaultValue,
       onFocus={handleFocus}
       onBlur={handleBlur}
       onChange={(event) => {
-        setPhone(formatUkrainianPhone(event.target.value))
+        const newValue = event.target.value
+        const isDeleting = newValue.length < phone.length
+        let nationalDigits = getUkrainianPhoneNationalDigits(newValue)
+
+        // If the user deleted a formatting character (like "(", ")", "-", " ")
+        // the digit string won't change on its own, which makes backspace feel
+        // unresponsive. In that case, drop the last digit too.
+        if (isDeleting && nationalDigits === getUkrainianPhoneNationalDigits(phone) && nationalDigits) {
+          nationalDigits = nationalDigits.slice(0, -1)
+        }
+
+        setPhone(formatUkrainianPhoneFromDigits(nationalDigits))
         onChange?.(event)
       }}
     />
@@ -56,8 +67,7 @@ function getUkrainianPhoneNationalDigits(value: string) {
   return digits.slice(0, 9)
 }
 
-function formatUkrainianPhone(value: string) {
-  const nationalDigits = getUkrainianPhoneNationalDigits(value)
+function formatUkrainianPhoneFromDigits(nationalDigits: string) {
   const operator = nationalDigits.slice(0, 2)
   const first = nationalDigits.slice(2, 5)
   const second = nationalDigits.slice(5, 7)
