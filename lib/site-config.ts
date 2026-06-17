@@ -22,7 +22,7 @@ export const SITE_CONTACTS = {
   mapHref: 'https://maps.google.com/?q=Черкаси,+вул.+Івана+Мазепи,+117',
   scheduleShort: 'Пн-Чт 8:00-17:00',
   scheduleFull: 'Пн-Чт 8:00-17:00 | Пт 08:00-16:00 | Сб-Нд: 08:00-17:00',
-  walkSchedule: 'Вихідні, 11:00-14:00',
+  walkSchedule: 'Вихідні, 06:00-11:00',
 } as const
 
 export const SITE_SOCIAL_LINKS = {
@@ -50,8 +50,6 @@ export const SITE_NAV_LINKS = [
   { name: 'Контакти', href: SITE_ROUTES.contacts },
 ] as const
 
-export const buildAnimalHref = (slugOrId: string) =>
-  `${SITE_ROUTES.animals}/${slugOrId}`
+export const buildAnimalHref = (slugOrId: string) => `${SITE_ROUTES.animals}/${slugOrId}`
 
-export const buildNewsHref = (id: string) =>
-  `${SITE_ROUTES.reportAndNews}/${id}`
+export const buildNewsHref = (id: string) => `${SITE_ROUTES.reportAndNews}/${id}`

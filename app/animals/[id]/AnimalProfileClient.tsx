@@ -29,7 +29,6 @@ import {
 import { motion } from 'motion/react'
 
 import type { Animal } from '@/types'
-import AnimalCard from '@/components/AnimalCard'
 import { LinkButton } from '@/components/ui/Button'
 import ImageLightbox from '@/components/news/ImageLightbox'
 import ShareMenu from '@/components/ui/ShareMenu'
@@ -37,6 +36,7 @@ import { buildDonateHref } from '@/lib/donate-search-params'
 import { buildAnimalHref, SITE_ROUTES } from '@/lib/site-config'
 import { cn } from '@/lib/utils'
 import Section from '@/components/ui/Section'
+import { useRouter } from 'next/navigation'
 
 type AnimalProfileClientProps = {
   animal: Animal
@@ -49,6 +49,8 @@ type Tone = 'orange' | 'green' | 'sky' | 'slate'
 const surfaceClass = 'rounded-[26px] border border-gray-200 bg-white shadow-[0_16px_48px_rgba(15,23,42,0.06)]'
 
 export default function AnimalProfileClient({ animal, galleryImages, relatedAnimals }: AnimalProfileClientProps) {
+  const router = useRouter()
+
   const images = useMemo(
     () => Array.from(new Set([animal.imageUrl, ...galleryImages].filter(Boolean))).slice(0, 6),
     [animal.imageUrl, galleryImages]
@@ -59,12 +61,12 @@ export default function AnimalProfileClient({ animal, galleryImages, relatedAnim
   const donationHref = buildDonateHref({ animalId: animal.id, gift: 'treat' })
 
   return (
-    <main className="min-h-screen overflow-hidden bg-[#f7f8f5] text-gray-950">
-      <section className="border-b border-gray-200 bg-white">
+    <main className="min-h-screen overflow-hidden bg-[#faf7f4] text-gray-950">
+      <section className="border-b border-gray-200">
         <Section as="div" contained={false} className="flex flex-col gap-5 py-5">
-          <LinkButton href={SITE_ROUTES.animals} variant="ghost" size="sm" className="w-fit bg-gray-50">
+          <LinkButton href="#" onClick={(e) => { e.preventDefault(); router.back() }} variant="primary" size="sm" className="w-fit">
             <ArrowLeft className="h-4 w-4" />
-            До каталогу
+            Повернутись назад
           </LinkButton>
 
           <div className="grid gap-5 lg:grid-cols-[9fr_11fr] lg:items-stretch">
@@ -165,63 +167,16 @@ export default function AnimalProfileClient({ animal, galleryImages, relatedAnim
         <CharacterTraits traits={animal.character} />
       </Section>
 
-      <section className="border-y border-gray-200 bg-white">
+      <section className="border-y border-gray-200">
         <Section as="div" contained={false} className="py-8">
           <SectionHeading
             eyebrow="План знайомства"
-            title="Три прості кроки"
+            title="Чотири прості кроки"
             text={`Для ${displayName} важливо не поспішати: спершу коротка розмова, потім спокійна зустріч і вже після цього рішення.`}
           />
-
-          <div className="mt-5 grid gap-3 md:grid-cols-3">
-            {profile.steps.slice(0, 3).map((step, index) => (
-              <StepCard key={step.title} index={index + 1} {...step} />
-            ))}
-          </div>
+          <AdoptionRoadmap steps={profile.steps} />
         </Section>
       </section>
-
-      {relatedAnimals.length > 0 ? (
-        <section className="border-t border-gray-200 bg-white">
-          <Section as="div" contained={false} className="py-8">
-            <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-              <SectionHeading
-                eyebrow="Ще кілька знайомств"
-                title="Схожі анкети"
-                text="Якщо серце ще вагається, подивіться на інших тварин, які теж чекають на свою людину."
-              />
-              <LinkButton href={SITE_ROUTES.animals} variant="secondary" className="w-full rounded-2xl sm:w-auto">
-                Всі тварини
-              </LinkButton>
-            </div>
-
-            <div className="columns-2 gap-3 sm:columns-3 lg:columns-4 [&>*]:mb-3">
-              {relatedAnimals.map((relatedAnimal, index) => (
-                <motion.a
-                  key={relatedAnimal.id}
-                  href={`/animals/${relatedAnimal.id}`}
-                  initial={{opacity: 0, y: 12}}
-                  animate={{opacity: 1, y: 0}}
-                  transition={{duration: 0.4, delay: index * 0.05, ease: [0.22, 1, 0.36, 1]}}
-                  whileHover={{scale: 1.02}}
-                  className="group relative block overflow-hidden rounded-[20px] shadow-sm"
-                >
-                  <img
-                    src={relatedAnimal.imageUrl}
-                    alt={relatedAnimal.name}
-                    referrerPolicy="no-referrer"
-                    className="w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                  />
-                  <div className="absolute inset-0 bg-linear-to-t from-gray-950/60 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-                  <span className="absolute bottom-0 left-0 right-0 translate-y-2 p-3 text-sm font-extrabold text-white opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
-                    {relatedAnimal.name}
-                  </span>
-                </motion.a>
-              ))}
-            </div>
-          </Section>
-        </section>
-      ) : null}
     </main>
   )
 }
@@ -462,18 +417,69 @@ function SectionHeading({ eyebrow, title, text }: { eyebrow: string; title: stri
   )
 }
 
-function StepCard({ icon: Icon, title, text, index }: { icon: LucideIcon; title: string; text: string; index: number }) {
+function AdoptionRoadmap({ steps }: { steps: Array<{ icon: LucideIcon; title: string; text: string }> }) {
   return (
-    <article className="rounded-[24px] border border-gray-200 bg-gray-50 p-4">
-      <div className="flex items-center justify-between gap-3">
-        <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-white text-primary shadow-sm">
-          <Icon className="h-5 w-5" />
-        </span>
-        <span className="text-xs font-black text-gray-300">0{index}</span>
+    <div className="mt-10">
+      {/* ─── Desktop: 2×2 grid ─── */}
+      <div className="hidden gap-5 md:grid md:grid-cols-2">
+        {steps.map((step, i) => {
+          const Icon = step.icon
+          return (
+            <motion.article
+              key={step.title}
+              initial={{ opacity: 0, y: 32 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              whileHover={{ y: -4, boxShadow: '0 20px 48px rgba(0,0,0,0.10)' }}
+              viewport={{ once: true, margin: '-48px' }}
+              transition={{ delay: i * 0.1, duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+              className="rounded-[22px] border border-gray-200 bg-white p-6 shadow-[0_6px_24px_rgba(0,0,0,0.06)]"
+            >
+              {/* Number badge + icon */}
+              <div className="flex items-center justify-between">
+                <span className="inline-flex items-center rounded-full bg-primary px-3.5 py-1.5 text-sm font-black tracking-wide text-white shadow-[0_4px_12px_rgba(242,116,56,0.30)]">
+                  {String(i + 1).padStart(2, '0')}
+                </span>
+                <div className="flex h-12 w-12 items-center justify-center rounded-[14px] border-2 border-orange-100 bg-orange-50 text-primary">
+                  <Icon className="h-6 w-6" />
+                </div>
+              </div>
+
+              <div className="mt-5 h-px bg-gray-100" />
+
+              <div className="mt-4">
+                <p className="text-base font-extrabold text-gray-950">{step.title}</p>
+                <p className="mt-2 text-sm font-semibold leading-6 text-gray-500">{step.text}</p>
+              </div>
+            </motion.article>
+          )
+        })}
       </div>
-      <h3 className="mt-4 text-base font-extrabold text-gray-950">{title}</h3>
-      <p className="mt-2 text-sm font-semibold leading-6 text-gray-600">{text}</p>
-    </article>
+
+      {/* ─── Mobile: cards list ─── */}
+      <div className="mt-4 flex flex-col gap-3 md:hidden">
+        {steps.map((step, i) => {
+          const Icon = step.icon
+          return (
+            <motion.div
+              key={step.title}
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.08, duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+              className="flex items-start gap-4 rounded-[18px] border border-gray-200 bg-white p-4 shadow-sm"
+            >
+              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[12px] bg-primary text-sm font-black text-white shadow-[0_4px_10px_rgba(242,116,56,0.25)]">
+                {String(i + 1).padStart(2, '0')}
+              </span>
+              <div className="min-w-0 pt-0.5">
+                <p className="text-sm font-extrabold text-gray-950">{step.title}</p>
+                <p className="mt-1 text-[12px] font-semibold leading-5 text-gray-500">{step.text}</p>
+              </div>
+            </motion.div>
+          )
+        })}
+      </div>
+    </div>
   )
 }
 
@@ -488,7 +494,7 @@ function buildProfile(animal: Animal, displayName: string) {
     intro:
       trimToSentence(animal.description, 190) || `${displayName} чекає на людину, яка готова знайомитися спокійно, уважно і без поспіху.`,
     story:
-      trimToSentence(animal.fullStory || animal.description, 360) ||
+      animal.fullStory || animal.description ||
       `${displayName} вже має свій маленький ритм у центрі: придивляється до людей, радіє увазі й поступово вчиться довіряти. Найкращий старт для знайомства - тиха розмова, трохи терпіння і відчуття безпеки.`,
     characterCards: [
       {
@@ -518,7 +524,7 @@ function buildProfile(animal: Animal, displayName: string) {
       {
         icon: ShieldCheck,
         title: 'Підготовка',
-        text: 'Уточнюємо здоров’я, документи, догляд і базові рекомендації.',
+        text: "Уточнюємо здоров'я, документи, догляд і базові рекомендації.",
       },
       {
         icon: Home,
@@ -540,7 +546,7 @@ function getCareStatus(animal: Animal) {
     return 'Можна знайомитись'
   }
 
-  return 'Очікує родинуu'
+  return 'Очікує родину'
 }
 
 function trimToSentence(value: string | undefined, limit: number) {
@@ -579,6 +585,6 @@ function toneClasses(tone: Tone) {
     orange: 'border-orange-200 bg-orange-50 text-orange-800',
     green: 'border-emerald-200 bg-emerald-50 text-emerald-800',
     sky: 'border-sky-200 bg-sky-50 text-sky-800',
-    slate: 'border-gray-200 bg-gray-50 text-gray-700',
+    slate: 'border-slate-200 bg-slate-50 text-slate-800',
   }[tone]
 }
