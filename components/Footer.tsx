@@ -4,28 +4,10 @@ import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import type { ReactNode } from 'react'
 import type { LucideIcon } from 'lucide-react'
-import {
-  ArrowRight,
-  Clock,
-  Facebook,
-  FileText,
-  Globe,
-  Heart,
-  Instagram,
-  Mail,
-  MapPin,
-  Newspaper,
-  Phone,
-  Stethoscope,
-} from 'lucide-react'
+import { ArrowRight, Clock, Facebook, FileText, Globe, Heart, Instagram, Mail, MapPin, Newspaper, Phone, Stethoscope } from 'lucide-react'
 
 import { reports } from '@/lib/news'
-import {
-  buildNewsHref,
-  SITE_CONTACTS,
-  SITE_ROUTES,
-  SITE_SOCIAL_LINKS,
-} from '@/lib/site-config'
+import { buildNewsHref, SITE_CONTACTS, SITE_ROUTES, SITE_SOCIAL_LINKS } from '@/lib/site-config'
 import { getSupabaseBrowserClient } from '@/lib/supabase/client'
 import Section from '@/components/ui/Section'
 
@@ -52,7 +34,7 @@ const quickLinks = [
   { label: 'Як допомогти', href: SITE_ROUTES.help },
   { label: 'Послуги', href: SITE_ROUTES.services },
   { label: 'Контакти', href: SITE_ROUTES.contacts },
-  { label: 'Звіти та новини', href: SITE_ROUTES.reportAndNews },
+  { label: 'Новини та звіти', href: SITE_ROUTES.reportAndNews },
 ]
 
 type FooterNewsItem = {
@@ -103,9 +85,7 @@ export default function Footer() {
                 <Heart className="h-5 w-5" />
               </span>
               <span>
-                <span className="block text-base font-black leading-snug">
-                  Центр допомоги тваринам
-                </span>
+                <span className="block text-base font-black leading-snug">Центр допомоги тваринам</span>
                 <span className="mt-1 block text-sm leading-6 text-white/54">
                   {SITE_CONTACTS.city}, {SITE_CONTACTS.street}
                 </span>
@@ -113,8 +93,7 @@ export default function Footer() {
             </Link>
 
             <p className="mt-4 max-w-sm text-sm leading-6 text-white/58">
-              Відлов, лікування, стерилізація, прилаштування та консультації
-              для власників домашніх улюбленців.
+              Відлов, лікування, стерилізація, прилаштування та консультації для власників домашніх улюбленців.
             </p>
 
             <div className="mt-5 flex max-w-full gap-2 overflow-hidden">
@@ -150,11 +129,7 @@ export default function Footer() {
             <FooterContact href={SITE_ROUTES.contactsSchedule} icon={Clock}>
               {SITE_CONTACTS.scheduleShort}
             </FooterContact>
-            <FooterContact
-              href={SITE_CONTACTS.mapHref}
-              icon={MapPin}
-              external
-            >
+            <FooterContact href={SITE_CONTACTS.mapHref} icon={MapPin} external>
               {SITE_CONTACTS.addressShort}
             </FooterContact>
           </FooterSection>
@@ -165,9 +140,7 @@ export default function Footer() {
                 {item.label}
               </FooterLink>
             ))}
-            {latestReport ? (
-              <FooterLink href={SITE_ROUTES.reportAndNews}>{latestReport.title}</FooterLink>
-            ) : null}
+            {latestReport ? <FooterLink href={SITE_ROUTES.reportAndNews}>{latestReport.title}</FooterLink> : null}
           </FooterSection>
 
           <FooterSection title="Новини" icon={Newspaper}>
@@ -180,9 +153,7 @@ export default function Footer() {
                 <span className="line-clamp-2 text-sm font-bold leading-5 text-white/78 transition group-hover:text-white">
                   {item.title}
                 </span>
-                <span className="mt-1 block text-xs font-bold text-orange-200/72">
-                  {formatFooterNewsDate(item.published_at)}
-                </span>
+                <span className="mt-1 block text-xs font-bold text-orange-200/72">{formatFooterNewsDate(item.published_at)}</span>
               </Link>
             ))}
             <FooterLink href={SITE_ROUTES.reportAndNews}>Всі новини та звіти</FooterLink>
@@ -197,12 +168,9 @@ export default function Footer() {
             <Stethoscope className="h-5 w-5" />
           </span>
           <span className="min-w-0">
-            <span className="block text-sm font-black uppercase tracking-[0.14em] text-white">
-              Комерційні послуги центру
-            </span>
+            <span className="block text-sm font-black uppercase tracking-[0.14em] text-white">Комерційні послуги центру</span>
             <span className="mt-1 block max-w-3xl text-sm leading-6 text-white/56">
-              Окремі послуги для домашніх тварин: актуальні деталі, умови та
-              запис на сторінці послуг.
+              Окремі послуги для домашніх тварин: актуальні деталі, умови та запис на сторінці послуг.
             </span>
           </span>
           <span className="inline-flex items-center gap-2 text-sm font-black text-orange-200 transition group-hover:text-white md:col-start-2 lg:col-start-auto">
@@ -212,9 +180,7 @@ export default function Footer() {
         </Link>
 
         <div className="mt-9 flex flex-col items-center justify-center gap-3 text-center text-xs font-semibold leading-5 text-white/38 lg:flex-row lg:justify-between lg:text-left">
-          <p className="max-w-4xl">
-            © {year} Центр надання допомоги безпритульним тваринам м. Черкаси.
-          </p>
+          <p className="max-w-4xl">© {year} Центр надання допомоги безпритульним тваринам м. Черкаси.</p>
           <p className="shrink-0">Розробка та дизайн by Yaroslav Solomianyi.</p>
         </div>
       </Section>
@@ -223,7 +189,9 @@ export default function Footer() {
 }
 
 function formatFooterNewsDate(value: string | null) {
-  if (!value) {return 'Без дати'}
+  if (!value) {
+    return 'Без дати'
+  }
   const date = new Date(value)
 
   if (Number.isNaN(date.getTime())) {
@@ -237,13 +205,7 @@ function formatFooterNewsDate(value: string | null) {
   }).format(date)
 }
 
-function FooterSection({title,
-  icon: Icon,
-  children,}: {
-  title: string
-  icon: LucideIcon
-  children: ReactNode
-}) {
+function FooterSection({ title, icon: Icon, children }: { title: string; icon: LucideIcon; children: ReactNode }) {
   return (
     <section className="group min-w-0 overflow-hidden">
       <div className="mb-4">
@@ -272,17 +234,18 @@ function FooterLink({ href, children }: { href: string; children: ReactNode }) {
   )
 }
 
-function FooterContact({href,
+function FooterContact({
+  href,
   icon: Icon,
   children,
-  external = false,}: {
+  external = false,
+}: {
   href: string
   icon: LucideIcon
   children: ReactNode
   external?: boolean
 }) {
-  const className =
-    'flex items-center gap-2.5 text-sm font-semibold leading-5 text-white/58 transition hover:text-white'
+  const className = 'flex items-center gap-2.5 text-sm font-semibold leading-5 text-white/58 transition hover:text-white'
   const content = (
     <>
       <Icon className="h-4 w-4 shrink-0 text-orange-200/82" />

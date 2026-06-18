@@ -7,6 +7,35 @@ import { createClient } from '@/lib/supabase/server'
 const FALLBACK_NEWS_IMAGE = '/dog.png'
 const NEWS_CATEGORY = 'Новини центру'
 
+export async function getPublishedNewsPaginated(
+  page: number,
+  pageSize: number,
+  order: 'asc' | 'desc' = 'desc',
+): Promise<{ news: NewsItem[]; total: number }> {
+  const supabase = await createClient()
+  const from = (page - 1) * pageSize
+  const to = from + pageSize - 1
+
+  const { data, error, count } = await supabase
+    .from('news_posts')
+    .select('*', { count: 'exact' })
+    .eq('is_published', true)
+    .not('published_at', 'is', null)
+    .lte('published_at', new Date().toISOString())
+    .order('published_at', { ascending: order === 'asc' })
+    .range(from, to)
+
+  if (error) {
+    console.error('Failed to load paginated news', error)
+    return { news: [], total: 0 }
+  }
+
+  return {
+    news: (data ?? []).map((post) => mapNewsPost(post as NewsPostRow)),
+    total: count ?? 0,
+  }
+}
+
 export async function getPublishedNews(limit?: number): Promise<NewsItem[]> {
   const supabase = await createClient()
   let query = supabase

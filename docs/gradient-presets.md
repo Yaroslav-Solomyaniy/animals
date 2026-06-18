@@ -59,6 +59,41 @@ Used in:
 
 - `app/services/page.tsx` - CTA "Потрібна ветеринарна послуга?"
 
+## Dark Card with Color Glow (CTA картки)
+
+Темні картки з кольоровим світінням — єдиний стиль для CTA-гридів. Світло розливається з верхнього правого кута на більшу частину картки.
+
+```tsx
+// Обгортка картки
+<div className="relative overflow-hidden rounded-4xl bg-gray-900 p-8">
+
+  {/* Кольоровий glow — замінити GLOW_COLOR на потрібний rgba */}
+  <div
+    className="pointer-events-none absolute inset-0"
+    style={{ background: `radial-gradient(ellipse 180% 140% at 90% -20%, GLOW_COLOR, transparent 60%)` }}
+  />
+
+  {/* Контент */}
+  <Icon className="relative mb-6 h-10 w-10 text-COLOR-400" />
+  <h3 className="relative text-2xl font-black text-white">{title}</h3>
+  <p className="relative mt-3 leading-7 text-gray-400">{description}</p>
+  <LinkButton href={href} variant="light" size="lg" className="relative mt-8">
+    {label}
+  </LinkButton>
+</div>
+```
+
+Кольори glow по темах:
+- Помаранчевий: `rgba(242,116,56,0.40)`
+- Блакитний: `rgba(14,165,233,0.40)`
+- Зелений: `rgba(16,185,129,0.40)`
+- Фіолетовий: `rgba(139,92,246,0.40)`
+
+Used in:
+- `app/help-for-us/page.tsx` - CTA секція (зараз конвертована у світлий стиль)
+
+---
+
 ## Shared CTA Accent
 
 Діагональна світла форма справа, добре працює на темних або насичених full-width CTA.
