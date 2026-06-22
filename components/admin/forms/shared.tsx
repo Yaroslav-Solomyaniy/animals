@@ -39,15 +39,18 @@ export function EntityForm({status = '',
 }
 
 export function Field({label,
+  hint,
   errors,
   children,}: {
   label: string
+  hint?: string
   errors?: string[]
   children: ReactNode
 }) {
   return (
     <label className="block space-y-2">
       <span className="text-sm font-extrabold text-slate-700">{label}</span>
+      {hint ? <span className="block text-[11px] font-semibold text-slate-400 -mt-1">{hint}</span> : null}
       {children}
       {errors?.length ? (
         <span className="block text-sm font-semibold text-red-600">{errors.join(', ')}</span>

@@ -169,6 +169,12 @@ function mapAnimalRow(row: AnimalRow, photos: AnimalPhotoRow[]): Animal {
         ? [adoptionStatusLabel, ...publicBadges.filter((badge) => badge !== adoptionStatusLabel)]
         : publicBadges
 
+    // Prefer character_traits from DB; fall back to public_badges for legacy records
+    const characterTraits = (row.character_traits?.length ? row.character_traits : null)
+        ?? (adoptionStatusLabel
+            ? [adoptionStatusLabel, ...publicBadges.filter((b) => b !== adoptionStatusLabel)]
+            : publicBadges)
+
     return {
         id: row.slug || row.id,
         databaseId: row.id,
@@ -182,9 +188,12 @@ function mapAnimalRow(row: AnimalRow, photos: AnimalPhotoRow[]): Animal {
         adoptionStatus: row.adoption_status,
         imageUrl: mainPhoto?.public_url ?? fallbackAnimalImage,
         galleryImages: galleryImages.length ? galleryImages : [fallbackAnimalImage],
-        character,
-        isVaccinated: Boolean(row.is_vaccinated),
+        character: characterTraits,
+        color: row.color ?? undefined,
+        isVaccinated: (row.vaccination_count ?? 0) > 0 || Boolean(row.is_vaccinated),
+        vaccinationCount: row.vaccination_count ?? 0,
         isNeutered: Boolean(row.is_neutered),
+        animalNumber: row.animal_number ?? undefined,
         description: row.short_description || row.full_story || `${name} шукає люблячу родину.`,
         fullStory: row.full_story ?? undefined,
         publishedAt: row.published_at,

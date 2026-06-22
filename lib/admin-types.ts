@@ -12,6 +12,10 @@ export type AnimalRow = {
   approximate_age_label: string | null
   is_vaccinated: boolean | null
   is_neutered: boolean | null
+  animal_number: string | null
+  color: string | null
+  vaccination_count: number
+  character_traits: string[]
   published_at: string | null
   created_at: string | null
   updated_at: string | null
@@ -65,4 +69,5 @@ export type VolunteerRequestRow = {
   admin_notes: string | null
   created_at: string | null
   updated_at: string | null
+
 }

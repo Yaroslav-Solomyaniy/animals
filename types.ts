@@ -14,9 +14,11 @@ export interface Animal {
   character: string[]
   color?: string
   isVaccinated: boolean
+  vaccinationCount: number
   isNeutered: boolean
   description: string
   fullStory?: string
+  animalNumber?: string | null
   publishedAt?: string | null
   createdAt?: string | null
 }

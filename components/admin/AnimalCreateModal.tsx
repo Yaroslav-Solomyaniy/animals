@@ -1,12 +1,32 @@
 'use client'
 
 import { useRef, useState, useTransition } from 'react'
-import { ArrowLeft, Check, ImagePlus, Loader2, Plus, Star, Trash2, X } from 'lucide-react'
+import {
+  ArrowLeft,
+  Check,
+  ClipboardList,
+  Hash,
+  Heart,
+  ImagePlus,
+  Loader2,
+  Palette,
+  PawPrint,
+  Plus,
+  ShieldCheck,
+  Sparkles,
+  Star,
+  Trash2,
+  X,
+} from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { Button, IconButton } from '@/components/ui/Button'
 import { Input, Select, Textarea } from '@/components/ui/FormControls'
-import { Field, toDatetimeLocal } from '@/components/admin/forms/shared'
-import { createAnimalDraftAction, publishAnimalAction, updateAnimalDraftAction } from '@/app/admin/animals/actions'
+import { toDatetimeLocal } from '@/components/admin/forms/shared'
+import {
+  createAnimalDraftAction,
+  publishAnimalAction,
+  updateAnimalDraftAction,
+} from '@/app/admin/animals/actions'
 import {
   createAnimalPhotoUploadAction,
   deleteAnimalPhotoAction,
@@ -16,606 +36,33 @@ import {
 import type { AnimalPhotoRow, AnimalRow } from '@/lib/admin-types'
 import { cn } from '@/lib/utils'
 
+// ─── Constants ────────────────────────────────────────────────────────────────
+
+export const COLOR_OPTIONS: Array<{ value: string; hex: string }> = [
+  { value: 'Чорний',       hex: '#1c1917' },
+  { value: 'Білий',        hex: '#f5f0eb' },
+  { value: 'Сірий',        hex: '#9ca3af' },
+  { value: 'Рудий',        hex: '#c2440e' },
+  { value: 'Коричневий',   hex: '#7c4a1e' },
+  { value: 'Палевий',      hex: '#d4a96a' },
+  { value: 'Кремовий',     hex: '#ede0cc' },
+  { value: 'Тигровий',     hex: '#8b6914' },
+  { value: 'Плямистий',    hex: '#a16207' },
+  { value: 'Чорно-білий',  hex: '#374151' },
+  { value: 'Рудо-білий',   hex: '#ea580c' },
+  { value: 'Сіро-білий',   hex: '#6b7280' },
+  { value: 'Трьохколірний',hex: '#7c3aed' },
+]
+
+export const CHARACTER_TRAITS: string[] = [
+  'Ласкавий', 'Активний', 'Спокійний', 'Ігривий', 'Самостійний',
+  'Товариський', 'Боязкий', 'Охайний', "Прив'язаний", 'Мирний',
+  'Добрий з дітьми', 'Добрий з тваринами', 'Розумний', 'Слухняний', 'Енергійний',
+]
+
+// ─── Types ────────────────────────────────────────────────────────────────────
+
 type Step = 'details' | 'photos' | 'publish'
-
-export default function AnimalCreateModal({initialAnimal,
-  initialPhotos = [],
-  initialStep = 'details',
-  triggerLabel = 'Додати тварину',
-  triggerDisabled = false,}: {
-  initialAnimal?: AnimalRow
-  initialPhotos?: AnimalPhotoRow[]
-  initialStep?: Step
-  triggerLabel?: string
-  triggerDisabled?: boolean
-}) {
-  const router = useRouter()
-  const fileInputRef = useRef<HTMLInputElement>(null)
-  const [isOpen, setIsOpen] = useState(false)
-  const [step, setStep] = useState<Step>('details')
-  const [animalId, setAnimalId] = useState<string | null>(null)
-  const [animalName, setAnimalName] = useState('')
-  const [photos, setPhotos] = useState<AnimalPhotoRow[]>([])
-  const [details, setDetails] = useState(() => getAnimalDetails(initialAnimal))
-  const [detailsSaved, setDetailsSaved] = useState(Boolean(initialAnimal && isAnimalDetailsComplete(getAnimalDetails(initialAnimal))))
-  const [status, setStatus] = useState('')
-  const [isUploading, setIsUploading] = useState(false)
-  const [isPending, startTransition] = useTransition()
-  const mainPhoto = photos.find((photo) => photo.is_main)
-  const isEditing = Boolean(initialAnimal)
-  const hasPublication = Boolean(initialAnimal?.published_at)
-  const detailsComplete = isAnimalDetailsComplete(details)
-  const canUsePhotos = Boolean(animalId) && detailsComplete && detailsSaved
-  const canUsePublish = canUsePhotos && Boolean(mainPhoto)
-
-  function openModal() {
-    const nextDetails = getAnimalDetails(initialAnimal)
-    const nextDetailsComplete = isAnimalDetailsComplete(nextDetails)
-    const nextHasMainPhoto = initialPhotos.some((photo) => photo.is_main)
-    setAnimalId(initialAnimal?.id ?? null)
-    setAnimalName(initialAnimal?.name ?? '')
-    setDetails(nextDetails)
-    setDetailsSaved(Boolean(initialAnimal && nextDetailsComplete))
-    setPhotos(initialPhotos)
-    setStatus('')
-    setIsOpen(true)
-    setStep(getAvailableStep(initialStep, {
-      hasSavedDetails: Boolean(initialAnimal && nextDetailsComplete),
-      hasMainPhoto: nextHasMainPhoto,
-    }))
-  }
-
-  function closeModal() {
-    setIsOpen(false)
-    setStep('details')
-    setAnimalId(null)
-    setAnimalName('')
-    setDetails(getAnimalDetails(initialAnimal))
-    setDetailsSaved(Boolean(initialAnimal && isAnimalDetailsComplete(getAnimalDetails(initialAnimal))))
-    setPhotos([])
-    setStatus('')
-    setIsUploading(false)
-    if (fileInputRef.current) {fileInputRef.current.value = ''}
-  }
-
-  function saveDetails(formData: FormData) {
-    if (!detailsComplete) {
-      setStatus('Заповни всі поля з вкладки "Дані", після цього можна переходити до фото.')
-      return
-    }
-
-    const intent = formData.get('intent')?.toString() ?? 'save-photos'
-    setStatus('')
-    startTransition(async () => {
-      const result =
-        initialAnimal
-          ? await updateAnimalDraftAction(initialAnimal.id, formData)
-          : await createAnimalDraftAction(formData)
-
-      if (!result.ok) {
-        setStatus(result.error)
-        return
-      }
-
-      setAnimalId(result.animal.id)
-      setAnimalName(result.animal.name)
-      setDetailsSaved(true)
-      router.refresh()
-
-      if (intent === 'save-close') {
-        closeModal()
-        return
-      }
-
-      if (intent === 'save') {
-        return
-      }
-
-      if (intent === 'save-publish') {
-        if (!mainPhoto) {
-          setStep('photos')
-          setStatus('Перед публікацією обери головне фото.')
-          return
-        }
-
-        setStep('publish')
-        return
-      }
-
-      setStep('photos')
-    })
-  }
-
-  function updateDetail<Key extends keyof AnimalDetails>(key: Key, value: AnimalDetails[Key]) {
-    setDetails((current) => ({ ...current, [key]: value }))
-    setDetailsSaved(false)
-    if (key === 'name') {
-      setAnimalName(String(value))
-    }
-  }
-
-  function changeStep(nextStep: Step) {
-    if (nextStep === 'photos' && !canUsePhotos) {
-      setStatus('Спочатку заповни та збережи всі дані тварини.')
-      return
-    }
-
-    if (nextStep === 'publish' && !canUsePublish) {
-      setStatus('Для публікації потрібні заповнені дані та головне фото.')
-      return
-    }
-
-    setStatus('')
-    setStep(nextStep)
-  }
-
-  async function uploadPhotos(files: FileList | null) {
-    if (!animalId || !files?.length) {return}
-    setStatus('')
-    setIsUploading(true)
-
-    try {
-      for (const file of Array.from(files)) {
-        const upload = await createAnimalPhotoUploadAction({
-          animalId,
-          fileName: file.name,
-          contentType: file.type || 'image/jpeg',
-        })
-
-        if (!upload.ok) {
-          setStatus(upload.error)
-          continue
-        }
-
-        let response: Response
-        try {
-          response = await fetch(upload.uploadUrl, {
-            method: 'PUT',
-            body: file,
-            headers: {
-              'Content-Type': file.type || 'application/octet-stream',
-            },
-          })
-        } catch {
-          setStatus('Браузер заблокував upload у R2. Перевір CORS policy для bucket paws-website.')
-          continue
-        }
-
-        if (!response.ok) {
-          const details = await response.text().catch(() => '')
-          setStatus(`R2 upload failed: ${response.status} ${response.statusText}${details ? ` — ${details}` : ''}`)
-          continue
-        }
-
-        const registered = await registerAnimalPhotoAction({
-          animalId,
-          r2Key: upload.r2Key,
-          publicUrl: upload.publicUrl,
-          alt: `${animalName} фото`,
-        })
-
-        if (!registered.ok) {
-          setStatus(registered.error)
-          continue
-        }
-
-        setPhotos((current) => [...current, registered.photo as AnimalPhotoRow])
-      }
-    } finally {
-      setIsUploading(false)
-      if (fileInputRef.current) {fileInputRef.current.value = ''}
-    }
-
-    router.refresh()
-  }
-
-  function setMainPhoto(photoId: string) {
-    if (!animalId) {return}
-    setStatus('')
-    startTransition(async () => {
-      const result = await setMainAnimalPhotoAction(animalId, photoId)
-
-      if (!result.ok) {
-        setStatus(result.error)
-        return
-      }
-
-      setPhotos((current) =>
-        current.map((photo) => ({
-          ...photo,
-          is_main: photo.id === photoId,
-        }))
-      )
-      router.refresh()
-    })
-  }
-
-  function deletePhoto(photoId: string) {
-    if (!animalId) {return}
-    setStatus('')
-    startTransition(async () => {
-      const result = await deleteAnimalPhotoAction(animalId, photoId)
-
-      if (!result.ok) {
-        setStatus(result.error)
-        return
-      }
-
-      setPhotos((current) =>
-        current
-          .filter((photo) => photo.id !== result.deletedPhotoId)
-          .map((photo) => ({
-            ...photo,
-            is_main: result.nextMainPhotoId ? photo.id === result.nextMainPhotoId : photo.is_main,
-          }))
-      )
-
-      if (!result.r2Deleted) {
-        setStatus('Фото прибрано з сайту, але файл у R2 не видалився автоматично.')
-      }
-
-      router.refresh()
-    })
-  }
-
-  function publish() {
-    if (!animalId) {return}
-    setStatus('')
-    const formData = new FormData()
-    formData.set('animalId', animalId)
-
-    startTransition(async () => {
-      const result = await publishAnimalAction(formData)
-
-      if (!result.ok) {
-        setStatus(result.error)
-        return
-      }
-
-      closeModal()
-      router.refresh()
-    })
-  }
-
-  function savePublicationState(nextStatus: AnimalRow['status']) {
-    if (!animalId) {return}
-    setStatus('')
-
-    const nextDetails = {
-      ...details,
-      status: nextStatus,
-      published_at: nextStatus === 'draft' ? '' : details.published_at,
-    }
-    const formData = getAnimalFormData(nextDetails)
-
-    startTransition(async () => {
-      const result = await updateAnimalDraftAction(animalId, formData)
-
-      if (!result.ok) {
-        setStatus(result.error)
-        return
-      }
-
-      setDetails(nextDetails)
-      setAnimalName(result.animal.name)
-      setDetailsSaved(true)
-      closeModal()
-      router.refresh()
-    })
-  }
-
-  return (
-    <>
-      <Button onClick={openModal} variant={isEditing ? 'outline' : 'primary'} size={isEditing ? 'sm' : 'md'} disabled={triggerDisabled}>
-        {!isEditing ? <Plus className="h-4 w-4" /> : null}
-        {triggerLabel}
-      </Button>
-
-      {isOpen ? (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/55 p-4 backdrop-blur-sm">
-          <div className="max-h-[92vh] w-full max-w-4xl overflow-hidden rounded-2xl bg-white shadow-[0_24px_90px_rgba(15,23,42,0.28)]">
-            <div className="flex items-start justify-between gap-4 border-b border-slate-200 px-6 py-5">
-              <div>
-                <p className="text-xs font-extrabold uppercase text-primary">
-                  {isEditing ? 'Картка тварини' : 'Нова тварина'}
-                </p>
-                <h2 className="mt-1 text-2xl font-extrabold text-slate-950">
-                  {animalName || 'Створення запису'}
-                </h2>
-              </div>
-              <IconButton label="Закрити" variant="ghost" onClick={closeModal}>
-                <X className="h-5 w-5" />
-              </IconButton>
-            </div>
-
-            <div className="grid grid-cols-3 border-b border-slate-200 bg-slate-50 text-sm font-extrabold text-slate-500">
-              <StepTab active={step === 'details'} done={detailsSaved && detailsComplete} onClick={() => changeStep('details')}>
-                Дані
-              </StepTab>
-              <StepTab active={step === 'photos'} done={Boolean(mainPhoto)} disabled={!canUsePhotos} onClick={() => changeStep('photos')}>
-                Фото
-              </StepTab>
-              <StepTab active={step === 'publish'} done={hasPublication} disabled={!canUsePublish} onClick={() => changeStep('publish')}>
-                Публікація
-              </StepTab>
-            </div>
-
-            <div className="max-h-[calc(92vh-150px)] overflow-auto p-6">
-              {status ? (
-                <div className="mb-5 rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm font-bold text-rose-700">
-                  {status}
-                </div>
-              ) : null}
-
-              {step === 'details' ? (
-                <form action={saveDetails} className="space-y-5">
-                  <div className="grid gap-4 md:grid-cols-2">
-                    <Field label="Ім'я">
-                      <Input name="name" placeholder="Ім'я відсутнє" value={details.name} onChange={(event) => updateDetail('name', event.target.value)} />
-                    </Field>
-                    <Field label="Стать">
-                      <Select name="gender" value={details.gender} onChange={(event) => updateDetail('gender', event.target.value as AnimalDetails['gender'])}>
-                        <option value="male">Хлопчик</option>
-                        <option value="female">Дівчинка</option>
-                      </Select>
-                    </Field>
-                    <Field label="Розмір">
-                      <Select name="size" value={details.size} onChange={(event) => updateDetail('size', event.target.value as AnimalDetails['size'])}>
-                        <option value="small">Малий</option>
-                        <option value="medium">Середній</option>
-                        <option value="large">Великий</option>
-                      </Select>
-                    </Field>
-                    <Field label="Вік текстом">
-                      <Input name="approximate_age_label" value={details.approximate_age_label} onChange={(event) => updateDetail('approximate_age_label', event.target.value)} />
-                    </Field>
-                  </div>
-                  <div className="grid gap-4 md:grid-cols-2">
-                    <Field label="Статус">
-                      <Select name="status" value={details.status} onChange={(event) => updateDetail('status', event.target.value as AnimalDetails['status'])}>
-                        <option value="draft">Чернетка</option>
-                        <option value="available">Доступна</option>
-                        <option value="reserved">Резерв</option>
-                        <option value="adopted">Прилаштована</option>
-                        <option value="hidden">Прихована</option>
-                      </Select>
-                    </Field>
-                    <Field label="Дата публікації">
-                      <Input name="published_at" type="datetime-local" value={details.published_at} onChange={(event) => updateDetail('published_at', event.target.value)} />
-                    </Field>
-                  </div>
-                  <div className="grid gap-4 md:grid-cols-2">
-                    <CheckboxField name="is_vaccinated" label="Вакциновано" checked={details.is_vaccinated} onChange={(checked) => updateDetail('is_vaccinated', checked)} />
-                    <CheckboxField name="is_neutered" label="Стерилізовано" checked={details.is_neutered} onChange={(checked) => updateDetail('is_neutered', checked)} />
-                  </div>
-                  <Field label="Бейдж на фото та фільтр">
-                    <Select name="adoption_status" value={details.adoption_status ?? ''} onChange={(event) => updateDetail('adoption_status', event.target.value as AnimalDetails['adoption_status'])}>
-                      <option value="">Без статусного бейджа</option>
-                      <option value="ready">Готовий до адопції</option>
-                      <option value="needs_care">Потребує турботи</option>
-                    </Select>
-                  </Field>
-                  <Field label="Короткий опис">
-                    <Textarea name="short_description" value={details.short_description} onChange={(event) => updateDetail('short_description', event.target.value)} />
-                  </Field>
-                  <Field label="Повна історія">
-                    <Textarea name="full_story" className="min-h-44" value={details.full_story} onChange={(event) => updateDetail('full_story', event.target.value)} />
-                  </Field>
-                  <Field label="Публічні бейджі">
-                    <Textarea
-                      name="public_badges"
-                      className="min-h-32"
-                      placeholder={'Готовий до адопції\nШукає родину\nМає свою історію'}
-                      value={details.public_badges}
-                      onChange={(event) => updateDetail('public_badges', event.target.value)}
-                    />
-                  </Field>
-                  <div className="flex flex-wrap justify-end gap-3">
-                    <Button type="submit" name="intent" value="save" variant="secondary" disabled={isPending || !detailsComplete} showIcon={false}>
-                      {isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
-                      Зберегти
-                    </Button>
-                    <Button type="submit" name="intent" value="save-close" variant="outline" disabled={isPending || !detailsComplete} showIcon={false}>
-                      {isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
-                      Зберегти і закрити
-                    </Button>
-                    <Button type="submit" name="intent" value="save-photos" disabled={isPending || !detailsComplete}>
-                      {isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
-                      Перейти до фото
-                    </Button>
-                    <Button type="submit" name="intent" value="save-publish" disabled={isPending || !detailsComplete || !mainPhoto}>
-                      {isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
-                      Перейти до публікації
-                    </Button>
-                  </div>
-                </form>
-              ) : null}
-
-              {step === 'photos' ? (
-                <div className="space-y-5">
-                  <div className="flex flex-col gap-3 rounded-xl border border-dashed border-slate-300 bg-slate-50 p-5 md:flex-row md:items-center md:justify-between">
-                    <div>
-                      <p className="font-extrabold text-slate-950">Фото тварини</p>
-                      <p className="mt-1 text-sm text-slate-500">Завантаж у R2 і познач головне фото зірочкою.</p>
-                    </div>
-                    <div>
-                      <input
-                        ref={fileInputRef}
-                        type="file"
-                        accept="image/*"
-                        multiple
-                        className="sr-only"
-                        onChange={(event) => uploadPhotos(event.target.files)}
-                      />
-                      <Button onClick={() => fileInputRef.current?.click()} disabled={!animalId || isUploading}>
-                        {isUploading ? <Loader2 className="h-4 w-4 animate-spin" /> : <ImagePlus className="h-4 w-4" />}
-                        {isUploading ? 'Завантаження...' : 'Додати фото'}
-                      </Button>
-                    </div>
-                  </div>
-
-                  {photos.length ? (
-                    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                      {photos.map((photo) => (
-                        <div key={photo.id} className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
-                          <div className="relative aspect-[4/3] bg-slate-100">
-                            {photo.public_url ? (
-                              // eslint-disable-next-line @next/next/no-img-element
-                              <img src={photo.public_url} alt={photo.alt ?? ''} className="h-full w-full object-cover" />
-                            ) : null}
-                            <IconButton
-                              label="Видалити фото"
-                              variant="danger"
-                              onClick={() => deletePhoto(photo.id)}
-                              disabled={isPending}
-                              className="absolute left-3 top-3 h-10 w-10 bg-white/90 text-rose-600 hover:bg-rose-50"
-                            >
-                              <Trash2 className="h-5 w-5" />
-                            </IconButton>
-                            <IconButton
-                              label="Зробити головним"
-                              variant="light"
-                              onClick={() => setMainPhoto(photo.id)}
-                              disabled={isPending}
-                              className={cn(
-                                'absolute right-3 top-3 h-10 w-10 border',
-                                photo.is_main ? 'border-amber-300 text-amber-500' : 'border-slate-200 text-slate-400 hover:text-amber-500'
-                              )}
-                            >
-                              <Star className={cn('h-5 w-5', photo.is_main && 'fill-current')} />
-                            </IconButton>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  ) : (
-                    <div className="rounded-xl border border-slate-200 bg-white p-8 text-center text-sm font-semibold text-slate-500">
-                      Фото ще немає.
-                    </div>
-                  )}
-
-                  <div className="flex justify-end gap-3">
-                    <Button variant="outline" onClick={() => setStep('details')} showIcon={false}>
-                      <ArrowLeft className="h-4 w-4" />
-                      Назад
-                    </Button>
-                    <Button onClick={() => changeStep('publish')} disabled={!canUsePublish}>
-                      Далі
-                    </Button>
-                  </div>
-                </div>
-              ) : null}
-
-              {step === 'publish' ? (
-                <div className="space-y-5">
-                  <div className="grid gap-4">
-                    <div className="rounded-xl border border-slate-200 bg-slate-50 p-5">
-                      <p className="text-sm font-extrabold uppercase text-slate-400">Поточний статус</p>
-                      <div className="mt-3">
-                        <StatusPill status={details.status} />
-                      </div>
-                      <p className="mt-3 text-sm font-semibold text-slate-500">
-                        {getPublicationStatusCopy(details.status, hasPublication)}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="flex flex-wrap justify-end gap-3">
-                    <Button variant="outline" onClick={() => setStep('photos')} showIcon={false}>
-                      <ArrowLeft className="h-4 w-4" />
-                      Назад
-                    </Button>
-                    {details.status === 'draft' ? (
-                      <>
-                        <Button variant="secondary" onClick={() => savePublicationState('draft')} disabled={isPending} showIcon={false}>
-                          {isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
-                          Залишити чернеткою
-                        </Button>
-                        <Button onClick={publish} disabled={isPending || !mainPhoto}>
-                          {isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Check className="h-4 w-4" />}
-                          Опублікувати
-                        </Button>
-                      </>
-                    ) : (
-                      <Button onClick={() => savePublicationState(details.status)} disabled={isPending}>
-                        {isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Check className="h-4 w-4" />}
-                        Зберегти
-                      </Button>
-                    )}
-                  </div>
-                </div>
-              ) : null}
-            </div>
-          </div>
-        </div>
-      ) : null}
-    </>
-  )
-}
-
-function StepTab({active,
-  done,
-  disabled = false,
-  onClick,
-  children,}: {
-  active: boolean
-  done: boolean
-  disabled?: boolean
-  onClick: () => void
-  children: React.ReactNode
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      disabled={disabled}
-      className={cn(
-        'flex items-center justify-center gap-2 px-4 py-3 transition hover:bg-white hover:text-slate-950 disabled:cursor-not-allowed disabled:opacity-45 disabled:hover:bg-transparent disabled:hover:text-slate-500',
-        active && 'bg-white text-slate-950'
-      )}
-    >
-      {done ? <Check className="h-4 w-4 text-emerald-500" /> : null}
-      {children}
-    </button>
-  )
-}
-
-function CheckboxField({name,
-  label,
-  checked,
-  onChange,
-  className,}: {
-  name: string
-  label: string
-  checked: boolean
-  onChange: (checked: boolean) => void
-  className?: string
-}) {
-  return (
-    <label className={cn('flex cursor-pointer items-center justify-between gap-4 rounded-xl border border-slate-200 bg-white px-4 py-4 text-sm font-extrabold text-slate-800 shadow-sm transition hover:border-slate-300', className)}>
-      <span>{label}</span>
-      <input name={name} className="peer sr-only" type="checkbox" checked={checked} onChange={(event) => onChange(event.target.checked)} />
-      <span className="relative h-7 w-12 rounded-full bg-slate-200 transition peer-checked:bg-primary">
-        <span className="absolute left-1 top-1 h-5 w-5 rounded-full bg-white shadow transition peer-checked:translate-x-5" />
-      </span>
-    </label>
-  )
-}
-
-function StatusPill({ status }: { status: AnimalRow['status'] }) {
-  return (
-    <span
-      className={cn(
-        'inline-flex rounded-full px-3 py-1.5 text-xs font-extrabold',
-        status === 'available' && 'bg-emerald-50 text-emerald-700',
-        status === 'reserved' && 'bg-amber-50 text-amber-700',
-        (status === 'adopted' || status === 'hidden') && 'bg-rose-50 text-rose-700',
-        status === 'draft' && 'bg-slate-200 text-slate-700'
-      )}
-    >
-      {getStatusLabel(status)}
-    </span>
-  )
-}
 
 type AnimalDetails = {
   name: string
@@ -630,87 +77,741 @@ type AnimalDetails = {
   is_vaccinated: boolean
   is_neutered: boolean
   published_at: string
+  animal_number: string
+  color: string
+  vaccination_count: number
+  character_traits: string[]
 }
 
-function getAnimalDetails(animal?: AnimalRow): AnimalDetails {
-  return {
-    name: animal?.name ?? '',
-    gender: animal?.gender ?? 'male',
-    size: animal?.size ?? 'medium',
-    status: animal?.status ?? 'draft',
-    short_description: animal?.short_description ?? '',
-    full_story: animal?.full_story ?? '',
-    approximate_age_label: animal?.approximate_age_label ?? '',
-    public_badges: animal?.public_badges?.join('\n') ?? '',
-    adoption_status: animal?.adoption_status ?? '',
-    is_vaccinated: Boolean(animal?.is_vaccinated),
-    is_neutered: Boolean(animal?.is_neutered),
-    published_at: toDatetimeLocal(animal?.published_at),
+// ─── Main Component ───────────────────────────────────────────────────────────
+
+export default function AnimalCreateModal({
+  initialAnimal,
+  initialPhotos = [],
+  initialStep = 'details',
+  triggerLabel = 'Додати тварину',
+  triggerDisabled = false,
+}: {
+  initialAnimal?: AnimalRow
+  initialPhotos?: AnimalPhotoRow[]
+  initialStep?: Step
+  triggerLabel?: string
+  triggerDisabled?: boolean
+}) {
+  const router = useRouter()
+  const fileInputRef = useRef<HTMLInputElement>(null)
+  const [isOpen, setIsOpen] = useState(false)
+  const [step, setStep] = useState<Step>('details')
+  const [animalId, setAnimalId] = useState<string | null>(null)
+  const [animalName, setAnimalName] = useState('')
+  const [photos, setPhotos] = useState<AnimalPhotoRow[]>([])
+  const [details, setDetails] = useState(() => getAnimalDetails(initialAnimal))
+  const [detailsSaved, setDetailsSaved] = useState(
+    Boolean(initialAnimal && isAnimalDetailsComplete(getAnimalDetails(initialAnimal)))
+  )
+  const [status, setStatus] = useState('')
+  const [isUploading, setIsUploading] = useState(false)
+  const [isPending, startTransition] = useTransition()
+  const mainPhoto = photos.find((p) => p.is_main)
+  const isEditing = Boolean(initialAnimal)
+  const hasPublication = Boolean(initialAnimal?.published_at)
+  const detailsComplete = isAnimalDetailsComplete(details)
+  const canUsePhotos = Boolean(animalId) && detailsComplete && detailsSaved
+  const canUsePublish = canUsePhotos && Boolean(mainPhoto)
+
+  function openModal() {
+    const next = getAnimalDetails(initialAnimal)
+    const nextComplete = isAnimalDetailsComplete(next)
+    const nextHasMain = initialPhotos.some((p) => p.is_main)
+    setAnimalId(initialAnimal?.id ?? null)
+    setAnimalName(initialAnimal?.name ?? '')
+    setDetails(next)
+    setDetailsSaved(Boolean(initialAnimal && nextComplete))
+    setPhotos(initialPhotos)
+    setStatus('')
+    setIsOpen(true)
+    setStep(getAvailableStep(initialStep, { hasSavedDetails: Boolean(initialAnimal && nextComplete), hasMainPhoto: nextHasMain }))
   }
-}
 
-function getAnimalFormData(details: AnimalDetails) {
-  const formData = new FormData()
-  formData.set('name', details.name)
-  formData.set('gender', details.gender)
-  formData.set('size', details.size)
-  formData.set('status', details.status)
-  formData.set('short_description', details.short_description)
-  formData.set('full_story', details.full_story)
-  formData.set('approximate_age_label', details.approximate_age_label)
-  formData.set('public_badges', details.public_badges)
-  formData.set('adoption_status', details.adoption_status ?? '')
-  formData.set('published_at', details.published_at)
+  function closeModal() {
+    setIsOpen(false)
+    setStep('details')
+    setAnimalId(null)
+    setAnimalName('')
+    setDetails(getAnimalDetails(initialAnimal))
+    setDetailsSaved(Boolean(initialAnimal && isAnimalDetailsComplete(getAnimalDetails(initialAnimal))))
+    setPhotos([])
+    setStatus('')
+    setIsUploading(false)
+    if (fileInputRef.current) fileInputRef.current.value = ''
+  }
 
-  if (details.is_vaccinated) {formData.set('is_vaccinated', 'on')}
-  if (details.is_neutered) {formData.set('is_neutered', 'on')}
+  function saveDetails(formData: FormData) {
+    if (!detailsComplete) {
+      setStatus("Заповни вік, короткий та повний опис — вони обов'язкові.")
+      return
+    }
+    const intent = formData.get('intent')?.toString() ?? 'save-photos'
+    setStatus('')
+    startTransition(async () => {
+      const result = initialAnimal
+        ? await updateAnimalDraftAction(initialAnimal.id, formData)
+        : await createAnimalDraftAction(formData)
+      if (!result.ok) { setStatus(result.error); return }
+      setAnimalId(result.animal.id)
+      setAnimalName(result.animal.name)
+      setDetailsSaved(true)
+      router.refresh()
+      if (intent === 'save-close') { closeModal(); return }
+      if (intent === 'save') return
+      if (intent === 'save-publish') {
+        if (!mainPhoto) { setStep('photos'); setStatus('Перед публікацією обери головне фото.'); return }
+        setStep('publish'); return
+      }
+      setStep('photos')
+    })
+  }
 
-  return formData
-}
+  function upd<K extends keyof AnimalDetails>(key: K, value: AnimalDetails[K]) {
+    setDetails((c) => ({ ...c, [key]: value }))
+    setDetailsSaved(false)
+    if (key === 'name') setAnimalName(String(value))
+  }
 
-function isAnimalDetailsComplete(details: AnimalDetails) {
-  return Boolean(
-    details.name.trim() &&
-    details.approximate_age_label.trim() &&
-    details.short_description.trim() &&
-    details.full_story.trim()
+  function changeStep(next: Step) {
+    if (next === 'photos' && !canUsePhotos) { setStatus('Спочатку збережи дані тварини.'); return }
+    if (next === 'publish' && !canUsePublish) { setStatus('Для публікації потрібні дані та головне фото.'); return }
+    setStatus('')
+    setStep(next)
+  }
+
+  async function uploadPhotos(files: FileList | null) {
+    if (!animalId || !files?.length) return
+    setStatus('')
+    setIsUploading(true)
+    try {
+      for (const file of Array.from(files)) {
+        const upload = await createAnimalPhotoUploadAction({ animalId, fileName: file.name, contentType: file.type || 'image/jpeg' })
+        if (!upload.ok) { setStatus(upload.error); continue }
+        let resp: Response
+        try { resp = await fetch(upload.uploadUrl, { method: 'PUT', body: file, headers: { 'Content-Type': file.type || 'application/octet-stream' } }) }
+        catch { setStatus('Браузер заблокував upload у R2. Перевір CORS.'); continue }
+        if (!resp.ok) { setStatus(`R2 upload failed: ${resp.status} ${resp.statusText}`); continue }
+        const reg = await registerAnimalPhotoAction({ animalId, r2Key: upload.r2Key, publicUrl: upload.publicUrl, alt: `${animalName} фото` })
+        if (!reg.ok) { setStatus(reg.error); continue }
+        setPhotos((c) => [...c, reg.photo as AnimalPhotoRow])
+      }
+    } finally {
+      setIsUploading(false)
+      if (fileInputRef.current) fileInputRef.current.value = ''
+    }
+    router.refresh()
+  }
+
+  function setMainPhoto(photoId: string) {
+    if (!animalId) return
+    setStatus('')
+    startTransition(async () => {
+      const r = await setMainAnimalPhotoAction(animalId, photoId)
+      if (!r.ok) { setStatus(r.error); return }
+      setPhotos((c) => c.map((p) => ({ ...p, is_main: p.id === photoId })))
+      router.refresh()
+    })
+  }
+
+  function deletePhoto(photoId: string) {
+    if (!animalId) return
+    setStatus('')
+    startTransition(async () => {
+      const r = await deleteAnimalPhotoAction(animalId, photoId)
+      if (!r.ok) { setStatus(r.error); return }
+      setPhotos((c) =>
+        c.filter((p) => p.id !== r.deletedPhotoId)
+         .map((p) => ({ ...p, is_main: r.nextMainPhotoId ? p.id === r.nextMainPhotoId : p.is_main }))
+      )
+      if (!r.r2Deleted) setStatus('Фото прибрано, але файл у R2 не видалився.')
+      router.refresh()
+    })
+  }
+
+  function publish() {
+    if (!animalId) return
+    setStatus('')
+    const fd = new FormData()
+    fd.set('animalId', animalId)
+    startTransition(async () => {
+      const r = await publishAnimalAction(fd)
+      if (!r.ok) { setStatus(r.error); return }
+      closeModal(); router.refresh()
+    })
+  }
+
+  function savePublicationState(nextStatus: AnimalRow['status']) {
+    if (!animalId) return
+    setStatus('')
+    const nextDetails = { ...details, status: nextStatus, published_at: nextStatus === 'draft' ? '' : details.published_at }
+    const fd = getAnimalFormData(nextDetails)
+    startTransition(async () => {
+      const r = await updateAnimalDraftAction(animalId, fd)
+      if (!r.ok) { setStatus(r.error); return }
+      setDetails(nextDetails)
+      setAnimalName(r.animal.name)
+      setDetailsSaved(true)
+      closeModal(); router.refresh()
+    })
+  }
+
+  return (
+    <>
+      <Button onClick={openModal} variant={isEditing ? 'outline' : 'primary'} size={isEditing ? 'sm' : 'md'} disabled={triggerDisabled}>
+        {!isEditing ? <Plus className="h-4 w-4" /> : null}
+        {triggerLabel}
+      </Button>
+
+      {isOpen ? (
+        <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-slate-950/60 p-4 pt-8 backdrop-blur-sm">
+          <div className="w-full max-w-3xl overflow-hidden rounded-2xl bg-white shadow-[0_32px_80px_rgba(15,23,42,0.32)]">
+
+            {/* ── Header ── */}
+            <div className="flex items-center justify-between gap-4 border-b border-slate-100 px-6 py-4">
+              <div className="flex items-center gap-3">
+                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-orange-50 text-primary">
+                  <PawPrint className="h-4 w-4" />
+                </div>
+                <div>
+                  <p className="text-[11px] font-black uppercase tracking-widest text-primary">
+                    {isEditing ? 'Редагування' : 'Нова тварина'}
+                  </p>
+                  <h2 className="text-lg font-extrabold leading-tight text-slate-950">
+                    {animalName || 'Без імені'}
+                  </h2>
+                </div>
+              </div>
+              <IconButton label="Закрити" variant="ghost" onClick={closeModal}>
+                <X className="h-5 w-5" />
+              </IconButton>
+            </div>
+
+            {/* ── Step tabs ── */}
+            <div className="grid grid-cols-3 border-b border-slate-100 text-sm font-bold">
+              {(['details', 'photos', 'publish'] as const).map((s, i) => {
+                const labels = ['Дані', 'Фото', 'Публікація']
+                const done = s === 'details' ? (detailsSaved && detailsComplete) : s === 'photos' ? Boolean(mainPhoto) : hasPublication
+                const disabled = s === 'photos' ? !canUsePhotos : s === 'publish' ? !canUsePublish : false
+                return (
+                  <button
+                    key={s}
+                    type="button"
+                    onClick={() => changeStep(s)}
+                    disabled={disabled}
+                    className={cn(
+                      'flex items-center justify-center gap-2 py-3 text-sm font-bold transition',
+                      'border-b-2',
+                      step === s ? 'border-primary text-primary' : 'border-transparent text-slate-400 hover:text-slate-700',
+                      disabled && 'cursor-not-allowed opacity-40'
+                    )}
+                  >
+                    <span className={cn(
+                      'flex h-5 w-5 items-center justify-center rounded-full text-[10px] font-black',
+                      done ? 'bg-emerald-100 text-emerald-600' : step === s ? 'bg-primary text-white' : 'bg-slate-100 text-slate-400'
+                    )}>
+                      {done ? <Check className="h-3 w-3" /> : i + 1}
+                    </span>
+                    {labels[i]}
+                  </button>
+                )
+              })}
+            </div>
+
+            {/* ── Body ── */}
+            <div className="max-h-[calc(100vh-260px)] overflow-y-auto">
+
+              {/* Error */}
+              {status ? (
+                <div className="mx-6 mt-5 rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm font-semibold text-rose-700">
+                  {status}
+                </div>
+              ) : null}
+
+              {/* ════ STEP: DETAILS ════ */}
+              {step === 'details' ? (
+                <form action={saveDetails} className="divide-y divide-slate-100">
+
+                  {/* — Ідентифікація — */}
+                  <FormSection icon={<Hash className="h-4 w-4" />} label="Ідентифікація">
+                    <div className="grid gap-4 sm:grid-cols-3">
+                      <FL label="Ім'я">
+                        <Input name="name" placeholder="Ім'я відсутнє" value={details.name} onChange={(e) => upd('name', e.target.value)} />
+                      </FL>
+                      <FL label="Номер тварини" hint="Тільки цифри">
+                        <div className="relative">
+                          <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-sm font-black text-slate-300">#</span>
+                          <Input name="animal_number" placeholder="0932187" value={details.animal_number} className="pl-7" onChange={(e) => upd('animal_number', e.target.value.replace(/\D/g, ''))} />
+                        </div>
+                      </FL>
+                      <FL label="Дата публікації">
+                        <Input name="published_at" type="datetime-local" value={details.published_at} onChange={(e) => upd('published_at', e.target.value)} />
+                      </FL>
+                    </div>
+                  </FormSection>
+
+                  {/* — Характеристика — */}
+                  <FormSection icon={<ClipboardList className="h-4 w-4" />} label="Характеристика">
+                    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                      <FL label="Стать">
+                        <Select name="gender" value={details.gender} onChange={(e) => upd('gender', e.target.value as AnimalDetails['gender'])}>
+                          <option value="male">Хлопчик</option>
+                          <option value="female">Дівчинка</option>
+                        </Select>
+                      </FL>
+                      <FL label="Розмір">
+                        <Select name="size" value={details.size} onChange={(e) => upd('size', e.target.value as AnimalDetails['size'])}>
+                          <option value="small">Малий</option>
+                          <option value="medium">Середній</option>
+                          <option value="large">Великий</option>
+                        </Select>
+                      </FL>
+                      <FL label="Вік *" hint="1.6 = 1 рік 6 міс.">
+                        <Input
+                          name="approximate_age_label"
+                          placeholder="1.6"
+                          value={details.approximate_age_label}
+                          onChange={(e) => upd('approximate_age_label', e.target.value.replace(/[^\d.]/g, ''))}
+                        />
+                      </FL>
+                      <FL label="Статус">
+                        <Select name="status" value={details.status} onChange={(e) => upd('status', e.target.value as AnimalDetails['status'])}>
+                          <option value="draft">Чернетка</option>
+                          <option value="available">Доступна</option>
+                          <option value="reserved">Резерв</option>
+                          <option value="adopted">Прилаштована</option>
+                          <option value="hidden">Прихована</option>
+                        </Select>
+                      </FL>
+                    </div>
+                    {/* Color picker */}
+                    <div className="mt-4">
+                      <p className="mb-2 text-xs font-extrabold text-slate-500">Забарвлення</p>
+                      <input type="hidden" name="color" value={details.color} />
+                      <ColorPicker value={details.color} onChange={(c) => upd('color', c)} />
+                    </div>
+                  </FormSection>
+
+                  {/* — Здоров'я — */}
+                  <FormSection icon={<ShieldCheck className="h-4 w-4" />} label="Здоров'я">
+                    <div className="grid gap-3 sm:grid-cols-2">
+                      <VaccinationField count={details.vaccination_count} onChange={(n) => { upd('vaccination_count', n); upd('is_vaccinated', n > 0) }} />
+                      <NeuterField gender={details.gender} checked={details.is_neutered} onChange={(v) => upd('is_neutered', v)} />
+                    </div>
+                    <input type="hidden" name="vaccination_count" value={details.vaccination_count} />
+                    <input type="hidden" name="is_vaccinated" value={details.vaccination_count > 0 ? 'on' : ''} />
+                    <input type="hidden" name="is_neutered" value={details.is_neutered ? 'on' : ''} />
+                    <div className="mt-3">
+                      <FL label="Бейдж і фільтр">
+                        <Select name="adoption_status" value={details.adoption_status ?? ''} onChange={(e) => upd('adoption_status', e.target.value as AnimalDetails['adoption_status'])}>
+                          <option value="">Без бейджа</option>
+                          <option value="ready">Готовий до адопції</option>
+                          <option value="needs_care">Потребує турботи</option>
+                        </Select>
+                      </FL>
+                    </div>
+                  </FormSection>
+
+                  {/* — Опис — */}
+                  <FormSection icon={<Heart className="h-4 w-4" />} label="Опис">
+                    <div className="space-y-4">
+                      <FL label="Короткий опис *">
+                        <Textarea
+                          name="short_description"
+                          className="min-h-[80px]"
+                          placeholder="2–3 речення для картки тварини"
+                          value={details.short_description}
+                          onChange={(e) => upd('short_description', e.target.value)}
+                        />
+                      </FL>
+                      <FL label="Повна історія *">
+                        <Textarea
+                          name="full_story"
+                          className="min-h-[120px]"
+                          placeholder="Докладна розповідь"
+                          value={details.full_story}
+                          onChange={(e) => upd('full_story', e.target.value)}
+                        />
+                      </FL>
+                    </div>
+                  </FormSection>
+
+                  {/* — Характер — */}
+                  <FormSection icon={<Sparkles className="h-4 w-4" />} label="Характер та звички">
+                    <CharacterTraitsField selected={details.character_traits} onChange={(t) => upd('character_traits', t)} />
+                    <input type="hidden" name="character_traits" value={details.character_traits.join('\n')} />
+                    <div className="mt-4">
+                      <FL label="Публічні бейджі" hint="По одному на рядок">
+                        <Textarea
+                          name="public_badges"
+                          className="min-h-[64px]"
+                          placeholder={'Готовий до адопції\nШукає родину'}
+                          value={details.public_badges}
+                          onChange={(e) => upd('public_badges', e.target.value)}
+                        />
+                      </FL>
+                    </div>
+                  </FormSection>
+
+                  {/* — Actions — */}
+                  <div className="flex items-center justify-between gap-3 bg-slate-50 px-6 py-4">
+                    <div className="flex gap-2">
+                      <Button type="submit" name="intent" value="save" variant="outline" size="sm" disabled={isPending || !detailsComplete} showIcon={false}>
+                        {isPending ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : null}
+                        Зберегти
+                      </Button>
+                      <Button type="submit" name="intent" value="save-close" variant="ghost" size="sm" disabled={isPending || !detailsComplete} showIcon={false}>
+                        Зберегти і закрити
+                      </Button>
+                    </div>
+                    <Button type="submit" name="intent" value="save-photos" size="sm" disabled={isPending || !detailsComplete}>
+                      {isPending ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : null}
+                      Перейти до фото
+                    </Button>
+                  </div>
+                </form>
+              ) : null}
+
+              {/* ════ STEP: PHOTOS ════ */}
+              {step === 'photos' ? (
+                <div>
+                  <div className="p-6 space-y-4">
+                    <div className="flex items-center justify-between rounded-xl border border-dashed border-slate-200 bg-slate-50 px-5 py-4">
+                      <div>
+                        <p className="text-sm font-extrabold text-slate-800">Фото тварини</p>
+                        <p className="mt-0.5 text-xs text-slate-500">Перше фото стає головним автоматично. Зірочка — змінити.</p>
+                      </div>
+                      <div>
+                        <input ref={fileInputRef} type="file" accept="image/*" multiple className="sr-only" onChange={(e) => uploadPhotos(e.target.files)} />
+                        <Button onClick={() => fileInputRef.current?.click()} disabled={!animalId || isUploading} size="sm">
+                          {isUploading ? <Loader2 className="h-4 w-4 animate-spin" /> : <ImagePlus className="h-4 w-4" />}
+                          {isUploading ? 'Завантаження...' : 'Додати фото'}
+                        </Button>
+                      </div>
+                    </div>
+
+                    {photos.length ? (
+                      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                        {photos.map((photo) => (
+                          <div key={photo.id} className="group relative overflow-hidden rounded-xl border border-slate-200 bg-slate-100">
+                            <div className="aspect-[4/3]">
+                              {photo.public_url ? (
+                                // eslint-disable-next-line @next/next/no-img-element
+                                <img src={photo.public_url} alt={photo.alt ?? ''} className="h-full w-full object-cover" />
+                              ) : null}
+                            </div>
+                            {photo.is_main ? (
+                              <div className="absolute bottom-2 left-2 flex items-center gap-1 rounded-full bg-amber-400 px-2 py-0.5 text-[10px] font-black text-white">
+                                <Star className="h-2.5 w-2.5 fill-current" /> Головне
+                              </div>
+                            ) : null}
+                            <div className="absolute right-2 top-2 flex gap-1.5 opacity-0 transition group-hover:opacity-100">
+                              <button type="button" onClick={() => setMainPhoto(photo.id)} disabled={isPending || photo.is_main}
+                                className={cn('flex h-8 w-8 items-center justify-center rounded-lg border bg-white/90 shadow-sm transition',
+                                  photo.is_main ? 'border-amber-300 text-amber-500' : 'border-slate-200 text-slate-500 hover:text-amber-500')}>
+                                <Star className={cn('h-3.5 w-3.5', photo.is_main && 'fill-current')} />
+                              </button>
+                              <button type="button" onClick={() => deletePhoto(photo.id)} disabled={isPending}
+                                className="flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 bg-white/90 text-rose-500 shadow-sm transition hover:bg-rose-50">
+                                <Trash2 className="h-3.5 w-3.5" />
+                              </button>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="rounded-xl border border-slate-200 py-12 text-center text-sm text-slate-400">
+                        Фото ще немає — додай перше
+                      </div>
+                    )}
+                  </div>
+                  <div className="flex items-center justify-between border-t border-slate-100 bg-slate-50 px-6 py-4">
+                    <Button variant="ghost" size="sm" onClick={() => setStep('details')} showIcon={false}>
+                      <ArrowLeft className="h-4 w-4" /> Назад
+                    </Button>
+                    <Button size="sm" onClick={() => changeStep('publish')} disabled={!canUsePublish}>
+                      Перейти до публікації
+                    </Button>
+                  </div>
+                </div>
+              ) : null}
+
+              {/* ════ STEP: PUBLISH ════ */}
+              {step === 'publish' ? (
+                <div>
+                  <div className="p-6">
+                    <div className="rounded-xl border border-slate-200 bg-slate-50 p-5">
+                      <p className="text-xs font-extrabold uppercase tracking-widest text-slate-400">Поточний статус</p>
+                      <div className="mt-3"><StatusPill status={details.status} /></div>
+                      <p className="mt-3 text-sm text-slate-500">{getPublicationCopy(details.status, hasPublication)}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-between border-t border-slate-100 bg-slate-50 px-6 py-4">
+                    <Button variant="ghost" size="sm" onClick={() => setStep('photos')} showIcon={false}>
+                      <ArrowLeft className="h-4 w-4" /> Назад
+                    </Button>
+                    <div className="flex gap-2">
+                      {details.status === 'draft' ? (
+                        <>
+                          <Button variant="outline" size="sm" onClick={() => savePublicationState('draft')} disabled={isPending} showIcon={false}>
+                            {isPending ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : null}
+                            Залишити чернеткою
+                          </Button>
+                          <Button size="sm" onClick={publish} disabled={isPending || !mainPhoto}>
+                            {isPending ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Check className="h-3.5 w-3.5" />}
+                            Опублікувати
+                          </Button>
+                        </>
+                      ) : (
+                        <Button size="sm" onClick={() => savePublicationState(details.status)} disabled={isPending}>
+                          {isPending ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Check className="h-3.5 w-3.5" />}
+                          Зберегти
+                        </Button>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              ) : null}
+            </div>
+          </div>
+        </div>
+      ) : null}
+    </>
   )
 }
 
-function getAvailableStep(
-  requestedStep: Step,
-  state: {
-    hasSavedDetails: boolean
-    hasMainPhoto: boolean
-  }
-): Step {
-  if (requestedStep === 'publish') {
-    return state.hasSavedDetails && state.hasMainPhoto ? 'publish' : 'details'
-  }
+// ─── Section wrapper ──────────────────────────────────────────────────────────
 
-  if (requestedStep === 'photos') {
-    return state.hasSavedDetails ? 'photos' : 'details'
-  }
+function FormSection({ icon, label, children }: { icon: React.ReactNode; label: string; children: React.ReactNode }) {
+  return (
+    <div className="px-6 py-5">
+      <div className="mb-4 flex items-center gap-2">
+        <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-orange-50 text-primary">
+          {icon}
+        </span>
+        <span className="text-xs font-extrabold uppercase tracking-widest text-slate-400">{label}</span>
+      </div>
+      {children}
+    </div>
+  )
+}
 
+// ─── Field label ──────────────────────────────────────────────────────────────
+
+function FL({ label, hint, children }: { label: string; hint?: string; children: React.ReactNode }) {
+  return (
+    <label className="block">
+      <span className="mb-1.5 block text-xs font-extrabold text-slate-600">{label}</span>
+      {hint ? <span className="mb-1.5 block text-[11px] text-slate-400">{hint}</span> : null}
+      {children}
+    </label>
+  )
+}
+
+// ─── Color Picker ─────────────────────────────────────────────────────────────
+
+function ColorPicker({ value, onChange }: { value: string; onChange: (c: string) => void }) {
+  return (
+    <div className="flex flex-wrap gap-2">
+      {COLOR_OPTIONS.map((opt) => {
+        const active = value === opt.value
+        return (
+          <button
+            key={opt.value}
+            type="button"
+            title={opt.value}
+            onClick={() => onChange(active ? '' : opt.value)}
+            className={cn(
+              'group relative flex h-8 items-center gap-1.5 rounded-lg border px-2.5 text-xs font-semibold transition',
+              active
+                ? 'border-primary bg-orange-50 text-primary ring-1 ring-primary/30'
+                : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300'
+            )}
+          >
+            <span className="h-3.5 w-3.5 shrink-0 rounded-full border border-black/10 shadow-sm" style={{ backgroundColor: opt.hex }} />
+            {opt.value}
+            {active ? <Check className="h-3 w-3" /> : null}
+          </button>
+        )
+      })}
+    </div>
+  )
+}
+
+// ─── Vaccination ──────────────────────────────────────────────────────────────
+
+function VaccinationField({ count, onChange }: { count: number; onChange: (n: number) => void }) {
+  const active = count > 0
+  return (
+    <div className="rounded-xl border border-slate-200 bg-white p-4">
+      <div className="flex items-center justify-between gap-3">
+        <div>
+          <p className="text-xs font-extrabold text-slate-700">Вакцинація</p>
+          <p className="mt-0.5 text-[11px] text-slate-400">
+            {active ? `${count} вакцин${count === 1 ? 'а' : count < 5 ? 'и' : ''}` : 'Не вакцинована'}
+          </p>
+        </div>
+        <Toggle active={active} onToggle={() => onChange(active ? 0 : 1)} />
+      </div>
+      {active ? (
+        <div className="mt-3 flex items-center gap-1.5 flex-wrap">
+          {[1, 2, 3, 4, 5, 6].map((n) => (
+            <button key={n} type="button" onClick={() => onChange(n)}
+              className={cn('h-7 w-7 rounded-lg border text-xs font-extrabold transition',
+                count === n ? 'border-primary bg-primary text-white' : 'border-slate-200 bg-slate-50 text-slate-600 hover:border-primary/40')}>
+              {n}
+            </button>
+          ))}
+          <input type="number" min={1} max={20} placeholder="7+" value={count > 6 ? count : ''}
+            onChange={(e) => { const n = parseInt(e.target.value, 10); if (Number.isFinite(n) && n >= 1 && n <= 20) onChange(n) }}
+            className="h-7 w-12 rounded-lg border border-slate-200 bg-slate-50 px-1.5 text-xs font-bold text-slate-700 outline-none focus:border-primary" />
+        </div>
+      ) : null}
+    </div>
+  )
+}
+
+// ─── Neuter ───────────────────────────────────────────────────────────────────
+
+function NeuterField({ gender, checked, onChange }: { gender: AnimalDetails['gender']; checked: boolean; onChange: (v: boolean) => void }) {
+  return (
+    <div className="flex items-center justify-between gap-3 rounded-xl border border-slate-200 bg-white p-4">
+      <div>
+        <p className="text-xs font-extrabold text-slate-700">
+          {gender === 'female' ? 'Стерилізація' : 'Кастрація'}
+        </p>
+        <p className="mt-0.5 text-[11px] text-slate-400">{checked ? 'Проведена' : 'Не проведена'}</p>
+      </div>
+      <label className="cursor-pointer">
+        <input type="checkbox" className="sr-only peer" checked={checked} onChange={(e) => onChange(e.target.checked)} />
+        <Toggle active={checked} onToggle={() => onChange(!checked)} />
+      </label>
+    </div>
+  )
+}
+
+// ─── Toggle ───────────────────────────────────────────────────────────────────
+
+function Toggle({ active, onToggle }: { active: boolean; onToggle: () => void }) {
+  return (
+    <button type="button" onClick={onToggle}
+      className={cn('relative h-6 w-11 shrink-0 rounded-full transition', active ? 'bg-primary' : 'bg-slate-200')}>
+      <span className={cn('absolute left-0.5 top-0.5 h-5 w-5 rounded-full bg-white shadow-sm transition-transform', active && 'translate-x-5')} />
+    </button>
+  )
+}
+
+// ─── Character Traits ─────────────────────────────────────────────────────────
+
+function CharacterTraitsField({ selected, onChange }: { selected: string[]; onChange: (t: string[]) => void }) {
+  function toggle(trait: string) {
+    if (selected.includes(trait)) onChange(selected.filter((t) => t !== trait))
+    else if (selected.length < 5) onChange([...selected, trait])
+  }
+  return (
+    <div>
+      <div className="flex flex-wrap gap-2">
+        {CHARACTER_TRAITS.map((trait) => {
+          const active = selected.includes(trait)
+          const disabled = !active && selected.length >= 5
+          return (
+            <button key={trait} type="button" disabled={disabled} onClick={() => toggle(trait)}
+              className={cn('flex h-8 items-center gap-1 rounded-full border px-3 text-xs font-semibold transition',
+                active ? 'border-primary bg-orange-50 text-primary' :
+                disabled ? 'cursor-not-allowed border-slate-100 text-slate-300' :
+                'border-slate-200 bg-white text-slate-600 hover:border-slate-300')}>
+              {active ? <Check className="h-3 w-3" /> : null}
+              {trait}
+            </button>
+          )
+        })}
+      </div>
+      <p className="mt-2 text-[11px] text-slate-400">
+        {selected.length > 0
+          ? `Обрано: ${selected.join(', ')}`
+          : 'Оберіть до 5 рис характеру'}
+      </p>
+    </div>
+  )
+}
+
+// ─── Status pill ──────────────────────────────────────────────────────────────
+
+function StatusPill({ status }: { status: AnimalRow['status'] }) {
+  return (
+    <span className={cn('inline-flex rounded-full px-3 py-1 text-xs font-extrabold',
+      status === 'available' && 'bg-emerald-50 text-emerald-700',
+      status === 'reserved' && 'bg-amber-50 text-amber-700',
+      (status === 'adopted' || status === 'hidden') && 'bg-rose-50 text-rose-700',
+      status === 'draft' && 'bg-slate-100 text-slate-600')}>
+      {{ draft: 'Чернетка', available: 'Опублікована', reserved: 'Резерв', adopted: 'Прилаштована', hidden: 'Прихована' }[status]}
+    </span>
+  )
+}
+
+// ─── Helpers ──────────────────────────────────────────────────────────────────
+
+function getAnimalDetails(a?: AnimalRow): AnimalDetails {
+  return {
+    name: a?.name ?? '',
+    gender: a?.gender ?? 'male',
+    size: a?.size ?? 'medium',
+    status: a?.status ?? 'draft',
+    short_description: a?.short_description ?? '',
+    full_story: a?.full_story ?? '',
+    approximate_age_label: a?.approximate_age_label ?? '',
+    public_badges: a?.public_badges?.join('\n') ?? '',
+    adoption_status: a?.adoption_status ?? '',
+    is_vaccinated: Boolean(a?.is_vaccinated),
+    is_neutered: Boolean(a?.is_neutered),
+    published_at: toDatetimeLocal(a?.published_at),
+    animal_number: a?.animal_number ?? '',
+    color: a?.color ?? '',
+    vaccination_count: a?.vaccination_count ?? 0,
+    character_traits: a?.character_traits ?? [],
+  }
+}
+
+function getAnimalFormData(d: AnimalDetails) {
+  const fd = new FormData()
+  fd.set('name', d.name)
+  fd.set('gender', d.gender)
+  fd.set('size', d.size)
+  fd.set('status', d.status)
+  fd.set('short_description', d.short_description)
+  fd.set('full_story', d.full_story)
+  fd.set('approximate_age_label', d.approximate_age_label)
+  fd.set('public_badges', d.public_badges)
+  fd.set('adoption_status', d.adoption_status ?? '')
+  fd.set('published_at', d.published_at)
+  fd.set('animal_number', d.animal_number)
+  fd.set('color', d.color)
+  fd.set('vaccination_count', String(d.vaccination_count))
+  fd.set('character_traits', d.character_traits.join('\n'))
+  if (d.vaccination_count > 0) fd.set('is_vaccinated', 'on')
+  if (d.is_neutered) fd.set('is_neutered', 'on')
+  return fd
+}
+
+function isAnimalDetailsComplete(d: AnimalDetails) {
+  return Boolean(d.approximate_age_label.trim() && d.short_description.trim() && d.full_story.trim())
+}
+
+function getAvailableStep(req: Step, s: { hasSavedDetails: boolean; hasMainPhoto: boolean }): Step {
+  if (req === 'publish') return s.hasSavedDetails && s.hasMainPhoto ? 'publish' : 'details'
+  if (req === 'photos') return s.hasSavedDetails ? 'photos' : 'details'
   return 'details'
 }
 
-function getStatusLabel(status: AnimalRow['status']) {
-  const labels: Record<AnimalRow['status'], string> = {
-    draft: 'Чернетка',
-    available: 'Опублікована',
-    reserved: 'Резерв',
-    adopted: 'Прилаштована',
-    hidden: 'Прихована',
-  }
-
-  return labels[status]
-}
-
-function getPublicationStatusCopy(status: AnimalRow['status'], hasPublication: boolean) {
-  if (status === 'draft') {return 'Чернетка не показується в публічному каталозі.'}
-  if (status === 'available') {return hasPublication ? 'Тварина доступна в публічному каталозі.' : 'Після збереження тварина буде доступна в каталозі.'}
-  if (status === 'reserved') {return 'Тварина має резерв і не повинна виглядати як вільна до адопції.'}
-  if (status === 'adopted') {return 'Тварину вже прилаштовано.'}
+function getPublicationCopy(status: AnimalRow['status'], hasPub: boolean) {
+  if (status === 'draft') return 'Чернетка не показується в публічному каталозі.'
+  if (status === 'available') return hasPub ? 'Тварина доступна в публічному каталозі.' : 'Після збереження тварина буде у каталозі.'
+  if (status === 'reserved') return 'Тварина зарезервована.'
+  if (status === 'adopted') return 'Тварину вже прилаштовано.'
   return 'Прихований запис не показується на сайті.'
 }

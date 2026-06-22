@@ -77,7 +77,7 @@ export default function AnimalProfileClient({ animal, galleryImages, relatedAnim
                 <StatusBadge icon={BadgeCheck} label={profile.status} tone={animal.adoptionStatus === 'needs_care' ? 'orange' : 'green'} />
                 <StatusBadge icon={Camera} label={`${images.length} фото`} tone="slate" />
                 <span className="ml-auto inline-flex h-8 items-center rounded-2xl bg-primary px-3 text-[11px] font-black tracking-wider text-white shadow-sm">
-                  #{animal.id}
+                  #{animal.animalNumber ?? animal.databaseId?.slice(0, 7).toUpperCase()}
                 </span>
               </div>
 
@@ -115,7 +115,9 @@ export default function AnimalProfileClient({ animal, galleryImages, relatedAnim
                     {
                       icon: Syringe,
                       label: 'Вакцинація',
-                      value: animal.isVaccinated ? 'Проведена' : 'Не проведена',
+                      value: animal.vaccinationCount > 0
+                        ? `${animal.vaccinationCount} вакцин${animal.vaccinationCount === 1 ? 'а' : animal.vaccinationCount < 5 ? 'и' : ''}`
+                        : 'Не проведена',
                       tone: animal.isVaccinated ? 'green' : 'orange',
                     },
                     {

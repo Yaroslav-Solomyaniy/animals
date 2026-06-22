@@ -28,6 +28,30 @@ const textList = z
   }, z.array(z.string()))
   .default([])
 
+// vaccination_count: integer 0–20
+const vaccinationCount = z
+  .preprocess((value) => {
+    if (value === '' || value == null) {return 0}
+    const n = Number(value)
+    return Number.isFinite(n) ? Math.round(n) : 0
+  }, z.number().int().min(0).max(20))
+  .default(0)
+
+// character_traits: predefined list, max 5 items
+// Sent from form as repeated fields named 'character_traits'
+const characterTraits = z
+  .preprocess((value) => {
+    if (Array.isArray(value)) {return value.filter(Boolean)}
+    if (typeof value === 'string' && value.trim()) {
+      return value
+        .split('\n')
+        .map((s) => s.trim())
+        .filter(Boolean)
+    }
+    return []
+  }, z.array(z.string()).max(5))
+  .default([])
+
 export const animalSchema = z.object({
   name: z.string().trim().optional().default(''),
   gender: z.enum(['male', 'female']),
@@ -41,6 +65,10 @@ export const animalSchema = z.object({
   is_vaccinated: checkbox,
   is_neutered: checkbox,
   published_at: nullableText,
+  animal_number: nullableText,
+  color: nullableText,
+  vaccination_count: vaccinationCount,
+  character_traits: characterTraits,
 })
 
 export type AnimalFormValue = z.infer<typeof animalSchema>

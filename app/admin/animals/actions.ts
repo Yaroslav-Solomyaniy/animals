@@ -219,9 +219,14 @@ function toAnimalPayload(value: AnimalFormValue, slug: string, name = getAnimalD
     public_badges: value.public_badges,
     adoption_status: value.adoption_status,
     approximate_age_label: value.approximate_age_label,
-    is_vaccinated: value.is_vaccinated,
+    // is_vaccinated derived from count for backward compat
+    is_vaccinated: value.vaccination_count > 0,
     is_neutered: value.is_neutered,
     published_at: value.published_at,
+    animal_number: value.animal_number,
+    color: value.color,
+    vaccination_count: value.vaccination_count,
+    character_traits: value.character_traits,
   }
 }
 
