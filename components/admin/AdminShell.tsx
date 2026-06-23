@@ -22,6 +22,7 @@ export default function AdminShell({ children }: { children: ReactNode }) {
   const pathname = usePathname()
   useScrollToTopOnRouteChange()
   const isAdminRoute = pathname.startsWith('/admin')
+  const isAnimalEditorRoute = pathname.startsWith('/admin/animals/') && pathname !== '/admin/animals/'
 
   if (!isAdminRoute) {
     return (
@@ -86,50 +87,57 @@ export default function AdminShell({ children }: { children: ReactNode }) {
       </aside>
 
       <div className="flex min-h-screen min-w-0 flex-1 flex-col">
-        <header className="sticky top-0 z-40 border-b border-slate-200 bg-white/88 text-slate-950 backdrop-blur-xl">
-          <div className="mx-auto flex max-w-[calc(100rem+4rem)] flex-col gap-4 px-4 py-4 sm:px-6 lg:px-8">
-            <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-              <div>
-                <p className="inline-flex items-center gap-2 rounded-full border border-orange-200 bg-orange-50 px-3 py-1.5 text-xs font-extrabold uppercase text-primary">
-                  <Rocket className="h-3.5 w-3.5" />
-                  Адмін панель сайту
-                </p>
-                <h1 className="mt-3 text-2xl font-extrabold text-slate-950 md:text-3xl">Керування контентом і каталогом</h1>
+        {!isAnimalEditorRoute && (
+          <header className="sticky top-0 z-40 border-b border-slate-200 bg-white/88 text-slate-950 backdrop-blur-xl">
+            <div className="mx-auto flex max-w-[calc(100rem+4rem)] flex-col gap-4 px-4 py-4 sm:px-6 lg:px-8">
+              <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+                <div>
+                  <p className="inline-flex items-center gap-2 rounded-full border border-orange-200 bg-orange-50 px-3 py-1.5 text-xs font-extrabold uppercase text-primary">
+                    <Rocket className="h-3.5 w-3.5" />
+                    Адмін панель сайту
+                  </p>
+                  <h1 className="mt-3 text-2xl font-extrabold text-slate-950 md:text-3xl">Керування контентом і каталогом</h1>
+                </div>
+
+                <LinkButton href="/" variant="outline" size="sm">
+                  На сайт
+                </LinkButton>
               </div>
 
-              <LinkButton href="/" variant="outline" size="sm">
-                На сайт
-              </LinkButton>
+              <nav className="flex flex-wrap gap-2 xl:hidden">
+                {adminNavigation.map((item) => {
+                  const Icon = item.icon
+                  const isActive =
+                    item.href === '/admin' ? pathname === item.href : pathname === item.href || pathname.startsWith(`${item.href}/`)
+
+                  return (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      className={cn(
+                        'inline-flex items-center gap-2 rounded-xl border px-4 py-2.5 text-sm font-bold transition-all',
+                        isActive
+                          ? 'border-orange-200 bg-orange-50 text-primary'
+                          : 'border-slate-200 bg-white text-slate-600 hover:border-orange-200 hover:text-primary'
+                      )}
+                    >
+                      <Icon className="h-4 w-4" />
+                      {item.label}
+                    </Link>
+                  )
+                })}
+              </nav>
             </div>
-
-            <nav className="flex flex-wrap gap-2 xl:hidden">
-              {adminNavigation.map((item) => {
-                const Icon = item.icon
-                const isActive =
-                  item.href === '/admin' ? pathname === item.href : pathname === item.href || pathname.startsWith(`${item.href}/`)
-
-                return (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    className={cn(
-                      'inline-flex items-center gap-2 rounded-xl border px-4 py-2.5 text-sm font-bold transition-all',
-                      isActive
-                        ? 'border-orange-200 bg-orange-50 text-primary'
-                        : 'border-slate-200 bg-white text-slate-600 hover:border-orange-200 hover:text-primary'
-                    )}
-                  >
-                    <Icon className="h-4 w-4" />
-                    {item.label}
-                  </Link>
-                )
-              })}
-            </nav>
-          </div>
-        </header>
+          </header>
+        )}
 
         <main className="flex-1 bg-[#f6f8fb] text-slate-950">
-          <div className="mx-auto max-w-[calc(100rem+4rem)] px-4 py-8 sm:px-6 lg:px-8">{children}</div>
+          <div className={cn(
+            'mx-auto max-w-[calc(100rem+4rem)] px-4 sm:px-6 lg:px-8',
+            isAnimalEditorRoute ? 'p-0' : 'py-8'
+          )}>
+            {children}
+          </div>
         </main>
       </div>
     </div>

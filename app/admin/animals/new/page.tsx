@@ -1,5 +1,10 @@
-import { redirect } from 'next/navigation'
+import { AdminAuthGate } from '@/components/admin/AdminAuthGate'
+import AnimalEditorPage from '@/components/admin/AnimalEditorPage'
 
 export default function NewAnimalPage() {
-  redirect('/admin/animals')
+  return (
+    <AdminAuthGate>
+      <AnimalEditorPage />
+    </AdminAuthGate>
+  )
 }

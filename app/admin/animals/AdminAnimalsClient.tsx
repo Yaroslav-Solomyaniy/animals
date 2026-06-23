@@ -4,13 +4,13 @@ import {
   CircleOff,
   ImageOff,
   Images,
+  Plus,
   Search,
 } from 'lucide-react'
 import { AdminAuthGate } from '@/components/admin/AdminAuthGate'
 import AdminNotice from '@/components/admin/AdminNotice'
 import AdminPageHeader from '@/components/admin/AdminPageHeader'
-import AnimalCreateModal from '@/components/admin/AnimalCreateModal'
-import { Button } from '@/components/ui/Button'
+import { Button, LinkButton } from '@/components/ui/Button'
 import { cn } from '@/lib/utils'
 import {
   hasAdminAnimalFilters,
@@ -79,7 +79,12 @@ export default function AdminAnimalsClient({animals,
         eyebrow="Тварини"
         title="Каталог тварин"
         description="Керуйте інформацією про тварин, переглядайте статуси, редагуйте дані та використовуйте серверні фільтри для швидкого пошуку потрібних записів."
-        actions={<AnimalCreateModal />}
+        actions={
+          <LinkButton href="/admin/animals/new" size="sm" showIcon={false}>
+            <Plus className="h-4 w-4" />
+            Додати тварину
+          </LinkButton>
+        }
       />
 
       <div className="space-y-4">
@@ -202,10 +207,13 @@ function AdminAnimalCard({ animal }: { animal: AdminAnimalCardData }) {
         </div>
       </div>
 
-      <div className="flex flex-wrap items-start gap-2 md:flex-col md:items-stretch">
-        <AnimalCreateModal initialAnimal={animal} initialPhotos={animal.photos} initialStep="details" triggerLabel="Дані" />
-        <AnimalCreateModal initialAnimal={animal} initialPhotos={animal.photos} initialStep="photos" triggerLabel="Фото" triggerDisabled={!detailsComplete} />
-        <AnimalCreateModal initialAnimal={animal} initialPhotos={animal.photos} initialStep="publish" triggerLabel="Публікація" triggerDisabled={!detailsComplete || !hasMainPhoto} />
+      <div className="flex items-start gap-2 md:flex-col md:items-stretch">
+        <Link
+          href={`/admin/animals/${animal.id}`}
+          className="inline-flex h-9 items-center justify-center rounded-md border border-primary/45 px-3.5 text-sm font-extrabold text-primary transition hover:border-primary hover:bg-orange-50"
+        >
+          Редагувати
+        </Link>
       </div>
     </article>
   )
