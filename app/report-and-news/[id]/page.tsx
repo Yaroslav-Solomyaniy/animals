@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { LinkButton } from '@/components/ui/Button'
 import { notFound } from 'next/navigation'
 import {
   ArrowLeft,
@@ -19,7 +20,6 @@ import { getPublicAnimalBySlugOrId } from '@/lib/animals'
 import type { NewsContentBlock } from '@/lib/news'
 import { getPublishedNewsBySlugOrId, getRelatedPublishedNews } from '@/lib/public-news'
 import { buildAnimalHref, buildNewsHref, SITE_ROUTES } from '@/lib/site-config'
-import Section from '@/components/ui/Section'
 
 type NewsPageProps = {
   params: Promise<{
@@ -55,12 +55,11 @@ export default async function NewsDetailsPage({ params }: NewsPageProps) {
     <main className="storybook-bg min-h-screen text-gray-950">
       <StorybookDecorations />
 
-      <Section contained={false} className="pt-8" as="div">
-        <BackLink />
-      </Section>
-
-      <section className="px-4 pb-8 pt-5 sm:px-6 lg:px-8">
-        <article className="mx-auto grid max-w-336 gap-5 overflow-hidden rounded-[28px] border border-orange-100 bg-white p-3 shadow-[0_28px_90px_rgba(15,23,42,0.10)] transition hover:border-orange-200 hover:shadow-[0_32px_100px_rgba(242,116,56,0.14)] lg:grid-cols-[minmax(0,1fr)_380px]">
+      <section className="px-4 pb-8 pt-6 sm:px-6 lg:px-8" style={{ position: 'relative', zIndex: 10 }}>
+        <div className="mx-auto mb-4 max-w-336">
+          <BackLink />
+        </div>
+        <article className="mx-auto grid max-w-336 gap-5 rounded-[28px] border border-orange-100 bg-white p-3 shadow-[0_28px_90px_rgba(15,23,42,0.10)] transition hover:border-orange-200 hover:shadow-[0_32px_100px_rgba(242,116,56,0.14)] lg:grid-cols-[minmax(0,1fr)_380px]">
           <div className="relative min-h-[440px] overflow-hidden rounded-[24px] ring-1 ring-orange-100/70 transition hover:ring-primary/45 lg:min-h-[560px]">
             <LightboxImage
               image={{
@@ -118,7 +117,7 @@ export default async function NewsDetailsPage({ params }: NewsPageProps) {
         </article>
       </section>
 
-      <section className="px-4 py-8 sm:px-6 lg:px-8">
+      <section className="px-4 py-8 sm:px-6 lg:px-8" style={{ zIndex: 0 }}>
         <div className="mx-auto grid max-w-336 gap-7 lg:grid-cols-[minmax(0,1fr)_380px] lg:items-start">
           <SectionFrame className="overflow-hidden rounded-[32px] p-0 transition hover:border-orange-200 hover:shadow-[0_28px_80px_rgba(242,116,56,0.16)]">
             <div className="border-b border-orange-100 bg-orange-50/60 px-6 py-5 sm:px-8">
@@ -132,7 +131,7 @@ export default async function NewsDetailsPage({ params }: NewsPageProps) {
                 {article.content.map((block, index) => (
                   <div
                     key={`${block.type}-${index}`}
-                    className={getBlockWidthClass(block.width)}
+                    className={getBlockWidthClass(block)}
                   >
                     <NewsBlock block={block} />
                   </div>
@@ -162,6 +161,7 @@ export default async function NewsDetailsPage({ params }: NewsPageProps) {
               </Link>
             </div>
 
+            {relatedNews.length > 0 && (
             <div className="rounded-[28px] border border-white/10 bg-gray-950 p-5 text-white shadow-[0_24px_70px_rgba(15,23,42,0.18)] transition hover:border-primary/60 hover:shadow-[0_24px_70px_rgba(242,116,56,0.20)]">
               <div className="mb-5 flex items-center gap-3">
                 <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-white/10 text-orange-200">
@@ -202,6 +202,7 @@ export default async function NewsDetailsPage({ params }: NewsPageProps) {
                 <ArrowRight className="h-4 w-4" />
               </Link>
             </div>
+            )}
           </aside>
         </div>
       </section>
@@ -215,7 +216,7 @@ function BackLink() {
   return (
     <Link
       href={SITE_ROUTES.reportAndNews}
-      className="group relative inline-flex items-center justify-center gap-2 overflow-hidden rounded-xl border border-primary/30 bg-white/90 px-4 py-2.5 text-sm font-extrabold text-primary shadow-[0_16px_45px_rgba(242,116,56,0.12)] backdrop-blur transition hover:border-primary active:scale-[0.98]"
+      className="group relative inline-flex items-center justify-center gap-2.5 overflow-hidden rounded-2xl border border-primary/30 bg-white/90 px-6 py-3.5 text-base font-extrabold text-primary shadow-[0_16px_45px_rgba(242,116,56,0.14)] backdrop-blur transition hover:border-primary active:scale-[0.98]"
     >
       <span className="absolute inset-y-0 left-0 w-0 bg-primary transition-all duration-300 ease-out group-hover:w-full" />
       <ArrowLeft className="relative z-10 h-4 w-4 transition group-hover:text-white" />
@@ -365,24 +366,26 @@ function NewsBlock({ block }: { block: NewsContentBlock }) {
         </div>
       )
 
-    case 'buttons':
+    case 'buttons': {
+      const visibleButtons = block.buttons.filter((b) => b.label?.trim())
+      if (visibleButtons.length === 0) return null
       return (
-        <div className="flex flex-col gap-3 rounded-[28px] border border-orange-100 bg-orange-50/70 p-4 shadow-soft transition hover:border-orange-200 hover:shadow-[0_20px_55px_rgba(242,116,56,0.14)] sm:flex-row">
-          {block.buttons.map((button) => (
-            <Link
+        <div className="flex flex-col gap-3 sm:flex-row">
+          {visibleButtons.map((button) => (
+            <LinkButton
               key={`${button.href}-${button.label}`}
               href={button.href}
-              className={
-                button.variant === 'outline'
-                  ? 'btn-outline inline-flex flex-1 items-center justify-center text-center'
-                  : 'btn-primary inline-flex flex-1 items-center justify-center text-center'
-              }
+              variant={button.variant === 'outline' ? 'outline' : 'primary'}
+              size="lg"
+              showIcon={false}
+              className="flex-1 justify-center"
             >
               {button.label}
-            </Link>
+            </LinkButton>
           ))}
         </div>
       )
+    }
 
     case 'gallery':
       return (
@@ -417,18 +420,19 @@ function NewsBlock({ block }: { block: NewsContentBlock }) {
   }
 }
 
-function getBlockWidthClass(width: NewsContentBlock['width']) {
-  switch (width) {
-    case 'narrow':
-      return 'mx-auto max-w-3xl'
-    case 'medium':
-      return 'mx-auto max-w-4xl'
-    case 'wide':
-      return 'mx-auto max-w-5xl'
-    case 'full':
-      return 'w-full'
-    default:
-      return 'mx-auto max-w-4xl'
+function getBlockWidthClass(block: NewsContentBlock) {
+  if (block.width) {
+    switch (block.width) {
+      case 'narrow': return 'mx-auto max-w-2xl'
+      case 'medium': return 'mx-auto max-w-4xl'
+      case 'wide':   return ''
+      case 'full':   return ''
+    }
+  }
+  switch (block.type) {
+    case 'paragraph': return 'mx-auto max-w-2xl'
+    case 'buttons':   return 'mx-auto max-w-2xl'
+    default:          return ''
   }
 }
 

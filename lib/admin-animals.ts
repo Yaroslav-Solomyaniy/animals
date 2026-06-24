@@ -1,35 +1,29 @@
-import {
-  createLoader,
-  parseAsString,
-  parseAsStringLiteral,
-  type inferParserType,
-} from 'nuqs/server'
+import { createLoader } from 'nuqs/server'
 import { createClient } from '@/lib/supabase/server'
 import type { AnimalPhotoRow, AnimalRow } from '@/lib/admin-types'
+import {
+  adminAnimalFilterParsers,
+  ADMIN_ANIMALS_PER_PAGE,
+  type AdminAnimalFilters,
+  type AdminAnimalPhotoFilter,
+} from '@/lib/admin-animals-parsers'
 
-const statusValues = ['all', 'draft', 'available', 'reserved', 'adopted', 'hidden'] as const
-const genderValues = ['all', 'male', 'female'] as const
-const sizeValues = ['all', 'small', 'medium', 'large'] as const
-const photoValues = ['all', 'with-main', 'without-main'] as const
-const sortValues = ['updated', 'published', 'name'] as const
-
-export const adminAnimalFilterParsers = {
-  q: parseAsString.withDefault(''),
-  status: parseAsStringLiteral(statusValues).withDefault('all'),
-  gender: parseAsStringLiteral(genderValues).withDefault('all'),
-  size: parseAsStringLiteral(sizeValues).withDefault('all'),
-  photo: parseAsStringLiteral(photoValues).withDefault('all'),
-  sort: parseAsStringLiteral(sortValues).withDefault('updated'),
-}
+export { adminAnimalFilterParsers } from '@/lib/admin-animals-parsers'
+export type {
+  AdminAnimalFilters,
+  AdminAnimalStatusFilter,
+  AdminAnimalGenderFilter,
+  AdminAnimalSizeFilter,
+  AdminAnimalPhotoFilter,
+  AdminAnimalSort,
+  AdminAnimalVaccinationFilter,
+  AdminAnimalNeuterFilter,
+  AdminAnimalAdoptionFilter,
+  AdminAnimalColorFilter,
+  AdminAnimalAgeFilter,
+} from '@/lib/admin-animals-parsers'
 
 export const loadAdminAnimalFilters = createLoader(adminAnimalFilterParsers)
-
-export type AdminAnimalFilters = inferParserType<typeof adminAnimalFilterParsers>
-export type AdminAnimalStatusFilter = AdminAnimalFilters['status']
-export type AdminAnimalGenderFilter = AdminAnimalFilters['gender']
-export type AdminAnimalSizeFilter = AdminAnimalFilters['size']
-export type AdminAnimalPhotoFilter = AdminAnimalFilters['photo']
-export type AdminAnimalSort = AdminAnimalFilters['sort']
 
 export type AdminAnimalCardData = AnimalRow & {
   photos: AnimalPhotoRow[]
@@ -38,6 +32,8 @@ export type AdminAnimalCardData = AnimalRow & {
 export type AdminAnimalsPageData = {
   animals: AdminAnimalCardData[]
   totalCount: number
+  currentPage: number
+  totalPages: number
   animalError: string | null
   photosError: string | null
 }
@@ -53,10 +49,16 @@ export async function getAdminAnimalsPageData(filters: AdminAnimalFilters): Prom
   const supabase = await createClient()
   const mainPhotoAnimalIds = await getMainPhotoAnimalIds(filters.photo)
 
+  const currentPage = Math.max(1, filters.page)
+  const from = (currentPage - 1) * ADMIN_ANIMALS_PER_PAGE
+  const to = from + ADMIN_ANIMALS_PER_PAGE - 1
+
   if (mainPhotoAnimalIds.error) {
     return {
       animals: [],
       totalCount: 0,
+      currentPage,
+      totalPages: 1,
       animalError: null,
       photosError: mainPhotoAnimalIds.error,
     }
@@ -66,6 +68,8 @@ export async function getAdminAnimalsPageData(filters: AdminAnimalFilters): Prom
     return {
       animals: [],
       totalCount: 0,
+      currentPage,
+      totalPages: 1,
       animalError: null,
       photosError: null,
     }
@@ -95,6 +99,46 @@ export async function getAdminAnimalsPageData(filters: AdminAnimalFilters): Prom
     query = query.eq('size', filters.size)
   }
 
+  if (filters.vaccination === 'yes') {
+    query = query.eq('is_vaccinated', true)
+  } else if (filters.vaccination === 'no') {
+    query = query.eq('is_vaccinated', false)
+  }
+
+  if (filters.neuter === 'yes') {
+    query = query.eq('is_neutered', true)
+  } else if (filters.neuter === 'no') {
+    query = query.eq('is_neutered', false)
+  }
+
+  if (filters.adoption === 'none') {
+    query = query.is('adoption_status', null)
+  } else if (filters.adoption !== 'all') {
+    query = query.eq('adoption_status', filters.adoption)
+  }
+
+  if (filters.color !== 'all') {
+    query = query.eq('color', filters.color)
+  }
+
+  if (filters.age === 'under1') {
+    query = query.not('approximate_age_label', 'is', null).filter('approximate_age_label::numeric', 'lt', 1)
+  } else if (filters.age === '1to2') {
+    query = query.not('approximate_age_label', 'is', null)
+      .filter('approximate_age_label::numeric', 'gte', 1)
+      .filter('approximate_age_label::numeric', 'lt', 2)
+  } else if (filters.age === '2to3') {
+    query = query.not('approximate_age_label', 'is', null)
+      .filter('approximate_age_label::numeric', 'gte', 2)
+      .filter('approximate_age_label::numeric', 'lt', 3)
+  } else if (filters.age === '3to4') {
+    query = query.not('approximate_age_label', 'is', null)
+      .filter('approximate_age_label::numeric', 'gte', 3)
+      .filter('approximate_age_label::numeric', 'lt', 4)
+  } else if (filters.age === 'over5') {
+    query = query.not('approximate_age_label', 'is', null).filter('approximate_age_label::numeric', 'gte', 5)
+  }
+
   if (filters.photo === 'with-main') {
     query = query.in('id', mainPhotoAnimalIds.ids)
   }
@@ -111,14 +155,19 @@ export async function getAdminAnimalsPageData(filters: AdminAnimalFilters): Prom
     query = query.order('updated_at', { ascending: false, nullsFirst: false })
   }
 
-  const { data, error, count } = await query
+  const { data, error, count } = await query.range(from, to)
 
   const animals = (data ?? []) as AnimalRow[]
+
+  const totalCount = count ?? 0
+  const totalPages = Math.max(1, Math.ceil(totalCount / ADMIN_ANIMALS_PER_PAGE))
 
   if (error || animals.length === 0) {
     return {
       animals: animals.map((animal) => ({ ...animal, photos: [] })),
-      totalCount: count ?? animals.length,
+      totalCount,
+      currentPage,
+      totalPages,
       animalError: error?.message ?? null,
       photosError: null,
     }
@@ -141,7 +190,9 @@ export async function getAdminAnimalsPageData(filters: AdminAnimalFilters): Prom
       ...animal,
       photos: photosByAnimal.get(animal.id) ?? [],
     })),
-    totalCount: count ?? animals.length,
+    totalCount,
+    currentPage,
+    totalPages,
     animalError: null,
     photosError: photosError?.message ?? null,
   }

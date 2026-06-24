@@ -1,8 +1,9 @@
 'use client'
 
-import { useRef, useState, useTransition, useEffect } from 'react'
+import { useEffect, useRef, useState, useTransition } from 'react'
 import Link from 'next/link'
 import {
+  AlertTriangle,
   Check,
   CheckCircle2,
   ChevronLeft,
@@ -10,27 +11,22 @@ import {
   Globe,
   Hash,
   Heart,
+  Image as ImageIcon,
   ImagePlus,
-  Lock,
   Loader2,
+  Lock,
   PawPrint,
   Save,
   ShieldCheck,
   Sparkles,
   Star,
   Trash2,
-  AlertTriangle,
-  Image as ImageIcon,
 } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/Button'
 import { Input, Select, Textarea } from '@/components/ui/FormControls'
 import { toDatetimeLocal } from '@/components/admin/forms/shared'
-import {
-  createAnimalDraftAction,
-  publishAnimalAction,
-  updateAnimalDraftAction,
-} from '@/app/admin/animals/actions'
+import { createAnimalDraftAction, publishAnimalAction, updateAnimalDraftAction } from '@/app/admin/animals/actions'
 import {
   createAnimalPhotoUploadAction,
   deleteAnimalPhotoAction,
@@ -39,6 +35,7 @@ import {
 } from '@/app/admin/animals/photo-actions'
 import type { AnimalPhotoRow, AnimalRow } from '@/lib/admin-types'
 import { cn } from '@/lib/utils'
+import { formatAge } from '@/lib/formatAge'
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
@@ -59,9 +56,21 @@ const COLOR_OPTIONS: Array<{ value: string; hex: string }> = [
 ]
 
 const CHARACTER_TRAITS: string[] = [
-  'Ласкавий', 'Активний', 'Спокійний', 'Ігривий', 'Самостійний',
-  'Товариський', 'Боязкий', 'Охайний', "Прив'язаний", 'Мирний',
-  'Добрий з дітьми', 'Добрий з тваринами', 'Розумний', 'Слухняний', 'Енергійний',
+  'Ласкавий',
+  'Активний',
+  'Спокійний',
+  'Ігривий',
+  'Самостійний',
+  'Товариський',
+  'Боязкий',
+  'Охайний',
+  "Прив'язаний",
+  'Мирний',
+  'Добрий з дітьми',
+  'Добрий з тваринами',
+  'Розумний',
+  'Слухняний',
+  'Енергійний',
 ]
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -100,9 +109,7 @@ export default function AnimalEditorPage({
   const [animalName, setAnimalName] = useState(initialAnimal?.name ?? '')
   const [photos, setPhotos] = useState<AnimalPhotoRow[]>(initialPhotos)
   const [details, setDetails] = useState<AnimalDetails>(() => getAnimalDetails(initialAnimal))
-  const [detailsSaved, setDetailsSaved] = useState(
-    Boolean(initialAnimal && isAnimalDetailsComplete(getAnimalDetails(initialAnimal)))
-  )
+  const [detailsSaved, setDetailsSaved] = useState(Boolean(initialAnimal && isAnimalDetailsComplete(getAnimalDetails(initialAnimal))))
   const [errorMsg, setErrorMsg] = useState('')
   const [saveSuccess, setSaveSuccess] = useState(false)
   const [isUploading, setIsUploading] = useState(false)
@@ -131,7 +138,7 @@ export default function AnimalEditorPage({
       if (el) observer.observe(el)
     })
     return () => observer.disconnect()
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   function scrollTo(id: string) {
@@ -154,10 +161,11 @@ export default function AnimalEditorPage({
     setErrorMsg('')
     const fd = getAnimalFormData(details)
     startTransition(async () => {
-      const result = initialAnimal
-        ? await updateAnimalDraftAction(initialAnimal.id, fd)
-        : await createAnimalDraftAction(fd)
-      if (!result.ok) { setErrorMsg(result.error); return }
+      const result = initialAnimal ? await updateAnimalDraftAction(initialAnimal.id, fd) : await createAnimalDraftAction(fd)
+      if (!result.ok) {
+        setErrorMsg(result.error)
+        return
+      }
       setAnimalId(result.animal.id)
       setAnimalName(result.animal.name)
       setDetailsSaved(true)
@@ -178,17 +186,35 @@ export default function AnimalEditorPage({
     try {
       for (const file of Array.from(files)) {
         const upload = await createAnimalPhotoUploadAction({ animalId, fileName: file.name, contentType: file.type || 'image/jpeg' })
-        if (!upload.ok) { setErrorMsg(upload.error); continue }
+        if (!upload.ok) {
+          setErrorMsg(upload.error)
+          continue
+        }
         let resp: Response
         try {
-          resp = await fetch(upload.uploadUrl, { method: 'PUT', body: file, headers: { 'Content-Type': file.type || 'application/octet-stream' } })
+          resp = await fetch(upload.uploadUrl, {
+            method: 'PUT',
+            body: file,
+            headers: { 'Content-Type': file.type || 'application/octet-stream' },
+          })
         } catch {
           setErrorMsg('Upload заблоковано. Перевір CORS у R2.')
           continue
         }
-        if (!resp.ok) { setErrorMsg(`R2 помилка: ${resp.status}`); continue }
-        const reg = await registerAnimalPhotoAction({ animalId, r2Key: upload.r2Key, publicUrl: upload.publicUrl, alt: `${animalName} фото` })
-        if (!reg.ok) { setErrorMsg(reg.error); continue }
+        if (!resp.ok) {
+          setErrorMsg(`R2 помилка: ${resp.status}`)
+          continue
+        }
+        const reg = await registerAnimalPhotoAction({
+          animalId,
+          r2Key: upload.r2Key,
+          publicUrl: upload.publicUrl,
+          alt: `${animalName} фото`,
+        })
+        if (!reg.ok) {
+          setErrorMsg(reg.error)
+          continue
+        }
         setPhotos((c) => [...c, reg.photo as AnimalPhotoRow])
       }
     } finally {
@@ -202,7 +228,10 @@ export default function AnimalEditorPage({
     if (!animalId) return
     startTransition(async () => {
       const r = await setMainAnimalPhotoAction(animalId, photoId)
-      if (!r.ok) { setErrorMsg(r.error); return }
+      if (!r.ok) {
+        setErrorMsg(r.error)
+        return
+      }
       setPhotos((c) => c.map((p) => ({ ...p, is_main: p.id === photoId })))
       router.refresh()
     })
@@ -212,9 +241,13 @@ export default function AnimalEditorPage({
     if (!animalId) return
     startTransition(async () => {
       const r = await deleteAnimalPhotoAction(animalId, photoId)
-      if (!r.ok) { setErrorMsg(r.error); return }
+      if (!r.ok) {
+        setErrorMsg(r.error)
+        return
+      }
       setPhotos((c) =>
-        c.filter((p) => p.id !== r.deletedPhotoId)
+        c
+          .filter((p) => p.id !== r.deletedPhotoId)
           .map((p) => ({ ...p, is_main: r.nextMainPhotoId ? p.id === r.nextMainPhotoId : p.is_main }))
       )
       if (!r.r2Deleted) setErrorMsg('Фото прибрано, але файл у R2 не видалився.')
@@ -228,7 +261,10 @@ export default function AnimalEditorPage({
     fd.set('animalId', animalId)
     startTransition(async () => {
       const r = await publishAnimalAction(fd)
-      if (!r.ok) { setErrorMsg(r.error); return }
+      if (!r.ok) {
+        setErrorMsg(r.error)
+        return
+      }
       setDetails((d) => ({ ...d, status: 'available' }))
       setSaveSuccess(true)
       setTimeout(() => setSaveSuccess(false), 3000)
@@ -243,7 +279,10 @@ export default function AnimalEditorPage({
     const fd = getAnimalFormData(nextDetails)
     startTransition(async () => {
       const r = await updateAnimalDraftAction(animalId, fd)
-      if (!r.ok) { setErrorMsg(r.error); return }
+      if (!r.ok) {
+        setErrorMsg(r.error)
+        return
+      }
       setDetails(nextDetails)
       setDetailsSaved(true)
       setSaveSuccess(true)
@@ -254,24 +293,37 @@ export default function AnimalEditorPage({
 
   const navSections = [
     { id: 'identification', label: 'Ідентифікація', icon: <Hash className="h-3.5 w-3.5" />, done: Boolean(details.name.trim()) },
-    { id: 'characteristics', label: 'Характеристика', icon: <ClipboardList className="h-3.5 w-3.5" />, done: Boolean(details.approximate_age_label.trim()) },
-    { id: 'health', label: "Здоров'я", icon: <ShieldCheck className="h-3.5 w-3.5" />, done: details.vaccination_count > 0 || details.is_neutered },
-    { id: 'description', label: 'Опис', icon: <Heart className="h-3.5 w-3.5" />, done: Boolean(details.short_description.trim() && details.full_story.trim()) },
+    {
+      id: 'characteristics',
+      label: 'Характеристика',
+      icon: <ClipboardList className="h-3.5 w-3.5" />,
+      done: Boolean(details.approximate_age_label.trim()),
+    },
+    {
+      id: 'health',
+      label: "Здоров'я",
+      icon: <ShieldCheck className="h-3.5 w-3.5" />,
+      done: details.vaccination_count > 0 || details.is_neutered,
+    },
+    {
+      id: 'description',
+      label: 'Опис',
+      icon: <Heart className="h-3.5 w-3.5" />,
+      done: Boolean(details.short_description.trim() && details.full_story.trim()),
+    },
     { id: 'character', label: 'Характер', icon: <Sparkles className="h-3.5 w-3.5" />, done: details.character_traits.length > 0 },
     { id: 'photos', label: 'Фото', icon: <ImageIcon className="h-3.5 w-3.5" />, done: Boolean(mainPhoto), locked: !canUsePhotos },
   ]
 
   return (
     <div className="flex min-h-screen flex-col">
-
       {/* WordPress-style sticky editor header */}
-      <header className="sticky top-0 z-40 flex h-14 items-center border-b border-slate-200 bg-white px-4 shadow-[0_1px_3px_rgba(15,23,42,0.06)] sm:px-6">
-
+      <header className="sticky top-0 z-40 flex h-14 items-center border-b rounded border-slate-200 bg-white px-4 shadow-[0_1px_3px_rgba(15,23,42,0.06)] sm:px-6">
         {/* Left: back + breadcrumb */}
         <div className="flex min-w-0 flex-1 items-center gap-3">
           <Link
             href="/admin/animals"
-            className="flex shrink-0 items-center gap-1.5 rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs font-bold text-slate-500 transition hover:border-slate-300 hover:bg-slate-50 hover:text-slate-800"
+            className="flex h-9 shrink-0 items-center gap-1.5 rounded-lg border border-slate-200 px-3 text-xs font-bold text-slate-500 transition hover:border-slate-300 hover:bg-slate-50 hover:text-slate-800"
           >
             <ChevronLeft className="h-3.5 w-3.5" />
             <span className="hidden sm:inline">Тварини</span>
@@ -283,27 +335,33 @@ export default function AnimalEditorPage({
             <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-orange-100 text-primary">
               <PawPrint className="h-3.5 w-3.5" />
             </span>
-            <span className="truncate text-sm font-bold text-slate-800">
-              {animalName || (isEditing ? 'Без імені' : 'Нова тварина')}
-            </span>
+            <span className="truncate text-sm font-bold text-slate-800">{animalName || (isEditing ? 'Без імені' : 'Нова тварина')}</span>
           </div>
         </div>
 
         {/* Right: status selector + save indicator + save + site link */}
         <div className="flex shrink-0 items-center gap-2">
           {saveSuccess ? (
-            <span className="hidden items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-1.5 text-xs font-bold text-emerald-700 sm:flex">
+            <span className="hidden h-9 items-center gap-1.5 rounded-full bg-emerald-50 px-3 text-xs font-bold text-emerald-700 sm:flex">
               <CheckCircle2 className="h-3.5 w-3.5" />
               Збережено
             </span>
           ) : null}
 
-          {!detailsSaved && detailsComplete ? (
-            <span className="hidden text-xs text-slate-400 sm:block">Незбережені зміни</span>
-          ) : null}
+          {!detailsSaved && detailsComplete ? <span className="hidden text-xs text-slate-400 sm:block">Незбережені зміни</span> : null}
+
+          {/* Publication date */}
+          <input
+            type="datetime-local"
+            value={details.published_at}
+            onChange={(e) => upd('published_at', e.target.value)}
+            className="hidden h-9 rounded-lg border border-slate-200 bg-white px-3 text-xs font-semibold text-slate-700 outline-none transition hover:border-orange-200 focus:border-primary focus:ring-2 focus:ring-primary/10 sm:block"
+          />
 
           {/* Status selector */}
-          <select
+          <Select
+            wrapperClassName="hidden sm:block"
+            className="h-9 min-w-[148px] rounded-lg py-0 pl-3 pr-1 text-xs font-bold"
             value={details.status}
             disabled={isPending}
             onChange={(e) => {
@@ -318,12 +376,11 @@ export default function AnimalEditorPage({
                 upd('status', s)
               }
             }}
-            className="hidden h-8 rounded-lg border border-slate-200 bg-white pl-2 pr-6 text-xs font-bold text-slate-700 outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10 disabled:opacity-50 sm:block"
           >
             <option value="draft">Чернетка</option>
             <option value="available">Опублікована</option>
             <option value="adopted">Прилаштована</option>
-          </select>
+          </Select>
 
           <Button onClick={handleSave} disabled={isPending || !detailsComplete} size="sm" showIcon={false}>
             {isPending ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Save className="h-3.5 w-3.5" />}
@@ -334,10 +391,10 @@ export default function AnimalEditorPage({
             <Link
               href={`/animals/${initialAnimal.slug}`}
               target="_blank"
-              className="hidden items-center gap-1.5 rounded-lg border border-emerald-200 bg-emerald-50 px-2.5 py-1.5 text-xs font-bold text-emerald-700 transition hover:bg-emerald-100 sm:flex"
+              className="hidden h-9 items-center gap-1.5 rounded-lg border border-emerald-200 bg-emerald-50 px-3 text-xs font-bold text-emerald-700 transition hover:bg-emerald-100 sm:flex"
             >
               <Globe className="h-3 w-3" />
-              На сайті ↗
+              Переглянути на сайті ↗
             </Link>
           ) : null}
         </div>
@@ -352,12 +409,10 @@ export default function AnimalEditorPage({
       ) : null}
 
       {/* ── Two-column layout ── */}
-      <div className="flex flex-1 gap-6 px-4 py-5 sm:px-6">
-
+      <div className="flex flex-1 gap-6 py-5">
         {/* ── Left Sidebar ─────────────────────────────────── */}
         <aside className="hidden w-56 shrink-0 xl:block">
-          <div className="sticky top-[72px] space-y-3">
-
+          <div className="sticky top-[72px] space-y-4">
             {/* Animal preview card */}
             <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
               <div className="relative aspect-[4/3] bg-gradient-to-br from-orange-50 to-slate-100">
@@ -370,54 +425,41 @@ export default function AnimalEditorPage({
                   </div>
                 )}
               </div>
-              <div className="px-3 py-2.5">
+              <div className="px-4 py-3">
                 <p className="truncate text-sm font-extrabold text-slate-900">
                   {animalName || <span className="italic text-slate-400">Без імені</span>}
                 </p>
                 <p className="mt-0.5 text-xs text-slate-400">
-                  {details.approximate_age_label ? `${details.approximate_age_label} р.` : 'Вік не вказано'} ·{' '}
+                  {details.approximate_age_label ? formatAge(details.approximate_age_label, 'Вік не вказано') : 'Вік не вказано'} ·{' '}
                   {details.gender === 'male' ? '♂' : '♀'}
                 </p>
               </div>
             </div>
 
             {/* Key data preview */}
-            <div className="rounded-2xl border border-slate-200 bg-white p-3.5 shadow-sm">
-              <p className="mb-2.5 text-[10px] font-black uppercase tracking-widest text-slate-400">Дані запису</p>
+            <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+              <p className="mb-3 text-[10px] font-black uppercase tracking-widest text-slate-400">Дані запису</p>
               <div className="space-y-1.5">
-                <PreviewRow label="Вік" value={details.approximate_age_label ? `${details.approximate_age_label} р.` : '—'} />
+                <PreviewRow label="Вік" value={details.approximate_age_label ? formatAge(details.approximate_age_label, '—') : '—'} />
                 <PreviewRow label="Стать" value={details.gender === 'male' ? '♂ Хлопчик' : '♀ Дівчинка'} />
                 <PreviewRow
                   label="Розмір"
                   value={details.size === 'small' ? 'Малий' : details.size === 'medium' ? 'Середній' : 'Великий'}
                 />
                 {details.color ? (
-                  <PreviewRow
-                    label="Колір"
-                    value={details.color}
-                    dot={COLOR_OPTIONS.find((c) => c.value === details.color)?.hex}
-                  />
+                  <PreviewRow label="Колір" value={details.color} dot={COLOR_OPTIONS.find((c) => c.value === details.color)?.hex} />
                 ) : null}
-                <PreviewRow
-                  label="Вакцинація"
-                  value={details.vaccination_count > 0 ? `✓ (${details.vaccination_count})` : '—'}
-                />
-                <PreviewRow
-                  label={details.gender === 'female' ? 'Стерилізація' : 'Кастрація'}
-                  value={details.is_neutered ? '✓' : '—'}
-                />
+                <PreviewRow label="Вакцинація" value={details.vaccination_count > 0 ? `✓ (${details.vaccination_count})` : '—'} />
+                <PreviewRow label={details.gender === 'female' ? 'Стерилізація' : 'Кастрація'} value={details.is_neutered ? '✓' : '—'} />
                 {details.adoption_status ? (
-                  <PreviewRow
-                    label="Бейдж"
-                    value={details.adoption_status === 'ready' ? 'Готовий до адопції' : 'Потребує турботи'}
-                  />
+                  <PreviewRow label="Бейдж" value={details.adoption_status === 'ready' ? 'Готовий до адопції' : 'Потребує турботи'} />
                 ) : null}
                 <PreviewRow label="Фото" value={photos.length > 0 ? String(photos.length) : '—'} />
               </div>
             </div>
 
             {/* Section nav */}
-            <nav className="rounded-2xl border border-slate-200 bg-white p-1.5 shadow-sm">
+            <nav className="rounded-2xl border border-slate-200 bg-white p-2 shadow-sm">
               <p className="mb-1 px-2 pt-1 text-[10px] font-black uppercase tracking-widest text-slate-400">Розділи</p>
               {navSections.map((s) => (
                 <button
@@ -429,10 +471,12 @@ export default function AnimalEditorPage({
                     activeSection === s.id ? 'bg-orange-50 text-primary' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-800'
                   )}
                 >
-                  <span className={cn(
-                    'flex h-4.5 w-4.5 shrink-0 items-center justify-center rounded-lg',
-                    activeSection === s.id ? 'bg-primary/10 text-primary' : 'bg-slate-100 text-slate-400'
-                  )}>
+                  <span
+                    className={cn(
+                      'flex h-4.5 w-4.5 shrink-0 items-center justify-center rounded-lg',
+                      activeSection === s.id ? 'bg-primary/10 text-primary' : 'bg-slate-100 text-slate-400'
+                    )}
+                  >
                     {s.locked ? <Lock className="h-2.5 w-2.5" /> : s.icon}
                   </span>
                   <span className="flex-1 truncate">{s.label}</span>
@@ -445,7 +489,6 @@ export default function AnimalEditorPage({
 
         {/* ── Main content ─────────────────────────────────── */}
         <main className="min-w-0 flex-1 space-y-4">
-
           {/* Mobile section nav */}
           <div className="flex gap-2 overflow-x-auto pb-1 xl:hidden">
             {navSections.map((s) => (
@@ -466,14 +509,9 @@ export default function AnimalEditorPage({
 
           {/* ═══ ІДЕНТИФІКАЦІЯ ═══════════════════════════════ */}
           <EditorSection id="identification" icon={<Hash className="h-4 w-4" />} title="Ідентифікація">
-            <div className="grid gap-3 sm:grid-cols-3">
+            <div className="grid gap-4 sm:grid-cols-2">
               <FL label="Ім'я тварини">
-                <Input
-                  name="name"
-                  placeholder="Ім'я відсутнє"
-                  value={details.name}
-                  onChange={(e) => upd('name', e.target.value)}
-                />
+                <Input name="name" placeholder="Ім'я відсутнє" value={details.name} onChange={(e) => upd('name', e.target.value)} />
               </FL>
               <FL label="Номер тварини">
                 <div className="relative">
@@ -488,20 +526,12 @@ export default function AnimalEditorPage({
                 </div>
                 <FieldHint>Тільки цифри</FieldHint>
               </FL>
-              <FL label="Дата публікації">
-                <Input
-                  name="published_at"
-                  type="datetime-local"
-                  value={details.published_at}
-                  onChange={(e) => upd('published_at', e.target.value)}
-                />
-              </FL>
             </div>
           </EditorSection>
 
           {/* ═══ ХАРАКТЕРИСТИКА ══════════════════════════════ */}
           <EditorSection id="characteristics" icon={<ClipboardList className="h-4 w-4" />} title="Характеристика">
-            <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+            <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
               <FL label="Стать">
                 <Select name="gender" value={details.gender} onChange={(e) => upd('gender', e.target.value as AnimalDetails['gender'])}>
                   <option value="male">♂ Хлопчик</option>
@@ -527,18 +557,24 @@ export default function AnimalEditorPage({
             </div>
 
             <div className="mt-4">
-              <p className="mb-2 text-xs font-extrabold text-slate-500">Забарвлення</p>
+              <p className="mb-3 text-xs font-extrabold text-slate-500">Забарвлення</p>
               <ColorPicker value={details.color} onChange={(c) => upd('color', c)} />
             </div>
           </EditorSection>
 
           {/* ═══ ЗДОРОВ'Я ════════════════════════════════════ */}
           <EditorSection id="health" icon={<ShieldCheck className="h-4 w-4" />} title="Здоров'я">
-            <div className="grid gap-3 sm:grid-cols-2">
-              <VaccinationField count={details.vaccination_count} onChange={(n) => { upd('vaccination_count', n); upd('is_vaccinated', n > 0) }} />
+            <div className="grid gap-4 sm:grid-cols-2">
+              <VaccinationField
+                count={details.vaccination_count}
+                onChange={(n) => {
+                  upd('vaccination_count', n)
+                  upd('is_vaccinated', n > 0)
+                }}
+              />
               <NeuterField gender={details.gender} checked={details.is_neutered} onChange={(v) => upd('is_neutered', v)} />
             </div>
-            <div className="mt-3">
+            <div className="mt-4">
               <FL label="Бейдж і фільтр у каталозі">
                 <Select
                   name="adoption_status"
@@ -555,11 +591,11 @@ export default function AnimalEditorPage({
 
           {/* ═══ ОПИС ════════════════════════════════════════ */}
           <EditorSection id="description" icon={<Heart className="h-4 w-4" />} title="Опис" required>
-            <div className="space-y-3">
+            <div className="space-y-4">
               <FL label="Короткий опис *">
                 <Textarea
                   name="short_description"
-                  className="min-h-[80px]"
+                  className="min-h-20"
                   placeholder="2–3 речення для картки тварини в каталозі..."
                   value={details.short_description}
                   onChange={(e) => upd('short_description', e.target.value)}
@@ -568,7 +604,7 @@ export default function AnimalEditorPage({
               <FL label="Повна історія *">
                 <Textarea
                   name="full_story"
-                  className="min-h-[130px]"
+                  className="min-h-65"
                   placeholder="Докладна розповідь — де знайшли, як поводиться, що любить..."
                   value={details.full_story}
                   onChange={(e) => upd('full_story', e.target.value)}
@@ -579,10 +615,7 @@ export default function AnimalEditorPage({
 
           {/* ═══ ХАРАКТЕР ════════════════════════════════════ */}
           <EditorSection id="character" icon={<Sparkles className="h-4 w-4" />} title="Характер та звички">
-            <CharacterTraitsField
-              selected={details.character_traits}
-              onChange={(t) => upd('character_traits', t)}
-            />
+            <CharacterTraitsField selected={details.character_traits} onChange={(t) => upd('character_traits', t)} />
           </EditorSection>
 
           {/* ═══ ФОТО ════════════════════════════════════════ */}
@@ -599,9 +632,12 @@ export default function AnimalEditorPage({
                 />
 
                 {photos.length > 0 ? (
-                  <div className="grid gap-3 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-3 2xl:grid-cols-4">
+                  <div className="grid gap-4 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-3 2xl:grid-cols-4">
                     {photos.map((photo) => (
-                      <div key={photo.id} className="group relative aspect-square overflow-hidden rounded-2xl border border-slate-200 bg-slate-100 shadow-sm">
+                      <div
+                        key={photo.id}
+                        className="group relative aspect-square overflow-hidden rounded-2xl border border-slate-200 bg-slate-100 shadow-sm"
+                      >
                         {photo.public_url ? (
                           // eslint-disable-next-line @next/next/no-img-element
                           <img src={photo.public_url} alt={photo.alt ?? ''} className="h-full w-full object-cover" />
@@ -676,7 +712,7 @@ export default function AnimalEditorPage({
                 <div>
                   <p className="text-sm font-bold text-slate-600">Фото доступні після збереження</p>
                   <p className="mx-auto mt-1 max-w-xs text-xs text-slate-400">
-                    Зображення додаються лише коли тварина збережена в базі. Це захищає базу від "сирих" файлів без запису.
+                    Зображення додаються лише коли тварина збережена в базі даних.
                   </p>
                 </div>
                 {!detailsComplete ? (
@@ -718,14 +754,9 @@ function EditorSection({
   children: React.ReactNode
 }) {
   return (
-    <section
-      id={id}
-      className="scroll-mt-20 rounded-2xl border border-slate-200 bg-white shadow-[0_2px_8px_rgba(15,23,42,0.04)]"
-    >
-      <div className="flex items-center gap-3 border-b border-slate-100 px-5 py-3.5">
-        <span className="flex h-7 w-7 items-center justify-center rounded-xl bg-orange-50 text-primary">
-          {icon}
-        </span>
+    <section id={id} className="scroll-mt-20 rounded-2xl border border-slate-200 bg-white shadow-[0_2px_8px_rgba(15,23,42,0.04)]">
+      <div className="flex items-center gap-3 border-b border-slate-100 px-5 py-4">
+        <span className="flex h-7 w-7 items-center justify-center rounded-xl bg-orange-50 text-primary">{icon}</span>
         <h2 className="text-sm font-extrabold text-slate-900">
           {title}
           {required ? <span className="ml-1 text-rose-400">*</span> : null}
@@ -780,7 +811,9 @@ function ColorPicker({ value, onChange }: { value: string; onChange: (c: string)
             onClick={() => onChange(active ? '' : opt.value)}
             className={cn(
               'flex h-7 items-center gap-1.5 rounded-lg border px-2 text-xs font-semibold transition',
-              active ? 'border-primary bg-orange-50 text-primary ring-1 ring-primary/20' : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300'
+              active
+                ? 'border-primary bg-orange-50 text-primary ring-1 ring-primary/20'
+                : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300'
             )}
           >
             <span className="h-3 w-3 shrink-0 rounded-full border border-black/10 shadow-sm" style={{ backgroundColor: opt.hex }} />
@@ -798,7 +831,7 @@ function ColorPicker({ value, onChange }: { value: string; onChange: (c: string)
 function VaccinationField({ count, onChange }: { count: number; onChange: (n: number) => void }) {
   const active = count > 0
   return (
-    <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
+    <div className="rounded-xl border border-slate-200 bg-slate-50 p-5">
       <div className="flex items-center justify-between gap-3">
         <div>
           <p className="text-xs font-extrabold text-slate-700">Вакцинація</p>
@@ -824,9 +857,15 @@ function VaccinationField({ count, onChange }: { count: number; onChange: (n: nu
             </button>
           ))}
           <input
-            type="number" min={1} max={20} placeholder="7+"
+            type="number"
+            min={1}
+            max={20}
+            placeholder="7+"
             value={count > 6 ? count : ''}
-            onChange={(e) => { const n = parseInt(e.target.value, 10); if (Number.isFinite(n) && n >= 1 && n <= 20) onChange(n) }}
+            onChange={(e) => {
+              const n = parseInt(e.target.value, 10)
+              if (Number.isFinite(n) && n >= 1 && n <= 20) onChange(n)
+            }}
             className="h-7 w-12 rounded-lg border border-slate-200 bg-white px-2 text-xs font-bold text-slate-700 outline-none focus:border-primary"
           />
         </div>
@@ -839,7 +878,7 @@ function VaccinationField({ count, onChange }: { count: number; onChange: (n: nu
 
 function NeuterField({ gender, checked, onChange }: { gender: AnimalDetails['gender']; checked: boolean; onChange: (v: boolean) => void }) {
   return (
-    <div className="flex items-center justify-between gap-3 rounded-xl border border-slate-200 bg-slate-50 p-4">
+    <div className="flex items-center justify-between gap-3 rounded-xl border border-slate-200 bg-slate-50 p-5">
       <div>
         <p className="text-xs font-extrabold text-slate-700">{gender === 'female' ? 'Стерилізація' : 'Кастрація'}</p>
         <p className="mt-0.5 text-[11px] text-slate-400">{checked ? 'Проведена' : 'Не проведена'}</p>
@@ -858,7 +897,9 @@ function Toggle({ active, onToggle }: { active: boolean; onToggle: () => void })
       onClick={onToggle}
       className={cn('relative h-6 w-11 shrink-0 rounded-full transition-colors', active ? 'bg-primary' : 'bg-slate-200')}
     >
-      <span className={cn('absolute left-0.5 top-0.5 h-5 w-5 rounded-full bg-white shadow-sm transition-transform', active && 'translate-x-5')} />
+      <span
+        className={cn('absolute left-0.5 top-0.5 h-5 w-5 rounded-full bg-white shadow-sm transition-transform', active && 'translate-x-5')}
+      />
     </button>
   )
 }
@@ -884,9 +925,11 @@ function CharacterTraitsField({ selected, onChange }: { selected: string[]; onCh
               onClick={() => toggle(trait)}
               className={cn(
                 'flex h-7 items-center gap-1 rounded-full border px-3 text-xs font-semibold transition',
-                active ? 'border-primary bg-orange-50 text-primary' :
-                  disabled ? 'cursor-not-allowed border-slate-100 text-slate-300' :
-                    'border-slate-200 bg-white text-slate-600 hover:border-slate-300'
+                active
+                  ? 'border-primary bg-orange-50 text-primary'
+                  : disabled
+                    ? 'cursor-not-allowed border-slate-100 text-slate-300'
+                    : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300'
               )}
             >
               {active ? <Check className="h-2.5 w-2.5" /> : null}
@@ -906,20 +949,37 @@ function CharacterTraitsField({ selected, onChange }: { selected: string[]; onCh
 
 function StatusPill({ status, className }: { status: AnimalRow['status']; className?: string }) {
   return (
-    <span className={cn(
-      'inline-flex items-center rounded-full px-2.5 py-1 text-xs font-extrabold',
-      status === 'available' && 'bg-emerald-50 text-emerald-700',
-      status === 'reserved' && 'bg-amber-50 text-amber-700',
-      (status === 'adopted' || status === 'hidden') && 'bg-rose-50 text-rose-700',
-      status === 'draft' && 'bg-slate-100 text-slate-600',
-      className
-    )}>
+    <span
+      className={cn(
+        'inline-flex items-center rounded-full px-2.5 py-1 text-xs font-extrabold',
+        status === 'available' && 'bg-emerald-50 text-emerald-700',
+        status === 'reserved' && 'bg-amber-50 text-amber-700',
+        (status === 'adopted' || status === 'hidden') && 'bg-rose-50 text-rose-700',
+        status === 'draft' && 'bg-slate-100 text-slate-600',
+        className
+      )}
+    >
       {getStatusLabel(status)}
     </span>
   )
 }
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
+
+function formatDateDisplay(value: string) {
+  if (!value) return ''
+  const [date, time] = value.split('T')
+  if (!date) return ''
+  const [year, month, day] = date.split('-')
+  return `${day}.${month}.${year}${time ? `, ${time}` : ''}`
+}
+
+function getTodayDatetimeLocal() {
+  const now = new Date()
+  const offset = now.getTimezoneOffset()
+  const local = new Date(now.getTime() - offset * 60000)
+  return local.toISOString().slice(0, 16)
+}
 
 function getAnimalDetails(a?: AnimalRow): AnimalDetails {
   return {
@@ -933,7 +993,7 @@ function getAnimalDetails(a?: AnimalRow): AnimalDetails {
     adoption_status: a?.adoption_status ?? '',
     is_vaccinated: Boolean(a?.is_vaccinated),
     is_neutered: Boolean(a?.is_neutered),
-    published_at: toDatetimeLocal(a?.published_at),
+    published_at: toDatetimeLocal(a?.published_at) || getTodayDatetimeLocal(),
     animal_number: a?.animal_number ?? '',
     color: a?.color ?? '',
     vaccination_count: a?.vaccination_count ?? 0,
@@ -965,7 +1025,6 @@ function getAnimalFormData(d: AnimalDetails) {
 function isAnimalDetailsComplete(d: AnimalDetails) {
   return Boolean(d.approximate_age_label.trim() && d.short_description.trim() && d.full_story.trim())
 }
-
 function getStatusLabel(status: AnimalRow['status']) {
   const labels: Record<AnimalRow['status'], string> = {
     draft: 'Чернетка',

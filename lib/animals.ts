@@ -3,7 +3,8 @@ import 'server-only'
 import type {Animal} from '@/types'
 import type {AnimalPhotoRow, AnimalRow} from '@/lib/admin-types'
 import {createClient} from '@/lib/supabase/server'
-import type {AnimalFilters} from "@/lib/animal-filter-parsers";
+import type {AnimalFilters} from "@/lib/animal-filter-parsers"
+import {formatAge} from '@/lib/formatAge'
 
 const fallbackAnimalImage = '/dog.png'
 const fallbackAnimalName = "Ім'я відсутнє"
@@ -41,6 +42,40 @@ export async function getPublicAnimals( pagination: PaginationRange = {from: 0, 
 
     if (filters?.q) {
         query = query.ilike('name', `%${filters.q}%`)
+    }
+
+    if (filters?.color && filters.color !== 'all') {
+        query = query.eq('color', filters.color)
+    }
+
+    if (filters?.vaccination === 'yes') {
+        query = query.or('is_vaccinated.eq.true,vaccination_count.gt.0')
+    } else if (filters?.vaccination === 'no') {
+        query = query.eq('is_vaccinated', false).eq('vaccination_count', 0)
+    }
+
+    if (filters?.neuter === 'yes') {
+        query = query.eq('is_neutered', true)
+    } else if (filters?.neuter === 'no') {
+        query = query.eq('is_neutered', false)
+    }
+
+    if (filters?.age === 'under1') {
+        query = query.not('approximate_age_label', 'is', null).filter('approximate_age_label::numeric', 'lt', 1)
+    } else if (filters?.age === '1to2') {
+        query = query.not('approximate_age_label', 'is', null)
+            .filter('approximate_age_label::numeric', 'gte', 1)
+            .filter('approximate_age_label::numeric', 'lt', 2)
+    } else if (filters?.age === '2to3') {
+        query = query.not('approximate_age_label', 'is', null)
+            .filter('approximate_age_label::numeric', 'gte', 2)
+            .filter('approximate_age_label::numeric', 'lt', 3)
+    } else if (filters?.age === '3to4') {
+        query = query.not('approximate_age_label', 'is', null)
+            .filter('approximate_age_label::numeric', 'gte', 3)
+            .filter('approximate_age_label::numeric', 'lt', 4)
+    } else if (filters?.age === 'over5') {
+        query = query.not('approximate_age_label', 'is', null).filter('approximate_age_label::numeric', 'gte', 5)
     }
 
     if (filters?.sort === 'name_asc') {
@@ -180,7 +215,7 @@ function mapAnimalRow(row: AnimalRow, photos: AnimalPhotoRow[]): Animal {
         databaseId: row.id,
         slug: row.slug,
         name,
-        age: row.approximate_age_label || 'Вік уточнюється',
+        age: formatAge(row.approximate_age_label),
         gender,
         size: mapSize(row.size),
         stayDuration: getCatalogDuration(row.published_at ?? row.created_at),

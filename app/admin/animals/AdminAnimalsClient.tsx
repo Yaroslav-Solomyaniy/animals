@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import AdminAnimalsFilters from '@/app/admin/animals/AdminAnimalsFilters'
 import {
   CheckCircle2,
   CircleOff,
@@ -6,73 +7,35 @@ import {
   Images,
   Plus,
   Search,
+  ChevronLeft,
+  ChevronRight,
 } from 'lucide-react'
 import { AdminAuthGate } from '@/components/admin/AdminAuthGate'
 import AdminNotice from '@/components/admin/AdminNotice'
 import AdminPageHeader from '@/components/admin/AdminPageHeader'
-import { Button, LinkButton } from '@/components/ui/Button'
+import { LinkButton } from '@/components/ui/Button'
 import { cn } from '@/lib/utils'
+import { formatAge } from '@/lib/formatAge'
 import {
-  hasAdminAnimalFilters,
   type AdminAnimalCardData,
-  type AdminAnimalFilters,
-  type AdminAnimalGenderFilter,
-  type AdminAnimalPhotoFilter,
-  type AdminAnimalSizeFilter,
-  type AdminAnimalSort,
-  type AdminAnimalStatusFilter,
 } from '@/lib/admin-animals'
 import type { AnimalRow } from '@/lib/admin-types'
 
 type Props = {
   animals: AdminAnimalCardData[]
   totalCount: number
+  currentPage: number
+  totalPages: number
   animalError: string | null
   photosError: string | null
-  filters: AdminAnimalFilters
 }
-
-const statusOptions: Array<{ value: AdminAnimalStatusFilter; label: string }> = [
-  { value: 'all', label: 'Усі статуси' },
-  { value: 'draft', label: 'Чернетки' },
-  { value: 'available', label: 'Доступні' },
-  { value: 'reserved', label: 'Резерв' },
-  { value: 'adopted', label: 'Прилаштовані' },
-  { value: 'hidden', label: 'Приховані' },
-]
-
-const genderOptions: Array<{ value: AdminAnimalGenderFilter; label: string }> = [
-  { value: 'all', label: 'Будь-яка стать' },
-  { value: 'male', label: 'Хлопчики' },
-  { value: 'female', label: 'Дівчатка' },
-]
-
-const sizeOptions: Array<{ value: AdminAnimalSizeFilter; label: string }> = [
-  { value: 'all', label: 'Будь-який розмір' },
-  { value: 'small', label: 'Малі' },
-  { value: 'medium', label: 'Середні' },
-  { value: 'large', label: 'Великі' },
-]
-
-const photoOptions: Array<{ value: AdminAnimalPhotoFilter; label: string }> = [
-  { value: 'all', label: 'Усі фото' },
-  { value: 'with-main', label: 'Є головне фото' },
-  { value: 'without-main', label: 'Без головного фото' },
-]
-
-const sortOptions: Array<{ value: AdminAnimalSort; label: string }> = [
-  { value: 'updated', label: 'Останні зміни' },
-  { value: 'published', label: 'Дата публікації' },
-  { value: 'name', label: 'Імʼя' },
-]
 
 export default function AdminAnimalsClient({animals,
   totalCount,
+  currentPage,
+  totalPages,
   animalError,
-  photosError,
-  filters,}: Props) {
-  const hasFilters = hasAdminAnimalFilters(filters)
-
+  photosError,}: Props) {
   return (
     <AdminAuthGate>
       <AdminPageHeader
@@ -92,56 +55,17 @@ export default function AdminAnimalsClient({animals,
         {photosError ? <AdminNotice>{photosError}</AdminNotice> : null}
       </div>
 
-      <form
-        action="/admin/animals"
-        className="mt-6 rounded-xl border border-slate-200 bg-white p-4 shadow-[0_18px_55px_rgba(15,23,42,0.06)]"
-      >
-        <div className="grid gap-3 lg:grid-cols-[minmax(0,1.4fr)_repeat(5,minmax(0,0.8fr))]">
-          <label className="relative block">
-            <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-            <input
-              name="q"
-              type="search"
-              defaultValue={filters.q}
-              placeholder="Пошук за імʼям, slug або описом"
-              className="h-11 w-full rounded-lg border border-slate-200 bg-slate-50 pl-10 pr-3 text-sm font-semibold text-slate-950 outline-none transition focus:border-primary focus:bg-white focus:ring-4 focus:ring-primary/10"
-            />
-          </label>
-
-          <FilterSelect name="status" value={filters.status} options={statusOptions} />
-          <FilterSelect name="gender" value={filters.gender} options={genderOptions} />
-          <FilterSelect name="size" value={filters.size} options={sizeOptions} />
-          <FilterSelect name="photo" value={filters.photo} options={photoOptions} />
-          <FilterSelect name="sort" value={filters.sort} options={sortOptions} />
-        </div>
-
-        <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <p className="text-sm font-bold text-slate-500">
-            Знайдено {totalCount} записів
-          </p>
-
-          <div className="flex flex-wrap gap-2">
-            {hasFilters ? (
-              <Link
-                href="/admin/animals"
-                className="inline-flex h-9 items-center justify-center rounded-md border border-primary/45 px-3.5 text-sm font-extrabold text-primary transition hover:bg-orange-50"
-              >
-                Скинути
-              </Link>
-            ) : null}
-            <Button type="submit" size="sm">
-              Застосувати
-            </Button>
-          </div>
-        </div>
-      </form>
+      <AdminAnimalsFilters totalCount={totalCount} />
 
       {animals.length ? (
-        <section className="mt-6 grid gap-4">
-          {animals.map((animal) => (
-            <AdminAnimalCard key={animal.id} animal={animal} />
-          ))}
-        </section>
+        <>
+          <section className="mt-6 grid gap-4">
+            {animals.map((animal) => (
+              <AdminAnimalCard key={animal.id} animal={animal} />
+            ))}
+          </section>
+          <AdminPagination currentPage={currentPage} totalPages={totalPages} />
+        </>
       ) : (
         <section className="mt-6 rounded-xl border border-dashed border-slate-300 bg-white p-10 text-center shadow-[0_18px_55px_rgba(15,23,42,0.04)]">
           <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-xl bg-orange-50 text-primary">
@@ -163,7 +87,10 @@ function AdminAnimalCard({ animal }: { animal: AdminAnimalCardData }) {
   const detailsComplete = isAdminAnimalDetailsComplete(animal)
 
   return (
-    <article className="grid gap-4 rounded-xl border border-slate-200 bg-white p-4 shadow-[0_12px_35px_rgba(15,23,42,0.05)] md:grid-cols-[180px_minmax(0,1fr)_auto]">
+    <Link
+      href={`/admin/animals/${animal.id}`}
+      className="group grid gap-4 rounded-xl border border-slate-200 bg-white p-4 shadow-[0_12px_35px_rgba(15,23,42,0.05)] transition hover:border-primary/30 hover:shadow-[0_12px_35px_rgba(242,116,56,0.08)] md:grid-cols-[180px_minmax(0,1fr)]"
+    >
       <div className="relative aspect-[4/3] overflow-hidden rounded-lg bg-slate-100 md:aspect-auto md:h-full">
         {mainPhoto?.public_url ? (
           // eslint-disable-next-line @next/next/no-img-element
@@ -190,7 +117,7 @@ function AdminAnimalCard({ animal }: { animal: AdminAnimalCardData }) {
         <div className="mt-4 grid gap-2 text-sm font-semibold text-slate-600 sm:grid-cols-2 xl:grid-cols-4">
           <Meta label="Стать" value={getGenderLabel(animal.gender)} />
           <Meta label="Розмір" value={getSizeLabel(animal.size)} />
-          <Meta label="Вік" value={animal.approximate_age_label || 'Не вказано'} />
+          <Meta label="Вік" value={formatAge(animal.approximate_age_label, 'Не вказано')} />
           <Meta label="Оновлено" value={formatDate(animal.updated_at)} />
         </div>
 
@@ -207,15 +134,7 @@ function AdminAnimalCard({ animal }: { animal: AdminAnimalCardData }) {
         </div>
       </div>
 
-      <div className="flex items-start gap-2 md:flex-col md:items-stretch">
-        <Link
-          href={`/admin/animals/${animal.id}`}
-          className="inline-flex h-9 items-center justify-center rounded-md border border-primary/45 px-3.5 text-sm font-extrabold text-primary transition hover:border-primary hover:bg-orange-50"
-        >
-          Редагувати
-        </Link>
-      </div>
-    </article>
+    </Link>
   )
 }
 
@@ -321,6 +240,60 @@ function getSizeLabel(size: AnimalRow['size']) {
 
 function getAdoptionStatusLabel(status: NonNullable<AnimalRow['adoption_status']>) {
   return status === 'ready' ? 'Готовий до адопції' : 'Потребує турботи'
+}
+
+function AdminPagination({ currentPage, totalPages }: { currentPage: number; totalPages: number }) {
+  if (totalPages <= 1) return null
+
+  function pageHref(page: number) {
+    if (typeof window === 'undefined') return `?page=${page}`
+    const params = new URLSearchParams(window.location.search)
+    params.set('page', String(page))
+    return `?${params.toString()}`
+  }
+
+  const pages = Array.from({ length: totalPages }, (_, i) => i + 1)
+
+  return (
+    <div className="mt-6 flex items-center justify-center gap-2">
+      <Link
+        href={pageHref(currentPage - 1)}
+        aria-disabled={currentPage === 1}
+        className={cn(
+          'flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-600 transition hover:border-primary/40 hover:text-primary',
+          currentPage === 1 && 'pointer-events-none opacity-30'
+        )}
+      >
+        <ChevronLeft className="h-4 w-4" />
+      </Link>
+
+      {pages.map((page) => (
+        <Link
+          key={page}
+          href={pageHref(page)}
+          className={cn(
+            'flex h-9 w-9 items-center justify-center rounded-lg border text-sm font-extrabold transition',
+            page === currentPage
+              ? 'border-primary bg-primary text-white shadow-[0_4px_14px_rgba(242,116,56,0.30)]'
+              : 'border-slate-200 bg-white text-slate-700 hover:border-primary/40 hover:text-primary'
+          )}
+        >
+          {page}
+        </Link>
+      ))}
+
+      <Link
+        href={pageHref(currentPage + 1)}
+        aria-disabled={currentPage === totalPages}
+        className={cn(
+          'flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-600 transition hover:border-primary/40 hover:text-primary',
+          currentPage === totalPages && 'pointer-events-none opacity-30'
+        )}
+      >
+        <ChevronRight className="h-4 w-4" />
+      </Link>
+    </div>
+  )
 }
 
 function formatDate(value: string | null) {

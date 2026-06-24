@@ -6,6 +6,7 @@ import {
   BadgeCheck,
   CalendarHeart,
   Clock3,
+  Palette,
   PawPrint,
   Ruler,
   Scissors,
@@ -88,7 +89,8 @@ export default function AnimalCard({
         <div className="grid grid-cols-2 gap-1.5">
           <FactTile icon={VenusAndMars} label="Стать" value={animal.gender} />
           <FactTile icon={Ruler} label="Розмір" value={animal.size} />
-          <FactTile icon={Clock3} label="Вік" value={animal.age} className="col-span-2" />
+          <FactTile icon={Clock3} label="Вік" value={animal.age} className={animal.color ? undefined : 'col-span-2'} />
+          {animal.color && <FactTile icon={Palette} label="Забарвлення" value={animal.color} />}
         </div>
 
         <div className="mt-3 grid grid-cols-2 gap-1.5 border-t border-gray-100 pt-3">
@@ -102,7 +104,7 @@ export default function AnimalCard({
             icon={animal.isNeutered ? BadgeCheck : Scissors}
             isReady={animal.isNeutered}
             label={getNeuterActionLabel(animal.gender)}
-            value={animal.isNeutered ? 'Проведена' : 'Заплановано'}
+            value={animal.isNeutered ? 'Присутня' : 'Відсутня'}
           />
         </div>
 

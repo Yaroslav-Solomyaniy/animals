@@ -35,6 +35,7 @@ import ShareMenu from '@/components/ui/ShareMenu'
 import { buildDonateHref } from '@/lib/donate-search-params'
 import { buildAnimalHref, SITE_ROUTES } from '@/lib/site-config'
 import { cn } from '@/lib/utils'
+import { formatAge } from '@/lib/formatAge'
 import Section from '@/components/ui/Section'
 import { useRouter } from 'next/navigation'
 
@@ -563,24 +564,6 @@ function trimToSentence(value: string | undefined, limit: number) {
   return `${text.slice(0, limit).replace(/[,\s]+$/g, '')}...`
 }
 
-function formatAge(value: string): string {
-  const match = value.match(/^(\d+)\.(\d+)$/)
-  if (!match) return value
-  const years = parseInt(match[1], 10)
-  const months = parseInt(match[2], 10)
-  const parts: string[] = []
-  if (years > 0) {
-    const y = years % 10,
-      y2 = years % 100
-    parts.push(`${years} ${y2 >= 11 && y2 <= 14 ? 'років' : y === 1 ? 'рік' : y >= 2 && y <= 4 ? 'роки' : 'років'}`)
-  }
-  if (months > 0) {
-    const m = months % 10,
-      m2 = months % 100
-    parts.push(`${months} ${m2 >= 11 && m2 <= 14 ? 'місяців' : m === 1 ? 'місяць' : m >= 2 && m <= 4 ? 'місяці' : 'місяців'}`)
-  }
-  return parts.length > 0 ? parts.join(' ') : value
-}
 
 function toneClasses(tone: Tone) {
   return {

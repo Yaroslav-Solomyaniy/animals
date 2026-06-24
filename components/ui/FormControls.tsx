@@ -16,7 +16,7 @@ import { Check, ChevronDown } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 const fieldClass =
-  'w-full rounded-xl border border-slate-200 bg-white px-4 py-3.5 font-semibold text-slate-950 shadow-sm outline-none transition-all placeholder:text-slate-400 hover:border-orange-200 focus:border-primary focus:ring-4 focus:ring-primary/10 disabled:cursor-not-allowed disabled:opacity-50'
+  'w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-950 shadow-sm outline-none transition-all placeholder:text-slate-400 hover:border-orange-200 focus:border-primary focus:ring-4 focus:ring-primary/10 disabled:cursor-not-allowed disabled:opacity-50'
 
 export function Input({ className, ...props }: InputHTMLAttributes<HTMLInputElement>) {
   return <input className={cn(fieldClass, className)} {...props} />
@@ -34,14 +34,17 @@ type SelectOption = {
   disabled: boolean
 }
 
-export function Select({className,
+export function Select({
+  wrapperClassName,
+  className,
   children,
   value,
   defaultValue,
   onChange,
   disabled,
   name,
-  ...props}: SelectHTMLAttributes<HTMLSelectElement>) {
+  ...props
+}: SelectHTMLAttributes<HTMLSelectElement> & { wrapperClassName?: string }) {
   const options = useMemo(() => extractOptions(children), [children])
   const initialValue = String(value ?? defaultValue ?? options[0]?.value ?? '')
   const [internalValue, setInternalValue] = useState(initialValue)
@@ -67,7 +70,7 @@ export function Select({className,
   }
 
   return (
-    <div className="relative">
+    <div className={cn("relative", wrapperClassName)}>
       <select
         ref={selectRef}
         name={name}
@@ -93,7 +96,7 @@ export function Select({className,
         }}
         className={cn(
           fieldClass,
-          'flex min-h-[52px] items-center justify-between gap-3 text-left',
+          'flex items-center justify-between gap-3 text-left',
           isOpen && 'border-primary ring-4 ring-primary/10',
           className
         )}
@@ -105,7 +108,7 @@ export function Select({className,
       </button>
 
       {isOpen ? (
-        <div className="absolute left-0 right-0 top-[calc(100%+8px)] z-50 overflow-hidden rounded-2xl border border-slate-200 bg-white p-1.5 shadow-[0_24px_70px_rgba(15,23,42,0.16)]">
+        <div className="absolute left-0 min-w-full top-[calc(100%+8px)] z-50 overflow-hidden rounded-2xl border border-slate-200 bg-white p-1.5 shadow-[0_24px_70px_rgba(15,23,42,0.16)]">
           <div className="max-h-72 overflow-auto rounded-xl">
             {options.map((option) => {
               const isSelected = option.value === currentValue
@@ -124,7 +127,7 @@ export function Select({className,
                     option.disabled && 'cursor-not-allowed opacity-45'
                   )}
                 >
-                  <span className="truncate">{option.label}</span>
+                  <span className="whitespace-nowrap">{option.label}</span>
                   {isSelected ? <Check className="h-4 w-4 text-primary" /> : null}
                 </button>
               )

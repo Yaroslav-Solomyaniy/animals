@@ -9,7 +9,10 @@ interface Props {
     size?: string
     care?: string
     sort?: string
-    order?: string
+    age?: string
+    color?: string
+    vaccination?: string
+    neuter?: string
     page?: number
   }>
 }
@@ -27,6 +30,10 @@ export default async function AnimalsPage({ searchParams }: Props) {
     size: (params.size as any) ?? 'all',
     care: (params.care as any) ?? 'all',
     sort: (params.sort as any) ?? 'newest',
+    age: (params.age as any) ?? 'all',
+    color: (params.color as any) ?? 'all',
+    vaccination: (params.vaccination as any) ?? 'all',
+    neuter: (params.neuter as any) ?? 'all',
     page: (params.page as any) ?? 1
   })
 

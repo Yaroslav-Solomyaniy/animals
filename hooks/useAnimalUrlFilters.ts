@@ -28,6 +28,10 @@ export function useAnimalUrlFilters() {
             size: 'all',
             care: 'all',
             sort: 'newest',
+            age: 'all',
+            color: 'all',
+            vaccination: 'all',
+            neuter: 'all',
             page: 1,
         })
     }

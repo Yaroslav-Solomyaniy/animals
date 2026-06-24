@@ -127,6 +127,27 @@ function revalidateNewsPaths(id: string, slug: string, previousSlug?: string | n
   }
 }
 
+export async function deleteNewsPostAction(id: string) {
+  await requireAdminSession()
+  const supabase = await createClient()
+
+  const { data: post } = await supabase.from('news_posts').select('id, slug').eq('id', id).single()
+
+  const { error } = await supabase.from('news_posts').delete().eq('id', id)
+
+  if (error) {
+    return { ok: false as const, error: error.message }
+  }
+
+  revalidatePath('/admin/news')
+  revalidatePath('/report-and-news')
+  if (post?.slug) {
+    revalidatePath(`/report-and-news/${post.slug}`)
+  }
+
+  return { ok: true as const }
+}
+
 async function requireAdminSession() {
   const supabase = await createClient()
   const { data, error } = await supabase.auth.getUser()

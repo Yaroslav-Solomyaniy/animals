@@ -23,6 +23,8 @@ export default function AdminShell({ children }: { children: ReactNode }) {
   useScrollToTopOnRouteChange()
   const isAdminRoute = pathname.startsWith('/admin')
   const isAnimalEditorRoute = pathname.startsWith('/admin/animals/') && pathname !== '/admin/animals/'
+  const isNewsEditorRoute = pathname.startsWith('/admin/news/')
+  const isEditorRoute = isAnimalEditorRoute || isNewsEditorRoute
 
   if (!isAdminRoute) {
     return (
@@ -87,7 +89,7 @@ export default function AdminShell({ children }: { children: ReactNode }) {
       </aside>
 
       <div className="flex min-h-screen min-w-0 flex-1 flex-col">
-        {!isAnimalEditorRoute && (
+        {!isEditorRoute && (
           <header className="sticky top-0 z-40 border-b border-slate-200 bg-white/88 text-slate-950 backdrop-blur-xl">
             <div className="mx-auto flex max-w-[calc(100rem+4rem)] flex-col gap-4 px-4 py-4 sm:px-6 lg:px-8">
               <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
@@ -134,7 +136,7 @@ export default function AdminShell({ children }: { children: ReactNode }) {
         <main className="flex-1 bg-[#f6f8fb] text-slate-950">
           <div className={cn(
             'mx-auto max-w-[calc(100rem+4rem)] px-4 sm:px-6 lg:px-8',
-            isAnimalEditorRoute ? 'p-0' : 'py-8'
+            isEditorRoute ? 'p-0' : 'py-8'
           )}>
             {children}
           </div>
