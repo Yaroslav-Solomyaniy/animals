@@ -32,6 +32,8 @@ import type { Animal } from '@/types'
 import { LinkButton } from '@/components/ui/Button'
 import ImageLightbox from '@/components/news/ImageLightbox'
 import ShareMenu from '@/components/ui/ShareMenu'
+import DonateForm from '@/components/DonateForm'
+import SectionFrame from '@/components/ui/SectionFrame'
 import { buildDonateHref } from '@/lib/donate-search-params'
 import { buildAnimalHref, SITE_ROUTES } from '@/lib/site-config'
 import { cn } from '@/lib/utils'
@@ -43,13 +45,23 @@ type AnimalProfileClientProps = {
   animal: Animal
   galleryImages: string[]
   relatedAnimals: Animal[]
+  donationsEnabled?: boolean
+  donationAmounts?: number[]
+  donationDescription?: string | null
 }
 
 type Tone = 'orange' | 'green' | 'sky' | 'slate'
 
 const surfaceClass = 'rounded-[26px] border border-gray-200 bg-white shadow-[0_16px_48px_rgba(15,23,42,0.06)]'
 
-export default function AnimalProfileClient({ animal, galleryImages, relatedAnimals }: AnimalProfileClientProps) {
+export default function AnimalProfileClient({
+  animal,
+  galleryImages,
+  relatedAnimals,
+  donationsEnabled = false,
+  donationAmounts = [100, 200, 500, 1000],
+  donationDescription,
+}: AnimalProfileClientProps) {
   const router = useRouter()
 
   const images = useMemo(
@@ -170,6 +182,30 @@ export default function AnimalProfileClient({ animal, galleryImages, relatedAnim
         <IntroPanel title="Про характер" eyebrow="Коротко без зайвого" text={profile.story} />
         <CharacterTraits traits={animal.character} />
       </Section>
+
+      {/* ── Donate card ─────────────────────────────────────────────────── */}
+      {donationsEnabled && (
+        <Section contained={false} className="py-8">
+          <SectionFrame className="mx-auto max-w-xl p-6 sm:p-8">
+            <div className="mb-6 flex items-center gap-3">
+              <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-orange-50 text-primary shadow-sm">
+                <Heart className="h-5 w-5" />
+              </span>
+              <div>
+                <p className="text-xs font-extrabold uppercase tracking-[0.16em] text-primary">Підтримай</p>
+                <h2 className="text-xl font-black text-gray-950">Підтримай {displayName}</h2>
+              </div>
+            </div>
+            <DonateForm
+              amounts={donationAmounts}
+              description={donationDescription ?? undefined}
+              animalId={animal.id}
+              animalName={displayName}
+              compact
+            />
+          </SectionFrame>
+        </Section>
+      )}
 
       <section className="border-y border-gray-200">
         <Section as="div" contained={false} className="py-8">

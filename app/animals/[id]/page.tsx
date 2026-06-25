@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import AnimalProfileClient from './AnimalProfileClient'
 import { getPublicAnimalBySlugOrId, getRelatedPublicAnimals } from '@/lib/animals'
+import { getSiteSettings } from '@/lib/site-settings'
 
 type AnimalPageProps = {
   params: Promise<{
@@ -20,7 +21,10 @@ export async function generateMetadata({ params }: AnimalPageProps): Promise<Met
 
 export default async function AnimalPage({ params }: AnimalPageProps) {
   const { id } = await params
-  const animal = await getPublicAnimalBySlugOrId(id)
+  const [animal, settings] = await Promise.all([
+    getPublicAnimalBySlugOrId(id),
+    getSiteSettings(),
+  ])
 
   if (!animal) {
     notFound()
@@ -34,6 +38,9 @@ export default async function AnimalPage({ params }: AnimalPageProps) {
       animal={animal}
       galleryImages={galleryImages}
       relatedAnimals={relatedAnimals}
+      donationsEnabled={settings.donationsEnabled}
+      donationAmounts={settings.donationAmounts}
+      donationDescription={settings.donationDescription}
     />
   )
 }

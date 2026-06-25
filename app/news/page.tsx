@@ -1,8 +1,7 @@
-import { Download, FileText, PawPrint, ScrollText } from 'lucide-react'
+import { PawPrint } from 'lucide-react'
 import SectionFrame from '@/components/ui/SectionFrame'
 import StorybookDecorations from '@/components/ui/StorybookDecorations'
 import Section from '@/components/ui/Section'
-import { getPublishedReports } from '@/lib/public-reports'
 import SortFilter from './SortFilter'
 import NewsGrid from './NewsGrid'
 import { Suspense } from 'react'
@@ -12,8 +11,6 @@ export default async function NewsPage({
 }: {
   searchParams: Promise<Record<string, string>>
 }) {
-  const reports = await getPublishedReports()
-
   return (
     <main className="min-h-screen text-gray-950">
       <StorybookDecorations />
@@ -33,7 +30,7 @@ export default async function NewsPage({
               Що нового у центрі?
             </h1>
             <p className="mt-6 max-w-lg text-base font-semibold leading-7 text-white/86 sm:text-lg sm:leading-8">
-              Короткі історії, важливі оновлення й звіти центру в одному місці, без зайвої офіційщини.
+              Короткі історії, важливі оновлення й матеріали центру в одному місці, без зайвої офіційщини.
             </p>
           </div>
 
@@ -49,7 +46,7 @@ export default async function NewsPage({
                 <p className="text-sm font-black">Бублик, спікер центру</p>
               </div>
               <p className="text-base font-semibold leading-6 sm:text-lg sm:leading-7">
-                Кажу коротко: новини свіжі, історії теплі, а звіти чекають нижче.
+                Кажу коротко: новини свіжі, історії теплі, приходьте частіше!
               </p>
             </div>
           </div>
@@ -73,71 +70,6 @@ export default async function NewsPage({
           </Suspense>
         </SectionFrame>
       </Section>
-
-      {/* Reports — shown only if published reports exist */}
-      {reports.length > 0 && (
-        <Section className="py-14">
-          <SectionFrame className="p-4 sm:p-6 lg:p-8">
-            <div className="mb-6 flex items-end gap-4 border-b border-orange-100/70 pb-6">
-              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-orange-50 text-primary">
-                <ScrollText className="h-5 w-5" />
-              </span>
-              <div>
-                <p className="text-sm font-semibold uppercase tracking-[0.18em] text-orange-600">Прозорість та відкритість</p>
-                <h2 className="mt-1 text-3xl font-black text-gray-950">Звіти центру</h2>
-              </div>
-            </div>
-
-            <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-              {reports.map((report) => (
-                <article
-                  key={report.id}
-                  className="flex flex-col rounded-[28px] border border-orange-100 bg-[linear-gradient(135deg,#fff7ed_0%,#ffffff_58%,#ecfeff_100%)] p-6 shadow-soft transition hover:border-orange-200 hover:shadow-[0_20px_60px_rgba(242,116,56,0.10)]"
-                >
-                  <div className="mb-4 flex items-start justify-between gap-3">
-                    <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-white text-primary shadow-sm">
-                      <ScrollText className="h-5 w-5" />
-                    </span>
-                    {report.period && (
-                      <span className="rounded-full bg-white px-3 py-1 text-xs font-black uppercase tracking-[0.12em] text-gray-400 shadow-sm">
-                        {report.period}
-                      </span>
-                    )}
-                  </div>
-
-                  <h3 className="text-xl font-black text-gray-950">{report.title}</h3>
-                  {report.description && (
-                    <p className="mt-2 text-sm leading-6 text-gray-600">{report.description}</p>
-                  )}
-
-                  {report.files.length > 0 && (
-                    <div className="mt-4 flex flex-col gap-2">
-                      {report.files.map((file, i) => (
-                        <a
-                          key={i}
-                          href={file.src}
-                          download
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="group flex items-center gap-3 rounded-xl border border-slate-100 bg-white px-3 py-2.5 transition hover:border-primary/30 hover:bg-orange-50"
-                        >
-                          <FileText className="h-4 w-4 shrink-0 text-slate-400 transition group-hover:text-primary" />
-                          <span className="min-w-0 flex-1 truncate text-sm font-bold text-slate-700 transition group-hover:text-primary">
-                            {file.name}
-                          </span>
-                          <Download className="h-3.5 w-3.5 shrink-0 text-slate-300 transition group-hover:text-primary" />
-                        </a>
-                      ))}
-                    </div>
-                  )}
-
-                  <p className="mt-auto pt-4 text-xs text-slate-400">{report.date}</p>
-                </article>
-              ))}
-            </div>
-          </SectionFrame>
-        </Section>
-      )}
     </main>
   )
 }

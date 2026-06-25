@@ -2,8 +2,11 @@ import {
   Bone,
   CalendarCheck,
   Clock,
+  Download,
   Droplets,
+  FileText,
   HandCoins,
+  ScrollText,
   Heart,
   HeartHandshake,
   Layers,
@@ -26,7 +29,9 @@ import { LinkButton } from '@/components/ui/Button'
 import { BorderBeam } from '@/components/ui/border-beam'
 import helpDogsImage from '@/public/DogHelp.png'
 import { SITE_CONTACTS, SITE_ROUTES } from '@/lib/site-config'
-import DonationSelector from './DonationSelector'
+import { getSiteSettings } from '@/lib/site-settings'
+import { getPublishedReports } from '@/lib/public-reports'
+import DonateForm from '@/components/DonateForm'
 
 
 const helpWays = [
@@ -122,7 +127,12 @@ const joinSteps = [
   },
 ]
 
-export default function HelpForUsPage() {
+export default async function HelpForUsPage() {
+  const [settings, reports] = await Promise.all([
+    getSiteSettings(),
+    getPublishedReports(),
+  ])
+
   return (
     <main className="storybook-bg min-h-screen text-gray-950">
       <StorybookDecorations />
@@ -178,18 +188,80 @@ export default function HelpForUsPage() {
         </div>
 
         {/* ── Financial Support ── */}
-        <SectionFrame as="section" className="mt-14 p-6 sm:p-8 lg:p-10">
-          <div>
-            <HandCoins className="mb-4 h-12 w-12 text-orange-500" />
-            <h2 className="text-3xl font-black text-gray-950">Фінансова підтримка</h2>
-            <p className="mt-4 max-w-2xl text-lg leading-8 text-gray-600">
-              Оберіть комфортну суму — одразу побачите, на що вона йде. Кожна гривня
-              перетворюється на конкретну турботу.
-            </p>
-          </div>
+        {settings.donationsEnabled && (
+          <SectionFrame as="section" className="mt-14 p-6 sm:p-8 lg:p-10">
+            <div className="mb-8">
+              <HandCoins className="mb-4 h-12 w-12 text-orange-500" />
+              <h2 className="text-3xl font-black text-gray-950">Фінансова підтримка</h2>
+              <p className="mt-4 max-w-2xl text-lg leading-8 text-gray-600">
+                {settings.donationDescription ??
+                  'Оберіть комфортну суму — кожна гривня перетворюється на конкретну турботу.'}
+              </p>
+            </div>
+            <div className="max-w-xl">
+              <DonateForm amounts={settings.donationAmounts} />
+            </div>
+          </SectionFrame>
+        )}
 
-          <DonationSelector />
-        </SectionFrame>
+        {/* ── Reports ── */}
+        {reports.length > 0 && (
+          <SectionFrame as="section" className="mt-14 p-6 sm:p-8">
+            <div className="mb-6 flex items-center gap-4 border-b border-orange-100/70 pb-6">
+              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-orange-50 text-primary">
+                <ScrollText className="h-5 w-5" />
+              </span>
+              <div>
+                <p className="text-sm font-semibold uppercase tracking-[0.18em] text-orange-600">Прозорість та відкритість</p>
+                <h2 className="mt-1 text-3xl font-black text-gray-950">Ми публічні — дивіться наші звіти</h2>
+              </div>
+            </div>
+            <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+              {reports.map((report) => (
+                <article
+                  key={report.id}
+                  className="flex flex-col rounded-[28px] border border-orange-100 bg-[linear-gradient(135deg,#fff7ed_0%,#ffffff_58%,#ecfeff_100%)] p-6 shadow-soft transition hover:border-orange-200 hover:shadow-[0_20px_60px_rgba(242,116,56,0.10)]"
+                >
+                  <div className="mb-4 flex items-start justify-between gap-3">
+                    <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-white text-primary shadow-sm">
+                      <ScrollText className="h-5 w-5" />
+                    </span>
+                    {report.period && (
+                      <span className="rounded-full bg-white px-3 py-1 text-xs font-black uppercase tracking-[0.12em] text-gray-400 shadow-sm">
+                        {report.period}
+                      </span>
+                    )}
+                  </div>
+                  <h3 className="text-xl font-black text-gray-950">{report.title}</h3>
+                  {report.description && (
+                    <p className="mt-2 text-sm leading-6 text-gray-600">{report.description}</p>
+                  )}
+                  {report.files.length > 0 && (
+                    <div className="mt-4 flex flex-col gap-2">
+                      {report.files.map((file, i) => (
+                        <a
+                          key={i}
+                          href={file.src}
+                          download
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="group flex items-center gap-3 rounded-xl border border-slate-100 bg-white px-3 py-2.5 transition hover:border-primary/30 hover:bg-orange-50"
+                        >
+                          <FileText className="h-4 w-4 shrink-0 text-slate-400 transition group-hover:text-primary" />
+                          <span className="min-w-0 flex-1 truncate text-sm font-bold text-slate-700 transition group-hover:text-primary">
+                            {file.name}
+                          </span>
+                          <Download className="h-3.5 w-3.5 shrink-0 text-slate-300 transition group-hover:text-primary" />
+                        </a>
+                      ))}
+                    </div>
+                  )}
+                  <p className="mt-auto pt-4 text-xs text-slate-400">{report.date}</p>
+                </article>
+              ))}
+            </div>
+          </SectionFrame>
+        )}
 
         {/* ── Volunteer Section ── */}
         <SectionFrame
@@ -321,7 +393,7 @@ export default function HelpForUsPage() {
 
       </Section>
 
-      {/* ── CTA ── */}
+      {/* CTA */}
       <Section className="py-14">
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
           {[

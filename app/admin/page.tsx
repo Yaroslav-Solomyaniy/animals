@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { Footprints, Newspaper, PawPrint, ScrollText } from 'lucide-react'
+import { Footprints, HandCoins, Newspaper, PawPrint, ScrollText, Settings } from 'lucide-react'
 import { AdminAuthGate } from '@/components/admin/AdminAuthGate'
 import AdminPageHeader from '@/components/admin/AdminPageHeader'
 
@@ -12,7 +12,7 @@ export default function AdminPage() {
         description="Нормальна структура адмінки: окремі розділи, таблиці списків і окремі сторінки створення та редагування."
       />
 
-      <div className="grid gap-4 md:grid-cols-4">
+      <div className="grid gap-4 md:grid-cols-3 lg:grid-cols-4">
         {[
           {
             href: '/admin/animals',
@@ -37,6 +37,18 @@ export default function AdminPage() {
             title: 'Заявки',
             text: 'Список заявок на волонтерство з контактами та статусом email-відправки.',
             icon: Footprints,
+          },
+          {
+            href: '/admin/donations',
+            title: 'Донати',
+            text: 'Список донатів через Monobank з фільтрами за статусом та статистикою.',
+            icon: HandCoins,
+          },
+          {
+            href: '/admin/settings',
+            title: 'Налаштування',
+            text: 'Вмикайте та вимикайте систему донатів, редагуйте опис та суми.',
+            icon: Settings,
           },
         ].map((item) => {
           const Icon = item.icon

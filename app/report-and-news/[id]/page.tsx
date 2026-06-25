@@ -202,7 +202,7 @@ export default async function NewsDetailsPage({ params }: NewsPageProps) {
               </div>
 
               <Link
-                href={SITE_ROUTES.reportAndNews}
+                href={'/news'}
                 className="mt-5 inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-xl border border-white/15 bg-white/[0.06] px-4 py-2.5 text-sm font-extrabold text-white transition hover:-translate-y-0.5 hover:border-primary hover:bg-primary hover:shadow-[0_18px_45px_rgba(242,116,56,0.22)]"
               >
                 Усі новини
@@ -222,7 +222,7 @@ export default async function NewsDetailsPage({ params }: NewsPageProps) {
 function BackLink() {
   return (
     <Link
-      href={SITE_ROUTES.reportAndNews}
+      href={'/news'}
       className="group relative inline-flex items-center justify-center gap-2.5 overflow-hidden rounded-2xl border border-primary/30 bg-white/90 px-6 py-3.5 text-base font-extrabold text-primary shadow-[0_16px_45px_rgba(242,116,56,0.14)] backdrop-blur transition hover:border-primary active:scale-[0.98]"
     >
       <span className="absolute inset-y-0 left-0 w-0 bg-primary transition-all duration-300 ease-out group-hover:w-full" />

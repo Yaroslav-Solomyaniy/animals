@@ -1,5 +1,6 @@
 'use client'
 
+// @ts-ignore — package installed at runtime
 import { DotLottieReact } from '@lottiefiles/dotlottie-react'
 import { cn } from '@/lib/utils'
 

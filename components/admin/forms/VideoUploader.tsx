@@ -48,6 +48,7 @@ export function VideoUploader({ src, title, caption, r2Key, onUpdate, onUpload, 
     setProgress(0)
 
     // dynamic import so FFmpeg doesn't load on page load
+    // @ts-ignore
     const { FFmpeg } = await import('@ffmpeg/ffmpeg')
     const ffmpeg = new FFmpeg() as unknown as FFmpegInstance
     ffmpeg.on('progress', ({ progress: p }) => {
@@ -73,6 +74,7 @@ export function VideoUploader({ src, title, caption, r2Key, onUpdate, onUpload, 
       setPhase('compressing')
       setProgress(0)
 
+      // @ts-ignore
       const { fetchFile } = await import('@ffmpeg/util')
       await ffmpeg.writeFile('input', await fetchFile(file))
       await ffmpeg.exec([

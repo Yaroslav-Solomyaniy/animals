@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useTransition } from 'react'
 import type { LucideIcon } from 'lucide-react'
 import {
   BadgeCheck,
@@ -9,6 +9,7 @@ import {
   Copy,
   CreditCard,
   Heart,
+  Loader2,
   PawPrint,
   ShieldCheck,
   Sparkles,
@@ -16,15 +17,16 @@ import {
 
 import SectionFrame from '@/components/ui/SectionFrame'
 import { Button } from '@/components/ui/Button'
-import { Select, Textarea } from '@/components/ui/FormControls'
+import { Textarea } from '@/components/ui/FormControls'
 import { SITE_CONTACTS } from '@/lib/site-config'
+import { createDonationAction } from '@/app/donate/actions'
 
-const DONATION_PAYMENT_URL = process.env.NEXT_PUBLIC_DONATION_PAYMENT_URL
 const TREAT_AMOUNTS = [50, 100, 250, 500]
 const GENERAL_AMOUNTS = [200, 500, 1000, 1500]
 
 type DonateAnimal = {
   id: string
+  databaseId?: string
   name: string
   age: string
   gender: string
@@ -32,9 +34,11 @@ type DonateAnimal = {
   imageUrl: string
 }
 
-export function DonateClient({animal,
+export function DonateClient({
+  animal,
   gift,
-  initialAmount,}: {
+  initialAmount,
+}: {
   animal: DonateAnimal | null
   gift: string
   initialAmount: string
@@ -47,29 +51,30 @@ export function DonateClient({animal,
   const [customAmount, setCustomAmount] = useState(
     initialAmount && !amounts.includes(Number(initialAmount)) ? initialAmount : ''
   )
-  const [currency, setCurrency] = useState('UAH')
   const [comment, setComment] = useState(
-    animal
-      ? `Смаколик для ${animal.name}`
-      : 'Підтримка центру допомоги тваринам'
+    animal ? `Смаколик для ${animal.name}` : 'Підтримка центру допомоги тваринам'
   )
   const [showRequisites, setShowRequisites] = useState(false)
   const [copied, setCopied] = useState('')
+  const [error, setError] = useState<string | null>(null)
+  const [isPending, startTransition] = useTransition()
+
   const amount = normalizeAmount(customAmount) || selectedAmount
-  const paymentHref = getPaymentHref({
-    amount,
-    animalId: animal?.id,
-    comment,
-    currency,
-  })
 
   function startPayment() {
-    if (paymentHref) {
-      window.location.href = paymentHref
-      return
-    }
-
-    setShowRequisites(true)
+    setError(null)
+    startTransition(async () => {
+      const result = await createDonationAction({
+        amount: Number(amount),
+        animalId: animal?.databaseId ?? animal?.id ?? null,
+        donorComment: comment || null,
+      })
+      if (!result.ok) {
+        setError(result.error)
+        return
+      }
+      window.location.href = result.pageUrl
+    })
   }
 
   async function copyValue(label: string, value: string) {
@@ -81,6 +86,7 @@ export function DonateClient({animal,
   return (
     <SectionFrame className="overflow-hidden rounded-[28px] p-0">
       <div className="grid min-h-[680px] lg:grid-cols-[0.92fr_1.08fr]">
+        {/* ── Left: photo ── */}
         <div className="relative min-h-[420px] overflow-hidden bg-gray-950 lg:min-h-full">
           {animal ? (
             <img
@@ -116,6 +122,7 @@ export function DonateClient({animal,
           </div>
         </div>
 
+        {/* ── Right: form ── */}
         <div className="flex flex-col p-5 sm:p-7 lg:p-9">
           <div className="mb-7 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
             <div>
@@ -128,17 +135,18 @@ export function DonateClient({animal,
               </h2>
               <p className="mt-3 max-w-2xl leading-7 text-gray-500">
                 {isTreatGift
-                  ? 'Донат буде привʼязаний до цієї тварини: ласощі, корм або дрібна покупка для догляду.'
+                  ? "Донат буде прив'язаний до цієї тварини: ласощі, корм або дрібна покупка для догляду."
                   : 'Ваш внесок піде на корм, ліки, обробки й щоденний догляд за тваринами.'}
               </p>
             </div>
 
             <span className="inline-flex w-fit shrink-0 items-center gap-2 rounded-2xl bg-[#F1FFF8] px-4 py-3 text-sm font-extrabold text-secondary">
               <ShieldCheck className="h-4 w-4" />
-              Призначення є
+              Monobank
             </span>
           </div>
 
+          {/* Preset amounts */}
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
             {amounts.map((presetAmount) => (
               <Button
@@ -156,102 +164,83 @@ export function DonateClient({animal,
             ))}
           </div>
 
-          <div className="mt-5 grid gap-4 sm:grid-cols-[minmax(0,1fr)_160px]">
+          {/* Custom amount */}
+          <div className="mt-5">
             <label className="block">
-              <span className="mb-2 block text-sm font-bold text-gray-500">
-                Інша сума
-              </span>
+              <span className="mb-2 block text-sm font-bold text-gray-500">Інша сума (грн)</span>
               <input
                 type="text"
                 inputMode="numeric"
                 min="1"
                 value={customAmount}
                 placeholder="Наприклад, 150"
-                onChange={(event) => setCustomAmount(event.target.value.replace(/\D/g, '').slice(0, 7))}
+                onChange={(e) => setCustomAmount(e.target.value.replace(/\D/g, '').slice(0, 7))}
                 className="h-14 w-full rounded-2xl border border-gray-100 bg-white px-5 text-base font-bold text-text-main shadow-sm outline-none transition-all placeholder:text-gray-300 focus:border-primary focus:ring-4 focus:ring-primary/10"
               />
             </label>
-
-            <label className="block">
-              <span className="mb-2 block text-sm font-bold text-gray-500">
-                Валюта
-              </span>
-              <Select
-                value={currency}
-                onChange={(event) => setCurrency(event.target.value)}
-                className="h-14 bg-white px-5 text-base font-bold"
-              >
-                <option>UAH</option>
-                <option>EUR</option>
-                <option>USD</option>
-              </Select>
-            </label>
           </div>
 
+          {/* Comment */}
           <label className="mt-5 block">
-            <span className="mb-2 block text-sm font-bold text-gray-500">
-              Коментар
-            </span>
+            <span className="mb-2 block text-sm font-bold text-gray-500">Коментар</span>
             <Textarea
               rows={3}
               value={comment}
-              onChange={(event) => setComment(event.target.value)}
+              onChange={(e) => setComment(e.target.value)}
               className="bg-white px-5 py-4 text-sm font-bold leading-6"
             />
           </label>
 
+          {/* Error */}
+          {error && (
+            <p className="mt-4 rounded-xl bg-rose-50 px-4 py-3 text-sm font-semibold text-rose-600">
+              {error}
+            </p>
+          )}
+
+          {/* Actions */}
           <div className="mt-6 grid gap-3 sm:grid-cols-[minmax(0,1fr)_180px]">
-            <Button type="button" size="lg" className="h-14 text-base" onClick={startPayment}>
-              <CreditCard className="h-5 w-5" />
-              {paymentHref ? 'Оплатити' : 'Показати реквізити'}
+            <Button
+              type="button"
+              size="lg"
+              className="h-14 text-base"
+              disabled={isPending || !amount}
+              onClick={startPayment}
+            >
+              {isPending
+                ? <Loader2 className="h-5 w-5 animate-spin" />
+                : <CreditCard className="h-5 w-5" />}
+              {isPending ? 'Перенаправлення…' : `Оплатити ${amount ? `${amount} грн` : ''}`}
             </Button>
             <Button
               type="button"
               variant="outline"
               size="lg"
               className="h-14 text-base"
-              onClick={() => setShowRequisites((value) => !value)}
+              onClick={() => setShowRequisites((v) => !v)}
             >
               <Banknote className="h-5 w-5" />
               Реквізити
             </Button>
           </div>
 
-          {showRequisites ? (
+          {/* Requisites */}
+          {showRequisites && (
             <div className="mt-5 rounded-3xl border border-orange-100 bg-orange-50/70 p-5">
               <h3 className="text-lg font-black text-text-main">Реквізити для переказу</h3>
               <p className="mt-2 text-sm leading-6 text-gray-600">
-                Платіжний провайдер ще не вказаний. Нижче дані для звʼязку з центром; коли додамо банку або LiqPay/WayForPay URL, кнопка “Оплатити” відкриватиме оплату напряму.
+                Для переказу вручну — зв'яжіться з нами, ми надамо актуальні реквізити.
               </p>
               <div className="mt-4 grid gap-3">
-                <RequisiteLine
-                  label="Сума"
-                  value={`${amount} ${currency}`}
-                  copied={copied}
-                  onCopy={copyValue}
-                />
-                <RequisiteLine
-                  label="Призначення"
-                  value={comment}
-                  copied={copied}
-                  onCopy={copyValue}
-                />
-                <RequisiteLine
-                  label="Email"
-                  value={SITE_CONTACTS.email}
-                  copied={copied}
-                  onCopy={copyValue}
-                />
-                <RequisiteLine
-                  label="Телефон"
-                  value={SITE_CONTACTS.phoneDisplay}
-                  copied={copied}
-                  onCopy={copyValue}
-                />
+                <RequisiteLine label="Сума" value={`${amount} грн`} copied={copied} onCopy={copyValue} />
+                <RequisiteLine label="Призначення" value={comment} copied={copied} onCopy={copyValue} />
+                <RequisiteLine label="Email" value={SITE_CONTACTS.email} copied={copied} onCopy={copyValue} />
+                <RequisiteLine label="Телефон" value={SITE_CONTACTS.phoneDisplay} copied={copied} onCopy={copyValue} />
               </div>
             </div>
-          ) : null}
+          )}
 
+          {/* Footer info */}
           <div className="mt-auto pt-7">
             <div className="grid gap-3 md:grid-cols-3">
               <SupportItem
@@ -269,10 +258,12 @@ export function DonateClient({animal,
   )
 }
 
-function RequisiteLine({label,
+function RequisiteLine({
+  label,
   value,
   copied,
-  onCopy,}: {
+  onCopy,
+}: {
   label: string
   value: string
   copied: string
@@ -297,29 +288,6 @@ function normalizeAmount(value: string) {
   return Number.isFinite(amount) && amount > 0 ? String(amount) : ''
 }
 
-function getPaymentHref({amount,
-  animalId,
-  comment,
-  currency,}: {
-  amount: string
-  animalId?: string
-  comment: string
-  currency: string
-}) {
-  if (!DONATION_PAYMENT_URL) {return ''}
-
-  const url = new URL(DONATION_PAYMENT_URL)
-  url.searchParams.set('amount', amount)
-  url.searchParams.set('currency', currency)
-  url.searchParams.set('comment', comment)
-
-  if (animalId) {
-    url.searchParams.set('animalId', animalId)
-  }
-
-  return url.toString()
-}
-
 function InfoChip({ children }: { children: React.ReactNode }) {
   return (
     <span className="rounded-full bg-white/92 px-3 py-1 text-xs font-extrabold text-text-main backdrop-blur">
@@ -328,9 +296,11 @@ function InfoChip({ children }: { children: React.ReactNode }) {
   )
 }
 
-function SupportItem({icon: Icon,
+function SupportItem({
+  icon: Icon,
   title,
-  text,}: {
+  text,
+}: {
   icon: LucideIcon
   title: string
   text: string

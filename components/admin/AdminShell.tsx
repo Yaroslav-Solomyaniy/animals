@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import type { ReactNode } from 'react'
-import { FilePlus2, Footprints, LayoutDashboard, Newspaper, PanelLeft, PawPrint, Rocket, ScrollText } from 'lucide-react'
+import { FilePlus2, Footprints, HandCoins, LayoutDashboard, Newspaper, PanelLeft, PawPrint, Rocket, ScrollText, Settings } from 'lucide-react'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import { LinkButton } from '@/components/ui/Button'
@@ -16,6 +16,8 @@ const adminNavigation = [
   { href: '/admin/news', label: 'Новини', icon: Newspaper },
   { href: '/admin/reports', label: 'Звіти', icon: ScrollText },
   { href: '/admin/volunteer-requests', label: 'Заявки', icon: Footprints },
+  { href: '/admin/donations', label: 'Донати', icon: HandCoins },
+  { href: '/admin/settings', label: 'Налаштування', icon: Settings },
 ]
 
 export default function AdminShell({ children }: { children: ReactNode }) {
@@ -26,6 +28,17 @@ export default function AdminShell({ children }: { children: ReactNode }) {
   const isNewsEditorRoute = pathname.startsWith('/admin/news/')
   const isReportsEditorRoute = pathname.startsWith('/admin/reports/') && pathname !== '/admin/reports/'
   const isEditorRoute = isAnimalEditorRoute || isNewsEditorRoute || isReportsEditorRoute
+
+  if (pathname === '/donate/success') {
+    return (
+      <div className="relative">
+        <div className="absolute inset-x-0 top-0 z-50">
+          <Header />
+        </div>
+        {children}
+      </div>
+    )
+  }
 
   if (!isAdminRoute) {
     return (
