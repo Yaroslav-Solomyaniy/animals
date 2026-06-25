@@ -34,7 +34,7 @@ const quickLinks = [
   { label: 'Як допомогти', href: SITE_ROUTES.help },
   { label: 'Послуги', href: SITE_ROUTES.services },
   { label: 'Контакти', href: SITE_ROUTES.contacts },
-  { label: 'Новини та звіти', href: SITE_ROUTES.reportAndNews },
+  { label: 'Новини та звіти', href: SITE_ROUTES.news },
 ]
 
 type FooterNewsItem = {
@@ -140,7 +140,7 @@ export default function Footer() {
                 {item.label}
               </FooterLink>
             ))}
-            {latestReport ? <FooterLink href={SITE_ROUTES.reportAndNews}>{latestReport.title}</FooterLink> : null}
+            {latestReport ? <FooterLink href={SITE_ROUTES.news}>{latestReport.title}</FooterLink> : null}
           </FooterSection>
 
           <FooterSection title="Новини" icon={Newspaper}>
@@ -156,7 +156,7 @@ export default function Footer() {
                 <span className="mt-1 block text-xs font-bold text-orange-200/72">{formatFooterNewsDate(item.published_at)}</span>
               </Link>
             ))}
-            <FooterLink href={SITE_ROUTES.reportAndNews}>Всі новини та звіти</FooterLink>
+            <FooterLink href={SITE_ROUTES.news}>Всі новини та звіти</FooterLink>
           </FooterSection>
         </div>
 

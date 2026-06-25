@@ -18,6 +18,7 @@ import {
   Trash2,
   X,
 } from 'lucide-react'
+import { Dialog, DialogRawContent } from '@/components/ui/Dialog'
 import { useRouter } from 'next/navigation'
 import { Button, IconButton } from '@/components/ui/Button'
 import { Input, Select, Textarea } from '@/components/ui/FormControls'
@@ -268,9 +269,9 @@ export default function AnimalCreateModal({
         {triggerLabel}
       </Button>
 
-      {isOpen ? (
-        <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-slate-950/60 p-4 pt-8 backdrop-blur-sm">
-          <div className="w-full max-w-3xl overflow-hidden rounded-2xl bg-white shadow-[0_32px_80px_rgba(15,23,42,0.32)]">
+      <Dialog open={isOpen} onOpenChange={(open) => { if (!open) closeModal() }}>
+        <DialogRawContent className="inset-0 flex items-start justify-center overflow-y-auto p-4 pt-8">
+          <div className="my-auto w-full max-w-3xl overflow-hidden rounded-2xl bg-white shadow-[0_32px_80px_rgba(15,23,42,0.32)]">
 
             {/* ── Header ── */}
             <div className="flex items-center justify-between gap-4 border-b border-slate-100 px-6 py-4">
@@ -579,8 +580,8 @@ export default function AnimalCreateModal({
               ) : null}
             </div>
           </div>
-        </div>
-      ) : null}
+        </DialogRawContent>
+      </Dialog>
     </>
   )
 }

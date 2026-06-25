@@ -88,3 +88,21 @@ export const DialogDescription = forwardRef<
     />
   )
 })
+
+export const DialogRawContent = forwardRef<
+  ElementRef<typeof DialogPrimitive.Content>,
+  ComponentPropsWithoutRef<typeof DialogPrimitive.Content>
+>(function DialogRawContent({ className, children, ...props }, ref) {
+  return (
+    <DialogPortal>
+      <DialogOverlay />
+      <DialogPrimitive.Content
+        ref={ref}
+        className={cn('fixed z-50 outline-none', className)}
+        {...props}
+      >
+        {children}
+      </DialogPrimitive.Content>
+    </DialogPortal>
+  )
+})

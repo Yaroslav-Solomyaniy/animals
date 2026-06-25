@@ -146,6 +146,7 @@ export default function AnimalProfileClient({ animal, galleryImages, relatedAnim
                     path={buildAnimalHref(animal.id)}
                     title={`${displayName} шукає родину`}
                     text={profile.intro}
+                    image={animal.imageUrl}
                     label="Поширити"
                     variant="button"
                     className="[&>button]:h-11 [&>button]:w-full [&>button]:rounded-2xl [&>button]:text-sm"
@@ -570,6 +571,6 @@ function toneClasses(tone: Tone) {
     orange: 'border-orange-200 bg-orange-50 text-orange-800',
     green: 'border-emerald-200 bg-emerald-50 text-emerald-800',
     sky: 'border-sky-200 bg-sky-50 text-sky-800',
-    slate: 'border-slate-200 bg-slate-50 text-slate-800',
+    slate: 'border-slate-200 bg-slate-50 text-slate-700',
   }[tone]
 }

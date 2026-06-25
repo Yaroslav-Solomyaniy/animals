@@ -25,6 +25,7 @@ export type NewsContentBlock =
       src: string
       title: string
       caption?: string
+      r2Key?: string
     } & NewsBlockBase)
   | ({
       type: 'table'
@@ -49,6 +50,14 @@ export type NewsContentBlock =
       }>
     } & NewsBlockBase)
   | ({
+      type: 'file'
+      src: string
+      name: string
+      description?: string
+      r2Key?: string
+      size?: number
+    } & NewsBlockBase)
+  | ({
       type: 'slider'
       images: Array<{
         src: string
@@ -65,7 +74,7 @@ export type NewsItem = {
   excerpt: string
   date: string
   category: string
-  image: string
+  image: string | null
   heroImages?: Array<{
     src: string
     alt: string

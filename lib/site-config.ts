@@ -4,7 +4,7 @@ export const SITE_ROUTES = {
   walks: '/walks',
   services: '/services',
   help: '/help-for-us',
-  reportAndNews: '/report-and-news',
+  news: '/news',
   contacts: '/contacts',
   contactsSchedule: '/contacts#schedule',
   donate: '/donate',
@@ -46,10 +46,10 @@ export const SITE_NAV_LINKS = [
   { name: 'Прогулянки', href: SITE_ROUTES.walks },
   { name: 'Послуги', href: SITE_ROUTES.services },
   { name: 'Як можна допомогти', href: SITE_ROUTES.help },
-  { name: 'Новини та звіти', href: SITE_ROUTES.reportAndNews },
+  { name: 'Новини та звіти', href: SITE_ROUTES.news },
   { name: 'Контакти', href: SITE_ROUTES.contacts },
 ] as const
 
 export const buildAnimalHref = (slugOrId: string) => `${SITE_ROUTES.animals}/${slugOrId}`
 
-export const buildNewsHref = (id: string) => `${SITE_ROUTES.reportAndNews}/${id}`
+export const buildNewsHref = (id: string) => `${SITE_ROUTES.news}/${id}`

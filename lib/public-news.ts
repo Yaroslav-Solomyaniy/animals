@@ -4,7 +4,6 @@ import type { NewsPostRow } from '@/lib/admin-types'
 import type { NewsContentBlock, NewsItem } from '@/lib/news'
 import { createClient } from '@/lib/supabase/server'
 
-const FALLBACK_NEWS_IMAGE = '/dog.png'
 const NEWS_CATEGORY = 'Новини центру'
 
 export async function getPublishedNewsPaginated(
@@ -111,7 +110,7 @@ function mapNewsPost(post: NewsPostRow): NewsItem {
     excerpt: post.excerpt ?? '',
     date: formatDate(publishedAt),
     category: NEWS_CATEGORY,
-    image: post.cover_url || FALLBACK_NEWS_IMAGE,
+    image: post.cover_url ?? null,
     readingTime: getReadingTime(content),
     publishedTime: formatTime(publishedAt),
     relatedAnimalId: post.related_animal_id ?? undefined,
@@ -146,7 +145,8 @@ function isNewsContentBlock(value: unknown): value is NewsContentBlock {
     block.type === 'table' ||
     block.type === 'buttons' ||
     block.type === 'gallery' ||
-    block.type === 'slider'
+    block.type === 'slider' ||
+    block.type === 'file'
   )
 }
 
@@ -174,6 +174,7 @@ function extractBlockText(block: NewsContentBlock): string {
     case 'video':
     case 'gallery':
     case 'slider':
+    case 'file':
       return ''
   }
 }
@@ -202,5 +203,5 @@ function formatTime(date: Date | null) {
 }
 
 function isUuid(value: string) {
-  return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value)
+  return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/.test(value)
 }

@@ -1,6 +1,6 @@
 import { Suspense } from 'react'
 import Link from 'next/link'
-import { ArrowRight, Calendar } from 'lucide-react'
+import { ArrowRight, Calendar, Newspaper } from 'lucide-react'
 import { LinkButton } from '@/components/ui/Button'
 import { getPublishedNewsPaginated } from '@/lib/public-news'
 import { buildNewsHref } from '@/lib/site-config'
@@ -20,11 +20,16 @@ export default async function NewsGrid({
 
   if (news.length === 0) {
     return (
-      <div className="rounded-[28px] border border-dashed border-orange-200 bg-orange-50/70 p-8 text-center">
-        <p className="text-lg font-black text-gray-950">Новин поки немає</p>
-        <p className="mt-2 text-gray-600">
-          Опублікуй першу новину в адмінці, і вона зʼявиться тут автоматично.
-        </p>
+      <div className="flex flex-col items-center gap-4 py-16 text-center">
+        <span className="flex h-20 w-20 items-center justify-center rounded-3xl bg-orange-50 text-orange-300">
+          <Newspaper className="h-10 w-10" />
+        </span>
+        <div>
+          <p className="text-xl font-black text-gray-950">Тут поки тихо</p>
+          <p className="mt-2 max-w-sm text-gray-500">
+            Ми вже готуємо новини — зaглядайте пізніше, буде цікаво.
+          </p>
+        </div>
       </div>
     )
   }

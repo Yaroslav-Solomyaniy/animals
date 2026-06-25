@@ -1,10 +1,8 @@
-import { Resend } from 'resend'
-import { SITE_CONTACTS } from '@/lib/site-config'
-import type { VolunteerFormValue } from '@/lib/admin-schemas'
+import {Resend} from 'resend'
+import {SITE_CONTACTS} from '@/lib/site-config'
+import type {VolunteerFormValue} from '@/lib/admin-schemas'
 
-type EmailSendResult =
-  | { ok: true }
-  | { ok: false; status: 'failed' | 'not_configured'; error: string }
+type EmailSendResult = { ok: true } | { ok: false; status: 'failed' | 'not_configured'; error: string }
 
 export async function sendVolunteerRequestEmail(value: VolunteerFormValue): Promise<EmailSendResult> {
   const apiKey = process.env.RESEND_API_KEY
@@ -50,14 +48,16 @@ export async function sendVolunteerRequestEmail(value: VolunteerFormValue): Prom
 }
 
 function formatResendError(error: unknown) {
-  if (typeof error === 'string') {return error}
+  if (typeof error === 'string') {
+    return error
+  }
   if (error && typeof error === 'object') {
     const message = 'message' in error ? error.message : null
     const name = 'name' in error ? error.name : null
 
-    return [name, message]
-      .filter((value): value is string => typeof value === 'string' && value.length > 0)
-      .join(': ') || JSON.stringify(error)
+    return (
+      [name, message].filter((value): value is string => typeof value === 'string' && value.length > 0).join(': ') || JSON.stringify(error)
+    )
   }
 
   return 'Unknown Resend error'
@@ -79,7 +79,7 @@ function renderVolunteerEmail(value: VolunteerFormValue) {
 
       <p style="margin:12px 0 0;font-size:15px;line-height:1.65;color:#fff7ed;">
         На сайті <strong>paws.ck.ua</strong> щойно залишили заявку на волонтерство.
-        Можливо, це ще одна добра людина для допомоги хвостикам ❤️
+        Можливо, це ще одна добра людина для допомоги хвостикам.
       </p>
     </div>
 
@@ -139,10 +139,5 @@ function renderVolunteerEmail(value: VolunteerFormValue) {
 }
 
 function escapeHtml(value: string) {
-  return value
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#039;')
+  return value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;')
 }

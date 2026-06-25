@@ -1,10 +1,10 @@
 'use client'
 
 import type { ReactNode } from 'react'
-import { useEffect, useState } from 'react'
-import { createPortal } from 'react-dom'
+import { useState } from 'react'
 import { ArrowLeft, ArrowRight, X } from 'lucide-react'
 import { IconButton } from '@/components/ui/Button'
+import { Dialog, DialogRawContent } from '@/components/ui/Dialog'
 
 export type LightboxImageItem = {
   src: string
@@ -24,42 +24,14 @@ export default function ImageLightbox({images,
   const activeImage = activeIndex === null ? null : images[activeIndex]
   const hasManyImages = images.length > 1
 
-  useEffect(() => {
-    if (activeIndex === null) {
-      return
-    }
-
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
-        setActiveIndex(null)
-      }
-
-      if (event.key === 'ArrowLeft') {
-        setActiveIndex((current) =>
-          current === null ? current : (current - 1 + images.length) % images.length,
-        )
-      }
-
-      if (event.key === 'ArrowRight') {
-        setActiveIndex((current) =>
-          current === null ? current : (current + 1) % images.length,
-        )
-      }
-    }
-
-    document.body.style.overflow = 'hidden'
-    window.addEventListener('keydown', handleKeyDown)
-
-    return () => {
-      document.body.style.overflow = ''
-      window.removeEventListener('keydown', handleKeyDown)
-    }
-  }, [activeIndex, images.length])
+  // Arrow keys handled via onKeyDown on Dialog content
+  function handleKeyDown(event: React.KeyboardEvent) {
+    if (event.key === 'ArrowLeft') goPrev()
+    if (event.key === 'ArrowRight') goNext()
+  }
 
   const open = () => setActiveIndex(initialIndex)
   const close = () => setActiveIndex(null)
-  const portalTarget =
-    typeof document === 'undefined' ? null : document.body
 
   const goPrev = () => {
     setActiveIndex((current) =>
@@ -73,61 +45,49 @@ export default function ImageLightbox({images,
     )
   }
 
-  const overlay =
-    activeImage && portalTarget
-      ? createPortal(
-          <div
-            className="fixed inset-0 z-[9999] flex items-center justify-center bg-gray-950/92 p-4 backdrop-blur-sm"
-            role="dialog"
-            aria-modal="true"
+  return (
+    <>
+      {children(open)}
+      <Dialog open={activeIndex !== null} onOpenChange={(o) => { if (!o) close() }}>
+        <DialogRawContent
+          className="inset-0 flex items-center justify-center bg-gray-950/92 p-4 backdrop-blur-sm"
+          onKeyDown={handleKeyDown}
+        >
+          <IconButton
+            type="button"
+            label="Закрити перегляд фото"
+            variant="ghost"
             onClick={close}
+            className="absolute right-4 top-4 border-white/30 bg-white/12 text-white backdrop-blur hover:bg-white hover:text-gray-950"
           >
-            <IconButton
-              type="button"
-              label="Закрити перегляд фото"
-              variant="ghost"
-              onClick={close}
-              className="absolute right-4 top-4 z-[10001] border-white/30 bg-white/12 text-white backdrop-blur hover:bg-white hover:text-gray-950"
-              aria-label="Закрити перегляд фото"
-            >
-              <X className="h-5 w-5" />
-            </IconButton>
+            <X className="h-5 w-5" />
+          </IconButton>
 
-            {hasManyImages && (
-              <>
-                <IconButton
-                  type="button"
-                  label="Попереднє фото"
-                  variant="ghost"
-                  onClick={(event) => {
-                    event.stopPropagation()
-                    goPrev()
-                  }}
-                  className="absolute left-4 top-1/2 z-[10001] -translate-y-1/2 border-white/30 bg-white/12 text-white backdrop-blur hover:bg-white hover:text-gray-950"
-                  aria-label="Попереднє фото"
-                >
-                  <ArrowLeft className="h-5 w-5" />
-                </IconButton>
-                <IconButton
-                  type="button"
-                  label="Наступне фото"
-                  variant="ghost"
-                  onClick={(event) => {
-                    event.stopPropagation()
-                    goNext()
-                  }}
-                  className="absolute right-4 top-1/2 z-[10001] -translate-y-1/2 border-white/30 bg-white/12 text-white backdrop-blur hover:bg-white hover:text-gray-950"
-                  aria-label="Наступне фото"
-                >
-                  <ArrowRight className="h-5 w-5" />
-                </IconButton>
-              </>
-            )}
+          {hasManyImages && (
+            <>
+              <IconButton
+                type="button"
+                label="Попереднє фото"
+                variant="ghost"
+                onClick={(e) => { e.stopPropagation(); goPrev() }}
+                className="absolute left-4 top-1/2 -translate-y-1/2 border-white/30 bg-white/12 text-white backdrop-blur hover:bg-white hover:text-gray-950"
+              >
+                <ArrowLeft className="h-5 w-5" />
+              </IconButton>
+              <IconButton
+                type="button"
+                label="Наступне фото"
+                variant="ghost"
+                onClick={(e) => { e.stopPropagation(); goNext() }}
+                className="absolute right-4 top-1/2 -translate-y-1/2 border-white/30 bg-white/12 text-white backdrop-blur hover:bg-white hover:text-gray-950"
+              >
+                <ArrowRight className="h-5 w-5" />
+              </IconButton>
+            </>
+          )}
 
-            <div
-              className="relative z-[10000] max-h-[92vh] max-w-[92vw]"
-              onClick={(event) => event.stopPropagation()}
-            >
+          {activeImage && (
+            <div className="relative max-h-[92vh] max-w-[92vw]" onClick={(e) => e.stopPropagation()}>
               <img
                 src={activeImage.src}
                 alt={activeImage.alt}
@@ -139,15 +99,9 @@ export default function ImageLightbox({images,
                 </span>
               )}
             </div>
-          </div>,
-          portalTarget,
-        )
-      : null
-
-  return (
-    <>
-      {children(open)}
-      {overlay}
+          )}
+        </DialogRawContent>
+      </Dialog>
     </>
   )
 }

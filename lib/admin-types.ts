@@ -21,6 +21,8 @@ export type AnimalRow = {
   updated_at: string | null
 }
 
+export type AnimalWithPhoto = AnimalRow & { photo_url: string | null }
+
 export type AnimalPhotoRow = {
   id: string
   animal_id: string
@@ -46,14 +48,20 @@ export type NewsPostRow = {
   published_at: string | null
 }
 
+export type ReportFile = {
+  name: string
+  src: string
+  r2Key: string
+  size?: number
+  description?: string
+}
+
 export type ReportRow = {
   id: string
   title: string
-  month: string | null
-  year: string | null
-  summary: string | null
-  file_url: string | null
-  file_r2_key: string | null
+  period: string | null
+  description: string | null
+  files: ReportFile[]
   is_published: boolean | null
   published_at: string | null
 }
@@ -68,6 +76,4 @@ export type VolunteerRequestRow = {
   email_error: string | null
   admin_notes: string | null
   created_at: string | null
-  updated_at: string | null
-
 }

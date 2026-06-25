@@ -3,6 +3,7 @@
 import { revalidatePath } from 'next/cache'
 import type { NewsContentBlock } from '@/lib/news'
 import { createClient } from '@/lib/supabase/server'
+import type { AnimalWithPhoto } from '@/lib/admin-types'
 
 export type NewsFormPayload = {
   slug: string
@@ -119,11 +120,11 @@ async function getAvailableSlug({supabase,
 function revalidateNewsPaths(id: string, slug: string, previousSlug?: string | null) {
   revalidatePath('/admin/news')
   revalidatePath(`/admin/news/${id}`)
-  revalidatePath('/report-and-news')
-  revalidatePath(`/report-and-news/${slug}`)
+  revalidatePath('/news')
+  revalidatePath(`/news/${slug}`)
 
   if (previousSlug && previousSlug !== slug) {
-    revalidatePath(`/report-and-news/${previousSlug}`)
+    revalidatePath(`/news/${previousSlug}`)
   }
 }
 
@@ -140,9 +141,9 @@ export async function deleteNewsPostAction(id: string) {
   }
 
   revalidatePath('/admin/news')
-  revalidatePath('/report-and-news')
+  revalidatePath('/news')
   if (post?.slug) {
-    revalidatePath(`/report-and-news/${post.slug}`)
+    revalidatePath(`/news/${post.slug}`)
   }
 
   return { ok: true as const }
@@ -219,4 +220,25 @@ const transliteration: Record<string, string> = {
   ь: '',
   ю: 'iu',
   я: 'ia',
+}
+
+export async function searchAnimalsAction(q: string): Promise<AnimalWithPhoto[]> {
+  const supabase = await createClient()
+  let query = supabase
+    .from('animals')
+    .select('*, animal_photos!inner(public_url)')
+    .eq('animal_photos.is_main', true)
+    .order('name')
+    .limit(60)
+
+  const term = q.replace(/[%,]/g, ' ').trim()
+  if (term) {
+    query = query.ilike('name', `%${term}%`)
+  }
+
+  const { data } = await query
+  return (data ?? []).map((a: Record<string, unknown>) => ({
+    ...a,
+    photo_url: (a.animal_photos as Array<{ public_url: string | null }>)?.[0]?.public_url ?? null,
+  })) as AnimalWithPhoto[]
 }

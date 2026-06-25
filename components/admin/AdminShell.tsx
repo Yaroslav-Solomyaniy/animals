@@ -24,7 +24,8 @@ export default function AdminShell({ children }: { children: ReactNode }) {
   const isAdminRoute = pathname.startsWith('/admin')
   const isAnimalEditorRoute = pathname.startsWith('/admin/animals/') && pathname !== '/admin/animals/'
   const isNewsEditorRoute = pathname.startsWith('/admin/news/')
-  const isEditorRoute = isAnimalEditorRoute || isNewsEditorRoute
+  const isReportsEditorRoute = pathname.startsWith('/admin/reports/') && pathname !== '/admin/reports/'
+  const isEditorRoute = isAnimalEditorRoute || isNewsEditorRoute || isReportsEditorRoute
 
   if (!isAdminRoute) {
     return (

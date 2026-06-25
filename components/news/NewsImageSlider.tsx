@@ -41,17 +41,17 @@ export default function NewsImageSlider({images,
   return (
     <ImageLightbox images={images} initialIndex={activeIndex}>
       {(openLightbox) => (
-        <div className={`relative overflow-hidden ${className}`}>
+        <div className="relative overflow-hidden">
           <button
             type="button"
             onClick={openLightbox}
-            className="block h-full w-full cursor-zoom-in overflow-hidden"
+            className="block w-full cursor-zoom-in overflow-hidden"
             aria-label="Відкрити фото на весь екран"
           >
             <img
               src={activeImage.src}
               alt={activeImage.alt}
-              className={`h-full w-full object-cover transition duration-500 ${imageClassName}`}
+              className="max-h-[600px] w-full object-contain transition duration-500"
             />
           </button>
 

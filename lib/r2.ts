@@ -22,7 +22,7 @@ const r2Config = {
   publicUrl: process.env.CLOUDFLARE_R2_PUBLIC_URL,
   animalPhotosFolder: process.env.CLOUDFLARE_R2_ANIMAL_PHOTOS_FOLDER,
   newsImagesFolder: process.env.CLOUDFLARE_R2_NEWS_IMAGES_FOLDER,
-  reportFilesFolder: process.env.CLOUDFLARE_R2_REPORT_FILES_FOLDER,
+  filesFolder: process.env.CLOUDFLARE_R2_FILES_FOLDER,
 }
 
 export function getAnimalPhotosBucketConfig(): R2BucketConfig {
@@ -49,6 +49,23 @@ export function createNewsImageKey(newsId: string, fileName: string) {
   return `${folder}/${newsId}/${randomUUID()}${getFileExtension(fileName)}`
 }
 
+export function createNewsVideoKey(newsId: string, fileName: string) {
+  const folder = normalizeFolder(requiredEnv(r2Config.newsImagesFolder, 'CLOUDFLARE_R2_NEWS_IMAGES_FOLDER'))
+  return `${folder}/${newsId}/videos/${randomUUID()}${getFileExtension(fileName)}`
+}
+
+export function createNewsFileKey(newsId: string, fileName: string) {
+  const folder = normalizeFolder(requiredEnv(r2Config.filesFolder, 'CLOUDFLARE_R2_FILES_FOLDER'))
+  return `${folder}/news/${newsId}/${randomUUID()}${getFileExtension(fileName)}`
+}
+
+export function getNewsVideosBucketConfig(): R2BucketConfig {
+  return {
+    bucket: requiredEnv(r2Config.bucket, 'CLOUDFLARE_R2_BUCKET'),
+    publicUrl: requiredEnv(r2Config.publicUrl, 'CLOUDFLARE_R2_PUBLIC_URL').replace(/\/+$/, ''),
+  }
+}
+
 export function getPublicFilesBucketConfig(): R2BucketConfig {
   return {
     bucket: requiredEnv(r2Config.bucket, 'CLOUDFLARE_R2_BUCKET'),
@@ -56,8 +73,13 @@ export function getPublicFilesBucketConfig(): R2BucketConfig {
   }
 }
 
+export function createReportFileKey(reportId: string, fileName: string) {
+  const folder = normalizeFolder(r2Config.filesFolder ?? 'files')
+  return `${folder}/reports/${reportId}/${randomUUID()}${getFileExtension(fileName)}`
+}
+
 export function createContactAttachmentKey(fileName: string) {
-  const folder = normalizeFolder(r2Config.reportFilesFolder ?? 'contact-attachments')
+  const folder = normalizeFolder(r2Config.filesFolder ?? 'files')
   return `${folder}/contacts/${randomUUID()}${getFileExtension(fileName)}`
 }
 
