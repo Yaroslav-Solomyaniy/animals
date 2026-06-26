@@ -1,10 +1,12 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
-import { Check, Loader2 } from 'lucide-react'
+import { Check, ChevronLeft, ChevronRight, Loader2 } from 'lucide-react'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/Dialog'
 import { searchAnimalsAction } from '@/app/admin/news/actions'
 import type { AnimalWithPhoto } from '@/lib/admin-types'
+
+const PAGE_SIZE = 6
 
 type Props = {
   open: boolean
@@ -17,13 +19,16 @@ export function AnimalPickerModal({ open, onOpenChange, selectedId, onSelect }: 
   const [query, setQuery] = useState('')
   const [animals, setAnimals] = useState<AnimalWithPhoto[]>([])
   const [isLoading, setIsLoading] = useState(false)
+  const [page, setPage] = useState(0)
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const queryRef = useRef(query)
   queryRef.current = query
 
-  // Fetch only when query has at least 3 chars
+  const totalPages = Math.ceil(animals.length / PAGE_SIZE)
+  const pageAnimals = animals.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE)
+
   useEffect(() => {
-    if (!open || query.length < 3) {
+    if (!open) {
       if (debounceRef.current) clearTimeout(debounceRef.current)
       setAnimals([])
       setIsLoading(false)
@@ -31,15 +36,16 @@ export function AnimalPickerModal({ open, onOpenChange, selectedId, onSelect }: 
     }
 
     if (debounceRef.current) clearTimeout(debounceRef.current)
+    setIsLoading(true)
+    setPage(0)
     debounceRef.current = setTimeout(async () => {
-      setIsLoading(true)
       try {
         const results = await searchAnimalsAction(queryRef.current)
         setAnimals(results)
       } finally {
         setIsLoading(false)
       }
-    }, 300)
+    }, query ? 300 : 0)
 
     return () => {
       if (debounceRef.current) clearTimeout(debounceRef.current)
@@ -49,6 +55,7 @@ export function AnimalPickerModal({ open, onOpenChange, selectedId, onSelect }: 
   function handleClose() {
     onOpenChange(false)
     setQuery('')
+    setPage(0)
   }
 
   function handleSelect(animal: AnimalWithPhoto) {
@@ -74,17 +81,13 @@ export function AnimalPickerModal({ open, onOpenChange, selectedId, onSelect }: 
           />
         </div>
 
-        <div className="grid min-h-0 flex-1 gap-3 overflow-y-auto p-5 sm:grid-cols-3" style={{ alignContent: 'start' }}>
-          {query.length < 3 ? (
-            <div className="flex items-center justify-center py-16 sm:col-span-3">
-              <p className="text-sm font-semibold text-slate-400">Введіть мінімум 3 символи для пошуку</p>
-            </div>
-          ) : isLoading ? (
+        <div className="grid gap-3 p-5 sm:grid-cols-3" style={{ alignContent: 'start' }}>
+          {isLoading ? (
             <div className="flex items-center justify-center py-16 sm:col-span-3">
               <Loader2 className="h-6 w-6 animate-spin text-slate-400" />
             </div>
-          ) : animals.length > 0 ? (
-            animals.map((animal) => (
+          ) : pageAnimals.length > 0 ? (
+            pageAnimals.map((animal) => (
               <button
                 key={animal.id}
                 type="button"
@@ -107,6 +110,30 @@ export function AnimalPickerModal({ open, onOpenChange, selectedId, onSelect }: 
             </div>
           )}
         </div>
+
+        {totalPages > 1 && (
+          <div className="flex shrink-0 items-center justify-between border-t border-slate-100 px-5 py-3">
+            <button
+              type="button"
+              onClick={() => setPage((p) => Math.max(0, p - 1))}
+              disabled={page === 0}
+              className="flex h-8 w-8 items-center justify-center rounded-xl border border-slate-200 text-slate-500 transition hover:border-primary hover:text-primary disabled:opacity-30"
+            >
+              <ChevronLeft className="h-4 w-4" />
+            </button>
+            <span className="text-xs font-semibold text-slate-400">
+              {page + 1} / {totalPages}
+            </span>
+            <button
+              type="button"
+              onClick={() => setPage((p) => Math.min(totalPages - 1, p + 1))}
+              disabled={page === totalPages - 1}
+              className="flex h-8 w-8 items-center justify-center rounded-xl border border-slate-200 text-slate-500 transition hover:border-primary hover:text-primary disabled:opacity-30"
+            >
+              <ChevronRight className="h-4 w-4" />
+            </button>
+          </div>
+        )}
       </DialogContent>
     </Dialog>
   )

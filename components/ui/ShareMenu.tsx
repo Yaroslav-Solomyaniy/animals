@@ -164,8 +164,8 @@ export default function ShareMenu({
               {/* OG Preview card */}
               <div className="mb-5 overflow-hidden rounded-2xl border border-slate-100 bg-slate-50 shadow-sm">
                 {image ? (
-                  <div className="aspect-[1200/630] overflow-hidden">
-                    <img src={image} alt={title} className="h-full w-full object-cover" />
+                  <div className="aspect-[4/3] overflow-hidden">
+                    <img src={image} alt={title} className="h-full w-full object-cover object-top" />
                   </div>
                 ) : (
                   <div className="flex aspect-[1200/630] items-center justify-center bg-[linear-gradient(135deg,#0f172a_0%,#1e3a5f_25%,#155e75_45%,#4c1d95_65%,#be185d_85%,#f27438_100%)]">

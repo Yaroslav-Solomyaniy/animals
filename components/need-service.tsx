@@ -2,6 +2,7 @@ import React from 'react'
 import { ArrowRight, MessageCircle, Phone, Sparkles, Stethoscope } from 'lucide-react'
 import { LinkButton } from '@/components/ui/Button'
 import { SITE_CONTACTS, SITE_ROUTES } from '@/lib/site-config'
+import { ServiceOrderDialog } from '@/components/ServiceOrderDialog'
 
 const NeedService = () => {
   return (
@@ -47,10 +48,17 @@ const NeedService = () => {
                   </span>
                   <ArrowRight className="h-5 w-5" />
                 </LinkButton>
-                <LinkButton href={SITE_ROUTES.contacts} variant="secondary" size="lg" className="w-full justify-between rounded-2xl">
-                  Заповнити форму
-                  <MessageCircle className="h-5 w-5" />
-                </LinkButton>
+                <ServiceOrderDialog
+                  trigger={
+                    <button className="flex h-11 w-full items-center justify-between rounded-2xl bg-gray-200 px-5 text-sm font-bold text-gray-900 transition hover:bg-gray-300">
+                      <span className="inline-flex items-center gap-2">
+                        <MessageCircle className="h-5 w-5" />
+                        Заповнити форму
+                      </span>
+                      <ArrowRight className="h-5 w-5" />
+                    </button>
+                  }
+                />
                 <LinkButton href={SITE_ROUTES.services} variant="dark" size="lg" className="w-full justify-between rounded-2xl">
                   Перелік послуг
                   <Stethoscope className="h-5 w-5" />

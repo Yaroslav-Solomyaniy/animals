@@ -19,6 +19,7 @@ export async function saveSettingsAction(formData: FormData): Promise<SaveSettin
   }
 
   const donationsEnabled = formData.get('donations_enabled') === 'on'
+  const reportsBlockEnabled = formData.get('reports_block_enabled') === 'on'
   const donationDescription = (formData.get('donation_description') as string | null)?.trim() || null
 
   // Parse comma-separated integers for donation_amounts
@@ -40,6 +41,7 @@ export async function saveSettingsAction(formData: FormData): Promise<SaveSettin
       donations_enabled: donationsEnabled,
       donation_description: donationDescription,
       donation_amounts: donationAmounts,
+      reports_block_enabled: reportsBlockEnabled,
     })
     .eq('id', 1)
 

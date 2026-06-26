@@ -3,6 +3,8 @@ import { Geist } from 'next/font/google'
 import type { ReactNode } from 'react'
 import { NuqsAdapter } from 'nuqs/adapters/next/app'
 import AdminShell from '@/components/admin/AdminShell'
+import { FeatureFlagsProvider } from '@/components/FeatureFlagsProvider'
+import { getSiteSettings } from '@/lib/site-settings'
 import { cn } from '@/lib/utils'
 import './globals.css'
 
@@ -12,15 +14,15 @@ export const metadata: Metadata = {
   title: 'Міський центр допомоги тваринам м. Черкаси | Допомога та новий дім для тварин',
   description:
     'Офіційний сайт центру допомоги тваринам у Черкасах. Інформація про адопцію, допомогу тваринам, підтримку ініціатив, волонтерство та відповідальне поводження з тваринами.',
-
   icons: [
     { url: '/favicon-16x16.png', type: 'image/png', sizes: '16x16' },
     { url: '/favicon-32x32.png', type: 'image/png', sizes: '32x32' },
-    { url: '/favicon.ico', type: 'image/x-icon' }
-  ]
+    { url: '/favicon.ico', type: 'image/x-icon' },
+  ],
 }
 
-export default function RootLayout({ children }: { children: ReactNode }) {
+export default async function RootLayout({ children }: { children: ReactNode }) {
+  const flags = await getSiteSettings()
 
   return (
     <html
@@ -30,7 +32,9 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     >
       <body className="min-h-full font-sans antialiased wrap-anywhere selection:bg-[rgba(79,184,178,0.24)]">
         <NuqsAdapter defaultOptions={{ clearOnDefault: true, scroll: false, shallow: true }}>
-          <AdminShell>{children}</AdminShell>
+          <FeatureFlagsProvider flags={flags}>
+            <AdminShell>{children}</AdminShell>
+          </FeatureFlagsProvider>
         </NuqsAdapter>
       </body>
     </html>

@@ -54,7 +54,7 @@ export default async function NewsPage({
       </Section>
 
       {/* News grid */}
-      <Section className="pt-14">
+      <Section className="pt-14 pb-14">
         <SectionFrame className="p-4 sm:p-6 lg:p-8">
           <div className="mb-6 flex items-end justify-between gap-4 border-b border-orange-100/70 pb-6">
             <div>

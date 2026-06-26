@@ -2,11 +2,7 @@ import {
   Bone,
   CalendarCheck,
   Clock,
-  Download,
   Droplets,
-  FileText,
-  HandCoins,
-  ScrollText,
   Heart,
   HeartHandshake,
   Layers,
@@ -15,6 +11,7 @@ import {
   PawPrint,
   Phone,
   Pill,
+  ScrollText,
   Sparkles,
   Star,
   Stethoscope,
@@ -31,8 +28,9 @@ import helpDogsImage from '@/public/DogHelp.png'
 import { SITE_CONTACTS, SITE_ROUTES } from '@/lib/site-config'
 import { getSiteSettings } from '@/lib/site-settings'
 import { getPublishedReports } from '@/lib/public-reports'
-import DonateForm from '@/components/DonateForm'
-
+import { getPublicAnimals } from '@/lib/animals'
+import { buildDonateHref } from '@/lib/donate-search-params'
+import DonationBanner from '@/components/DonationBanner'
 
 const helpWays = [
   {
@@ -109,7 +107,7 @@ const volunteerRoles = [
 const joinSteps = [
   {
     icon: Phone,
-    title: 'Зв\'яжіться з нами',
+    title: "Зв'яжіться з нами",
     description: 'Зателефонуйте або напишіть — ми розповімо все про формати участі.',
     accent: 'bg-orange-500',
   },
@@ -128,9 +126,10 @@ const joinSteps = [
 ]
 
 export default async function HelpForUsPage() {
-  const [settings, reports] = await Promise.all([
+  const [settings, reports, { animals: featuredAnimals }] = await Promise.all([
     getSiteSettings(),
     getPublishedReports(),
+    getPublicAnimals({ from: 0, to: 6 }),
   ])
 
   return (
@@ -146,137 +145,70 @@ export default async function HelpForUsPage() {
       >
         <div className="overflow-hidden rounded-3xl border border-orange-100 bg-white p-3 shadow-[0_28px_80px_rgba(15,23,42,0.08)]">
           <div className="relative min-h-105 overflow-hidden rounded-[26px] border border-orange-100 bg-gray-950">
-            <img
-              src={helpDogsImage.src}
-              alt="Допомога тваринам"
-              className="absolute inset-0 h-full w-full object-cover"
-            />
+            <img src={helpDogsImage.src} alt="Допомога тваринам" className="absolute inset-0 h-full w-full object-cover" />
             <div className="absolute inset-0 bg-linear-to-t from-gray-950/70 via-gray-950/10 to-transparent" />
             <div className="absolute right-5 bottom-5 left-5">
-              <p className="max-w-sm text-3xl font-black leading-tight text-white drop-shadow">
-                Вони потребують, ми допомагаємо
-              </p>
+              <p className="max-w-sm text-3xl font-black leading-tight text-white drop-shadow">Вони потребують, ми допомагаємо</p>
             </div>
           </div>
         </div>
       </PageHero>
 
       <Section className="mt-14">
-
         {/* ── 3 Help Ways ── */}
-        <div className="grid gap-5 md:grid-cols-3">
-          {helpWays.map((way) => {
-            const Icon = way.icon
-            return (
-              <article
-                key={way.title}
-                className={`group relative overflow-hidden rounded-4xl border ${way.bg} ${way.border} p-8 transition duration-300 hover:-translate-y-1.5 hover:shadow-[0_24px_64px_rgba(15,23,42,0.10)]`}
-              >
-                {/* Top accent bar */}
-                <div className={`absolute inset-x-0 top-0 h-[3px] ${way.bar}`} />
+        <div className={`grid gap-5 ${settings.donationsEnabled ? 'md:grid-cols-3' : 'md:grid-cols-2'}`}>
+          {helpWays
+            .filter((w) => w.title !== 'Фінансова допомога' || settings.donationsEnabled)
+            .map((way) => {
+              const Icon = way.icon
+              return (
+                <article
+                  key={way.title}
+                  className={`group relative overflow-hidden rounded-4xl border ${way.bg} ${way.border} p-8 transition duration-300 hover:-translate-y-1.5 hover:shadow-[0_24px_64px_rgba(15,23,42,0.10)]`}
+                >
+                  {/* Top accent bar */}
+                  <div className={`absolute inset-x-0 top-0 h-[3px] ${way.bar}`} />
 
-                <Icon className={`mb-6 h-11 w-11 ${way.iconColor}`} />
+                  <Icon className={`mb-6 h-11 w-11 ${way.iconColor}`} />
 
-                <h2 className="text-2xl font-black text-gray-950">{way.title}</h2>
-                <p className="mt-3 leading-7 text-gray-600">{way.text}</p>
+                  <h2 className="text-2xl font-black text-gray-950">{way.title}</h2>
+                  <p className="mt-3 leading-7 text-gray-600">{way.text}</p>
 
-                {/* Bottom accent line */}
-                <div className={`mt-8 h-[3px] w-10 rounded-full ${way.bar} opacity-70 transition-all duration-300 group-hover:w-16 group-hover:opacity-100`} />
-              </article>
-            )
-          })}
+                  {/* Bottom accent line */}
+                  <div
+                    className={`mt-8 h-[3px] w-10 rounded-full ${way.bar} opacity-70 transition-all duration-300 group-hover:w-16 group-hover:opacity-100`}
+                  />
+                </article>
+              )
+            })}
         </div>
 
-        {/* ── Financial Support ── */}
-        {settings.donationsEnabled && (
-          <SectionFrame as="section" className="mt-14 p-6 sm:p-8 lg:p-10">
-            <div className="mb-8">
-              <HandCoins className="mb-4 h-12 w-12 text-orange-500" />
-              <h2 className="text-3xl font-black text-gray-950">Фінансова підтримка</h2>
-              <p className="mt-4 max-w-2xl text-lg leading-8 text-gray-600">
-                {settings.donationDescription ??
-                  'Оберіть комфортну суму — кожна гривня перетворюється на конкретну турботу.'}
-              </p>
-            </div>
-            <div className="max-w-xl">
-              <DonateForm amounts={settings.donationAmounts} />
-            </div>
-          </SectionFrame>
-        )}
-
-        {/* ── Reports ── */}
-        {reports.length > 0 && (
-          <SectionFrame as="section" className="mt-14 p-6 sm:p-8">
-            <div className="mb-6 flex items-center gap-4 border-b border-orange-100/70 pb-6">
-              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-orange-50 text-primary">
-                <ScrollText className="h-5 w-5" />
-              </span>
-              <div>
-                <p className="text-sm font-semibold uppercase tracking-[0.18em] text-orange-600">Прозорість та відкритість</p>
-                <h2 className="mt-1 text-3xl font-black text-gray-950">Ми публічні — дивіться наші звіти</h2>
-              </div>
-            </div>
-            <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-              {reports.map((report) => (
-                <article
-                  key={report.id}
-                  className="flex flex-col rounded-[28px] border border-orange-100 bg-[linear-gradient(135deg,#fff7ed_0%,#ffffff_58%,#ecfeff_100%)] p-6 shadow-soft transition hover:border-orange-200 hover:shadow-[0_20px_60px_rgba(242,116,56,0.10)]"
-                >
-                  <div className="mb-4 flex items-start justify-between gap-3">
-                    <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-white text-primary shadow-sm">
-                      <ScrollText className="h-5 w-5" />
-                    </span>
-                    {report.period && (
-                      <span className="rounded-full bg-white px-3 py-1 text-xs font-black uppercase tracking-[0.12em] text-gray-400 shadow-sm">
-                        {report.period}
-                      </span>
-                    )}
-                  </div>
-                  <h3 className="text-xl font-black text-gray-950">{report.title}</h3>
-                  {report.description && (
-                    <p className="mt-2 text-sm leading-6 text-gray-600">{report.description}</p>
-                  )}
-                  {report.files.length > 0 && (
-                    <div className="mt-4 flex flex-col gap-2">
-                      {report.files.map((file, i) => (
-                        <a
-                          key={i}
-                          href={file.src}
-                          download
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="group flex items-center gap-3 rounded-xl border border-slate-100 bg-white px-3 py-2.5 transition hover:border-primary/30 hover:bg-orange-50"
-                        >
-                          <FileText className="h-4 w-4 shrink-0 text-slate-400 transition group-hover:text-primary" />
-                          <span className="min-w-0 flex-1 truncate text-sm font-bold text-slate-700 transition group-hover:text-primary">
-                            {file.name}
-                          </span>
-                          <Download className="h-3.5 w-3.5 shrink-0 text-slate-300 transition group-hover:text-primary" />
-                        </a>
-                      ))}
-                    </div>
-                  )}
-                  <p className="mt-auto pt-4 text-xs text-slate-400">{report.date}</p>
-                </article>
-              ))}
-            </div>
-          </SectionFrame>
+        {/* ── Financial Support + Reports ── */}
+        {(settings.donationsEnabled || (settings.reportsBlockEnabled && reports.length > 0)) && (
+          <DonationBanner
+            donationsEnabled={settings.donationsEnabled}
+            amounts={settings.donationAmounts}
+            description={settings.donationDescription}
+            animals={featuredAnimals.map((a) => ({
+              id: a.id,
+              name: a.name,
+              imageUrl: a.imageUrl,
+              donateHref: buildDonateHref({ animalId: a.id, gift: 'treat', amount: 150 }),
+            }))}
+            reports={settings.reportsBlockEnabled ? reports : []}
+          />
         )}
 
         {/* ── Volunteer Section ── */}
-        <SectionFrame
-          as="section"
-          className="mt-14 grid gap-8 p-4 sm:p-6 lg:grid-cols-[1fr_0.9fr] lg:p-8"
-        >
+        <SectionFrame as="section" className="mt-14 grid gap-8 p-4 sm:p-6 lg:grid-cols-[1fr_0.9fr] lg:p-8">
           {/* Volunteer roles */}
           <div className="rounded-[36px] border border-gray-100 bg-white p-6 sm:p-8">
             <div className="mb-8 max-w-2xl">
               <Users className="mb-4 h-10 w-10 text-orange-500" />
               <h2 className="text-3xl font-black text-gray-950">Станьте волонтером</h2>
               <p className="mt-4 leading-7 text-gray-600">
-                Найпростіший формат для старту — записатися на вихідні прогулянки. Це
-                допомагає тваринам залишатися активними, спокійнішими та краще
-                соціалізованими.
+                Найпростіший формат для старту — записатися на вихідні прогулянки. Це допомагає тваринам залишатися активними, спокійнішими
+                та краще соціалізованими.
               </p>
             </div>
 
@@ -306,45 +238,39 @@ export default async function HelpForUsPage() {
           {/* How to join — timeline */}
           <div className="overflow-hidden rounded-[36px] border border-orange-100 bg-orange-50/70">
             <div className="relative h-52">
-              <img
-                src="/dogs.png"
-                alt="Собаки"
-                className="h-full w-full object-cover"
-              />
+              <img src="/dogs.png" alt="Собаки" className="h-full w-full object-cover" />
               <div className="absolute inset-0 bg-gradient-to-t from-orange-950/30 to-transparent" />
             </div>
             <div className="p-6 sm:p-8">
-            <h2 className="text-3xl font-black text-gray-950">Як долучитися</h2>
-            <p className="mt-2 text-gray-500">Три кроки, що займуть не більше хвилини</p>
+              <h2 className="text-3xl font-black text-gray-950">Як долучитися</h2>
+              <p className="mt-2 text-gray-500">Три кроки, що займуть не більше хвилини</p>
 
-            <ol className="relative mt-8 space-y-0">
-              {joinSteps.map((step, index) => {
-                const Icon = step.icon
-                const isLast = index === joinSteps.length - 1
-                return (
-                  <li key={step.title} className="flex gap-5">
-                    <div className="flex flex-col items-center">
-                      <span
-                        className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-white shadow-md ${step.accent}`}
-                      >
-                        <Icon className="h-5 w-5" />
-                      </span>
-                      {!isLast && (
-                        <span className="my-2 w-0.5 flex-1 rounded-full bg-gradient-to-b from-gray-300 to-transparent" />
-                      )}
-                    </div>
-                    <div className={isLast ? 'pb-0' : 'pb-8'}>
-                      <h3 className="pt-2 text-lg font-extrabold text-gray-950">{step.title}</h3>
-                      <p className="mt-1 leading-7 text-gray-600">{step.description}</p>
-                    </div>
-                  </li>
-                )
-              })}
-            </ol>
+              <ol className="relative mt-8 space-y-0">
+                {joinSteps.map((step, index) => {
+                  const Icon = step.icon
+                  const isLast = index === joinSteps.length - 1
+                  return (
+                    <li key={step.title} className="flex gap-5">
+                      <div className="flex flex-col items-center">
+                        <span
+                          className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-white shadow-md ${step.accent}`}
+                        >
+                          <Icon className="h-5 w-5" />
+                        </span>
+                        {!isLast && <span className="my-2 w-0.5 flex-1 rounded-full bg-gradient-to-b from-gray-300 to-transparent" />}
+                      </div>
+                      <div className={isLast ? 'pb-0' : 'pb-8'}>
+                        <h3 className="pt-2 text-lg font-extrabold text-gray-950">{step.title}</h3>
+                        <p className="mt-1 leading-7 text-gray-600">{step.description}</p>
+                      </div>
+                    </li>
+                  )
+                })}
+              </ol>
 
-            <LinkButton href={SITE_ROUTES.contacts} size="lg" className="mt-8 w-full">
-              Перейти до контактів
-            </LinkButton>
+              <LinkButton href={SITE_ROUTES.contacts} size="lg" className="mt-8 w-full">
+                Перейти до контактів
+              </LinkButton>
             </div>
           </div>
         </SectionFrame>
@@ -356,8 +282,7 @@ export default async function HelpForUsPage() {
             <Package className="mx-auto mb-4 h-11 w-11 text-orange-500" />
             <h2 className="text-3xl font-black text-gray-950">Необхідні речі</h2>
             <p className="mt-4 leading-7 text-gray-600">
-              Ці речі потрібні центру постійно. Їх можна передати особисто або
-              погодити доставку телефоном.
+              Ці речі потрібні центру постійно. Їх можна передати особисто або погодити доставку телефоном.
             </p>
           </div>
 
@@ -381,16 +306,11 @@ export default async function HelpForUsPage() {
           <div className="mt-8 overflow-hidden rounded-3xl">
             <div className="relative bg-gradient-to-br from-orange-50 to-amber-50 p-6 text-center">
               <BorderBeam size={200} duration={10} colorFrom="#f27438" colorTo="#fbbf24" borderWidth={1.5} />
-              <p className="font-extrabold text-gray-800">
-                Адреса для передачі допомоги: м. Черкаси, вул. Івана Мазепи, 117
-              </p>
-              <p className="mt-2 text-gray-600">
-                Перед візитом краще зателефонувати, щоб узгодити час.
-              </p>
+              <p className="font-extrabold text-gray-800">Адреса для передачі допомоги: м. Черкаси, вул. Івана Мазепи, 117</p>
+              <p className="mt-2 text-gray-600">Перед візитом краще зателефонувати, щоб узгодити час.</p>
             </div>
           </div>
         </SectionFrame>
-
       </Section>
 
       {/* CTA */}
@@ -423,8 +343,8 @@ export default async function HelpForUsPage() {
               icon: Phone,
               iconColor: 'text-emerald-500',
               iconBg: 'bg-emerald-50',
-              title: 'Зв\'яжіться з нами',
-              description: 'Маєте питання щодо допомоги або послуг? Ми завжди на зв\'язку та раді відповісти.',
+              title: "Зв'яжіться з нами",
+              description: "Маєте питання щодо допомоги або послуг? Ми завжди на зв'язку та раді відповісти.",
               href: SITE_ROUTES.contacts,
               label: 'Контакти',
               glow: 'rgba(16,185,129,0.12)',
@@ -444,7 +364,10 @@ export default async function HelpForUsPage() {
           ].map((item) => {
             const Icon = item.icon
             return (
-              <div key={item.title} className={`relative flex flex-col overflow-hidden rounded-4xl border bg-white p-8 shadow-sm transition hover:-translate-y-1 hover:shadow-lg ${item.border}`}>
+              <div
+                key={item.title}
+                className={`relative flex flex-col overflow-hidden rounded-4xl border bg-white p-8 shadow-sm transition duration-300 hover:-translate-y-1.5 hover:shadow-[0_24px_64px_rgba(15,23,42,0.10)] ${item.border}`}
+              >
                 <div
                   className="pointer-events-none absolute inset-0"
                   style={{ background: `radial-gradient(ellipse 180% 140% at 90% -20%, ${item.glow}, transparent 60%)` }}

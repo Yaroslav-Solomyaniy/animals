@@ -8,6 +8,7 @@ import {
   getR2PublicUrl,
 } from '@/lib/r2'
 import { SITE_CONTACTS } from '@/lib/site-config'
+import { createClient } from '@/lib/supabase/server'
 
 type UploadRequest = {
   fileName: string
@@ -87,6 +88,21 @@ export async function submitContactFormAction(formData: FormData): Promise<Conta
   }
 
   const emailResult = await sendContactMessageEmail(contactMessage)
+
+  // Always save to DB regardless of email result
+  const supabase = await createClient()
+  await supabase.from('contact_submissions').insert({
+    name: contactMessage.name,
+    phone: contactMessage.phone,
+    email: contactMessage.email,
+    topic: contactMessage.topic,
+    animal_id: contactMessage.animal,
+    animal_name: contactMessage.animalName,
+    message: contactMessage.message,
+    attachment_urls: contactMessage.attachmentUrls,
+    email_status: emailResult.ok ? 'sent' : emailResult.status,
+    email_error: emailResult.ok ? null : emailResult.error,
+  })
 
   if (!emailResult.ok) {
     return {

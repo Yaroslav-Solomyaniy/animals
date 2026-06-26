@@ -138,6 +138,79 @@ function renderVolunteerEmail(value: VolunteerFormValue) {
 `
 }
 
+type ServiceRequestEmailValue = {
+  category: string
+  phone: string
+  weight?: string
+  desired_date?: string
+  comment?: string
+}
+
+export async function sendServiceRequestEmail(value: ServiceRequestEmailValue): Promise<EmailSendResult> {
+  const apiKey = process.env.RESEND_API_KEY
+  if (!apiKey) return { ok: false, status: 'not_configured', error: 'RESEND_API_KEY not set' }
+
+  const resend = new Resend(apiKey)
+  const to = process.env.SERVICE_REQUEST_EMAIL_TO ?? process.env.EMAIL_TO ?? SITE_CONTACTS.email
+  const from = process.env.EMAIL_FROM ?? 'Shelter <onboarding@resend.dev>'
+  const subject = `Замовлення послуги: ${value.category}`
+
+  const rows = [
+    `Послуга: ${value.category}`,
+    `Телефон: ${value.phone}`,
+    value.weight ? `Вага тварини: ${value.weight} кг` : null,
+    value.desired_date ? `Бажана дата: ${value.desired_date}` : null,
+    value.comment ? `Коментар: ${value.comment}` : null,
+  ].filter(Boolean).join('\n')
+
+  const { error } = await resend.emails.send({
+    from,
+    to: [to],
+    subject,
+    text: `Нове замовлення послуги з сайту\n\n${rows}`,
+    html: renderServiceRequestEmail(value),
+  })
+
+  if (error) return { ok: false, status: 'failed', error: formatResendError(error) }
+  return { ok: true }
+}
+
+function renderServiceRequestEmail(value: ServiceRequestEmailValue) {
+  const rows = [
+    { label: 'Послуга', val: value.category },
+    { label: 'Телефон', val: value.phone },
+    value.weight ? { label: 'Вага тварини', val: `${value.weight} кг` } : null,
+    value.desired_date ? { label: 'Бажана дата', val: value.desired_date } : null,
+    value.comment ? { label: 'Коментар', val: value.comment } : null,
+  ].filter(Boolean) as { label: string; val: string }[]
+
+  const rowsHtml = rows.map(({ label, val }) => `
+    <div style="margin-bottom:14px;">
+      <div style="font-size:12px;color:#9ca3af;text-transform:uppercase;font-weight:bold;margin-bottom:4px;">${escapeHtml(label)}</div>
+      <div style="font-size:16px;font-weight:700;color:#111827;">${escapeHtml(val)}</div>
+    </div>`).join('')
+
+  return `
+<div style="background:#f8fafc;padding:36px 18px;font-family:Arial,sans-serif;color:#111827;">
+  <div style="max-width:640px;margin:0 auto;background:#fff;border-radius:24px;border:1px solid #e5e7eb;overflow:hidden;">
+    <div style="background:linear-gradient(135deg,#fb923c,#f97316);padding:28px;color:#fff;">
+      <p style="margin:0 0 10px;font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.12em;color:#ffedd5;">Замовлення послуги</p>
+      <h1 style="margin:0;font-size:26px;line-height:1.25;">Нове замовлення з сайту</h1>
+    </div>
+    <div style="padding:28px;">
+      <div style="background:#fff7ed;border:1px solid #fed7aa;border-radius:18px;padding:22px;">
+        ${rowsHtml}
+      </div>
+      <div style="margin-top:22px;">
+        <a href="tel:${escapeHtml(value.phone)}" style="display:inline-block;background:#f97316;color:#fff;text-decoration:none;border-radius:12px;padding:12px 18px;font-size:14px;font-weight:700;">
+          Подзвонити
+        </a>
+      </div>
+    </div>
+  </div>
+</div>`
+}
+
 function escapeHtml(value: string) {
   return value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;')
 }

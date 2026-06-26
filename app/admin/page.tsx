@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { Footprints, HandCoins, Newspaper, PawPrint, ScrollText, Settings } from 'lucide-react'
+import { Footprints, HandCoins, Inbox, Newspaper, PawPrint, ScrollText, Settings } from 'lucide-react'
 import { AdminAuthGate } from '@/components/admin/AdminAuthGate'
 import AdminPageHeader from '@/components/admin/AdminPageHeader'
 
@@ -33,8 +33,14 @@ export default function AdminPage() {
             icon: ScrollText,
           },
           {
+            href: '/admin/submissions',
+            title: 'Звернення',
+            text: 'Всі форми в одному місці: контактна форма, волонтери, послуги. Фільтр, пагінація, повторна відправка.',
+            icon: Inbox,
+          },
+          {
             href: '/admin/volunteer-requests',
-            title: 'Заявки',
+            title: 'Заявки волонтерів',
             text: 'Список заявок на волонтерство з контактами та статусом email-відправки.',
             icon: Footprints,
           },

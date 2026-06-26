@@ -153,7 +153,7 @@ export default function AnimalProfileClient({
                   Познайомитись
                 </LinkButton>
 
-                <div className="grid grid-cols-[1fr_1fr] gap-3">
+                <div className={`grid gap-3 ${donationsEnabled ? 'grid-cols-[1fr_1fr]' : 'grid-cols-1'}`}>
                   <ShareMenu
                     path={buildAnimalHref(animal.id)}
                     title={`${displayName} шукає родину`}
@@ -163,10 +163,12 @@ export default function AnimalProfileClient({
                     variant="button"
                     className="[&>button]:h-11 [&>button]:w-full [&>button]:rounded-2xl [&>button]:text-sm"
                   />
-                  <LinkButton href={donationHref} variant="outline" size="sm" className="h-11 rounded-2xl text-sm">
-                    <Heart className="h-4 w-4" />
-                    Підтримати
-                  </LinkButton>
+                  {donationsEnabled && (
+                    <LinkButton href={donationHref} variant="outline" size="sm" className="h-11 rounded-2xl text-sm">
+                      <Heart className="h-4 w-4" />
+                      Підтримати
+                    </LinkButton>
+                  )}
                 </div>
                 <LinkButton href={SITE_ROUTES.contacts} variant="ghost" size="sm" className="h-9 w-full rounded-2xl text-xs">
                   <MessageCircleQuestion className="h-4 w-4" />
@@ -183,29 +185,6 @@ export default function AnimalProfileClient({
         <CharacterTraits traits={animal.character} />
       </Section>
 
-      {/* ── Donate card ─────────────────────────────────────────────────── */}
-      {donationsEnabled && (
-        <Section contained={false} className="py-8">
-          <SectionFrame className="mx-auto max-w-xl p-6 sm:p-8">
-            <div className="mb-6 flex items-center gap-3">
-              <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-orange-50 text-primary shadow-sm">
-                <Heart className="h-5 w-5" />
-              </span>
-              <div>
-                <p className="text-xs font-extrabold uppercase tracking-[0.16em] text-primary">Підтримай</p>
-                <h2 className="text-xl font-black text-gray-950">Підтримай {displayName}</h2>
-              </div>
-            </div>
-            <DonateForm
-              amounts={donationAmounts}
-              description={donationDescription ?? undefined}
-              animalId={animal.id}
-              animalName={displayName}
-              compact
-            />
-          </SectionFrame>
-        </Section>
-      )}
 
       <section className="border-y border-gray-200">
         <Section as="div" contained={false} className="py-8">

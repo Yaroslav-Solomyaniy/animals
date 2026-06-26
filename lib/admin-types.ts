@@ -77,3 +77,37 @@ export type VolunteerRequestRow = {
   admin_notes: string | null
   created_at: string | null
 }
+
+export type EmailStatus = 'sent' | 'failed' | 'not_configured'
+
+export type ContactSubmissionRow = {
+  id: string
+  name: string
+  phone: string
+  email: string | null
+  topic: string
+  animal_id: string | null
+  animal_name: string | null
+  message: string | null
+  attachment_urls: string[]
+  email_status: EmailStatus
+  email_error: string | null
+  created_at: string | null
+}
+
+export type ServiceRequestRow = {
+  id: string
+  category: string
+  phone: string
+  weight: string | null
+  desired_date: string | null
+  comment: string | null
+  email_status: EmailStatus
+  email_error: string | null
+  created_at: string | null
+}
+
+export type AnySubmission =
+  | ({ _type: 'contact' } & ContactSubmissionRow)
+  | ({ _type: 'volunteer' } & VolunteerRequestRow)
+  | ({ _type: 'service' } & ServiceRequestRow)

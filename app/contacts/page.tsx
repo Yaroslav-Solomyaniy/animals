@@ -4,7 +4,6 @@ import BorderGlow from '@/components/ui/BorderGlow'
 import SectionFrame from '@/components/ui/SectionFrame'
 import Section from '@/components/ui/Section'
 import { DiagonalGrid } from '@/components/ui/background-components'
-import { getPublicAnimals } from '@/lib/animals'
 import { SITE_CONTACTS, SITE_SOCIAL_LINKS } from '@/lib/site-config'
 import ContactForm from './ContactForm'
 import StorybookDecorations from '@/components/ui/StorybookDecorations'
@@ -70,8 +69,6 @@ const contactGradientClassNames = {
 } as const
 
 export default async function ContactsPage() {
-  const animals = await getPublicAnimals()
-
   return (
     <main className="text-text-main relative">
       <DiagonalGrid className="opacity-40 fixed" />
@@ -177,7 +174,7 @@ export default async function ContactsPage() {
               glowColor="249 115 22"
               fillOpacity={0.08}
             >
-              <ContactForm animals={animals.animals} />
+              <ContactForm />
             </BorderGlow>
           </SectionFrame>
       </Section>

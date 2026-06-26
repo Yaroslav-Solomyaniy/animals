@@ -2,6 +2,7 @@
 
 import {
   Children,
+  forwardRef,
   isValidElement,
   type InputHTMLAttributes,
   type ReactElement,
@@ -18,9 +19,12 @@ import { cn } from '@/lib/utils'
 const fieldClass =
   'w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-950 shadow-sm outline-none transition-all placeholder:text-slate-400 hover:border-orange-200 focus:border-primary focus:ring-4 focus:ring-primary/10 disabled:cursor-not-allowed disabled:opacity-50'
 
-export function Input({ className, ...props }: InputHTMLAttributes<HTMLInputElement>) {
-  return <input className={cn(fieldClass, className)} {...props} />
-}
+export const Input = forwardRef<HTMLInputElement, InputHTMLAttributes<HTMLInputElement>>(
+  ({ className, ...props }, ref) => (
+    <input ref={ref} className={cn(fieldClass, className)} {...props} />
+  )
+)
+Input.displayName = 'Input'
 
 type OptionElement = ReactElement<{
   value?: string | number
@@ -151,9 +155,9 @@ function extractOptions(children: React.ReactNode): SelectOption[] {
     .map((child) => {
       const label = Children.toArray(child.props.children).join('')
       return {
-        value: String(child.props.value ?? label),
+        value: String(child.props.value ?? ''),
         label,
-        disabled: Boolean(child.props.disabled),
+        disabled: child.props.disabled ?? false,
       }
     })
 }

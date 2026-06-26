@@ -23,6 +23,7 @@ import {buildDonateHref} from '@/lib/donate-search-params'
 import {buildAnimalHref} from '@/lib/site-config'
 import type {Animal} from '@/types'
 import {cn} from '@/lib/utils'
+import {useFeatureFlags} from '@/components/FeatureFlagsProvider'
 
 type AnimalCardProps = {
   animal: Animal
@@ -37,6 +38,7 @@ export default function AnimalCard({
   detailsHref,
   index = 0,
 }: AnimalCardProps) {
+  const { donationsEnabled } = useFeatureFlags()
   const treatHref = buildDonateHref({animalId: animal.id, gift: 'treat'})
   const primaryHref = detailsHref ?? buildAnimalHref(animal.id)
 
@@ -113,16 +115,18 @@ export default function AnimalCard({
             Деталі
             <ArrowRight className="h-4 w-4" />
           </LinkButton>
-          <LinkButton
-            href={treatHref}
-            variant="outline"
-            size="icon"
-            className="h-11 w-11 shrink-0 rounded-xl"
-            aria-label={`Дати смаколик для ${animal.name}`}
-            title="Дати смаколик"
-          >
-            <PawPrint className="h-4.5 w-4.5" />
-          </LinkButton>
+          {donationsEnabled && (
+            <LinkButton
+              href={treatHref}
+              variant="outline"
+              size="icon"
+              className="h-11 w-11 shrink-0 rounded-xl"
+              aria-label={`Дати смаколик для ${animal.name}`}
+              title="Дати смаколик"
+            >
+              <PawPrint className="h-4.5 w-4.5" />
+            </LinkButton>
+          )}
         </div>
       </div>
     </motion.article>
@@ -162,7 +166,7 @@ function CareStatus({icon: Icon, isReady, label, value}: {
         <Icon className="h-3.5 w-3.5" />
       </span>
       <span className="min-w-0 flex-1">
-        <span className="block truncate text-[8.5px] leading-none font-black tracking-wide uppercase opacity-70">{label}</span>
+                <span className="block truncate text-[8.5px] leading-none font-black tracking-wide uppercase">{label}</span>
         <span className="mt-1 block truncate text-[12px] leading-4 font-extrabold">{value}</span>
       </span>
     </div>

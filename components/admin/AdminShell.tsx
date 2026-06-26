@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import type { ReactNode } from 'react'
-import { FilePlus2, Footprints, HandCoins, LayoutDashboard, Newspaper, PanelLeft, PawPrint, Rocket, ScrollText, Settings } from 'lucide-react'
+import { FilePlus2, HandCoins, Inbox, LayoutDashboard, Newspaper, PanelLeft, PawPrint, Rocket, ScrollText, Settings } from 'lucide-react'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import { LinkButton } from '@/components/ui/Button'
@@ -15,7 +15,7 @@ const adminNavigation = [
   { href: '/admin/animals', label: 'Тварини', icon: PawPrint },
   { href: '/admin/news', label: 'Новини', icon: Newspaper },
   { href: '/admin/reports', label: 'Звіти', icon: ScrollText },
-  { href: '/admin/volunteer-requests', label: 'Заявки', icon: Footprints },
+  { href: '/admin/submissions', label: 'Звернення', icon: Inbox },
   { href: '/admin/donations', label: 'Донати', icon: HandCoins },
   { href: '/admin/settings', label: 'Налаштування', icon: Settings },
 ]
@@ -94,7 +94,7 @@ export default function AdminShell({ children }: { children: ReactNode }) {
             <p className="text-sm font-extrabold text-slate-950">Швидкі дії</p>
             <div className="mt-3 space-y-2">
               <QuickLink href="/admin/animals" label="Каталог тварин" />
-              <QuickLink href="/admin/volunteer-requests" label="Заявки волонтерів" />
+              <QuickLink href="/admin/submissions" label="Всі звернення" />
               <QuickLink href="/admin/news/new" label="Додати новину" />
               <QuickLink href="/admin/reports/new" label="Додати звіт" />
             </div>

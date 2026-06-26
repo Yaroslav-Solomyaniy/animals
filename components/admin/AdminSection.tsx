@@ -5,17 +5,13 @@ type AdminSectionProps = {
   id?: string
   eyebrow?: string
   title: string
+  badge?: ReactNode
   description: string
   children: ReactNode
   className?: string
 }
 
-export function AdminSection({id,
-  eyebrow,
-  title,
-  description,
-  children,
-  className,}: AdminSectionProps) {
+export function AdminSection({ id, eyebrow, title, badge, description, children, className }: AdminSectionProps) {
   return (
     <section
       id={id}
@@ -27,13 +23,12 @@ export function AdminSection({id,
       <div className="mb-6 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
         <div>
           {eyebrow ? (
-            <p className="text-xs font-extrabold uppercase text-primary">
-              {eyebrow}
-            </p>
+            <p className="text-xs font-extrabold uppercase text-primary">{eyebrow}</p>
           ) : null}
-          <h3 className="mt-2 text-2xl font-extrabold tracking-tight text-slate-950">
-            {title}
-          </h3>
+          <div className="mt-2 flex items-center gap-2">
+            <h3 className="text-2xl font-extrabold tracking-tight text-slate-950">{title}</h3>
+            {badge}
+          </div>
         </div>
         <p className="max-w-2xl text-sm leading-6 text-slate-500">{description}</p>
       </div>

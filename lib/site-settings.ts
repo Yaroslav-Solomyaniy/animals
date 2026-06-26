@@ -1,31 +1,23 @@
 import 'server-only'
+import { cache } from 'react'
 
 import { createClient } from '@/lib/supabase/server'
+import type { FeatureFlags } from '@/lib/feature-flags'
+import { DEFAULT_FLAGS } from '@/lib/feature-flags'
 
-export type SiteSettings = {
-  donationsEnabled: boolean
-  donationDescription: string | null
-  donationAmounts: number[]
-}
+/** @deprecated Use FeatureFlags type instead */
+export type SiteSettings = FeatureFlags
 
-const DEFAULT_SETTINGS: SiteSettings = {
-  donationsEnabled: false,
-  donationDescription: null,
-  donationAmounts: [100, 200, 500, 1000],
-}
-
-export async function getSiteSettings(): Promise<SiteSettings> {
+export const getSiteSettings = cache(async (): Promise<FeatureFlags> => {
   try {
     const supabase = await createClient()
     const { data, error } = await supabase
       .from('site_settings')
-      .select('donations_enabled, donation_description, donation_amounts')
+      .select('donations_enabled, donation_description, donation_amounts, reports_block_enabled')
       .eq('id', 1)
       .single()
 
-    if (error || !data) {
-      return DEFAULT_SETTINGS
-    }
+    if (error || !data) return DEFAULT_FLAGS
 
     return {
       donationsEnabled: data.donations_enabled ?? false,
@@ -33,9 +25,10 @@ export async function getSiteSettings(): Promise<SiteSettings> {
       donationAmounts:
         Array.isArray(data.donation_amounts) && data.donation_amounts.length > 0
           ? (data.donation_amounts as number[])
-          : DEFAULT_SETTINGS.donationAmounts,
+          : DEFAULT_FLAGS.donationAmounts,
+      reportsBlockEnabled: data.reports_block_enabled ?? DEFAULT_FLAGS.reportsBlockEnabled,
     }
   } catch {
-    return DEFAULT_SETTINGS
+    return DEFAULT_FLAGS
   }
-}
+})

@@ -19,9 +19,9 @@ export default async function AdminSettingsPage() {
 
       <div className="mt-6 flex flex-col gap-6">
         <AdminSection
-          eyebrow="Донати"
-          title="Система донатів"
-          description="Вмикайте/вимикайте збір донатів та налаштовуйте параметри."
+          eyebrow="Налаштування сайту"
+          title="Функції та відображення"
+          description="Керуйте функціями сайту: донати, блок звітів та інші параметри."
         >
           <SettingsForm settings={settings} />
         </AdminSection>

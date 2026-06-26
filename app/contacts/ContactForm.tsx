@@ -2,17 +2,13 @@
 
 import { type FormEvent, useRef, useState } from 'react'
 import { Check, Loader2, Paperclip, PawPrint, Send, X } from 'lucide-react'
-import { Dialog, DialogRawContent } from '@/components/ui/Dialog'
 
 import { type ContactFormState, createContactAttachmentUploadAction, submitContactFormAction } from './actions'
 import { Button } from '@/components/ui/Button'
 import { Input, Select, Textarea } from '@/components/ui/FormControls'
 import UkrainianPhoneInput from '@/components/ui/UkrainianPhoneInput'
-import type { Animal } from '@/types'
-
-type ContactFormProps = {
-  animals: Animal[]
-}
+import { AnimalPickerModal } from '@/components/admin/AnimalPickerModal'
+import type { AnimalWithPhoto } from '@/lib/admin-types'
 
 type UploadedAttachment = {
   name: string
@@ -20,27 +16,36 @@ type UploadedAttachment = {
   r2Key: string
 }
 
-export default function ContactForm({ animals }: ContactFormProps) {
+export default function ContactForm() {
   const formRef = useRef<HTMLFormElement>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [topic, setTopic] = useState('')
-  const [selectedAnimalId, setSelectedAnimalId] = useState('')
+  const [selectedAnimal, setSelectedAnimal] = useState<AnimalWithPhoto | null>(null)
   const [isAnimalModalOpen, setIsAnimalModalOpen] = useState(false)
   const [selectedFiles, setSelectedFiles] = useState<File[]>([])
   const [uploadedAttachments, setUploadedAttachments] = useState<UploadedAttachment[]>([])
   const [status, setStatus] = useState<ContactFormState | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [consentGiven, setConsentGiven] = useState(false)
+  const [name, setName] = useState('')
+  const [phone, setPhone] = useState('')
+  const [message, setMessage] = useState('')
 
-  const selectedAnimal = animals.find((animal) => animal.id === selectedAnimalId)
   const isAdoptionTopic = topic === 'adoption'
+  const MAX_FILES = 3
+
+  const isFormValid =
+    name.trim() !== '' &&
+    phone.trim().replace(/\D/g, '').length >= 10 &&
+    topic !== '' &&
+    (topic === 'adoption' || message.trim() !== '') &&
+    consentGiven
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
 
     const form = formRef.current
-    if (!form || isSubmitting) {
-      return
-    }
+    if (!form || isSubmitting) return
 
     setIsSubmitting(true)
     setStatus(null)
@@ -64,9 +69,7 @@ export default function ContactForm({ animals }: ContactFormProps) {
         const response = await fetch(upload.uploadUrl, {
           method: 'PUT',
           body: file,
-          headers: {
-            'Content-Type': file.type || 'application/octet-stream',
-          },
+          headers: { 'Content-Type': file.type || 'application/octet-stream' },
         })
 
         if (!response.ok) {
@@ -77,11 +80,7 @@ export default function ContactForm({ animals }: ContactFormProps) {
         formData.append('attachmentUrls', upload.publicUrl)
         setUploadedAttachments((current) => [
           ...current,
-          {
-            name: file.name,
-            publicUrl: upload.publicUrl,
-            r2Key: upload.r2Key,
-          },
+          { name: file.name, publicUrl: upload.publicUrl, r2Key: upload.r2Key },
         ])
       }
 
@@ -90,9 +89,7 @@ export default function ContactForm({ animals }: ContactFormProps) {
 
       if (result.ok) {
         setSelectedFiles([])
-        if (fileInputRef.current) {
-          fileInputRef.current.value = ''
-        }
+        if (fileInputRef.current) fileInputRef.current.value = ''
       }
     } finally {
       setIsSubmitting(false)
@@ -124,12 +121,20 @@ export default function ContactForm({ animals }: ContactFormProps) {
               type="text"
               required
               placeholder="Ім&#39;я та прізвище"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
               className="rounded-2xl border-gray-100 bg-gray-50 py-4 font-medium shadow-none transition hover:border-gray-200 focus:border-orange-300 focus:bg-white focus:ring-0"
             />
           </label>
           <label className="space-y-2">
             <span className="text-sm font-semibold text-gray-700">Телефон</span>
-            <UkrainianPhoneInput name="phone" required className="h-[52px]" placeholder="+38 (0__) ___-__-__" />
+            <UkrainianPhoneInput
+              name="phone"
+              required
+              className="h-[52px]"
+              placeholder="+38 (0__) ___-__-__"
+              onChange={(e) => setPhone(e.target.value)}
+            />
           </label>
           <label className="space-y-2">
             <span className="text-sm font-semibold text-gray-700">Email</span>
@@ -144,9 +149,7 @@ export default function ContactForm({ animals }: ContactFormProps) {
               onChange={(event) => {
                 const value = event.currentTarget.value
                 setTopic(value)
-                if (value !== 'adoption') {
-                  setSelectedAnimalId('')
-                }
+                if (value !== 'adoption') setSelectedAnimal(null)
               }}
             >
               <option value="">Оберіть тему звернення</option>
@@ -158,95 +161,161 @@ export default function ContactForm({ animals }: ContactFormProps) {
           </label>
         </div>
 
-        {isAdoptionTopic ? (
+        {isAdoptionTopic && (
           <div className="mt-4 rounded-3xl border border-orange-100 bg-orange-50/45 p-4">
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-              <div>
-                <span className="text-sm font-semibold text-gray-700">Собака для усиновлення</span>
-                <p className="mt-1 text-sm leading-6 text-gray-600">
-                  {selectedAnimal ? selectedAnimal.name : 'Можна обрати собаку з каталогу або залишити поле порожнім.'}
-                </p>
+            {selectedAnimal ? (
+              <div className="flex items-center gap-4">
+                {/* Photo with remove button */}
+                <div className="relative h-16 w-16 shrink-0">
+                  <div className="h-16 w-16 overflow-hidden rounded-2xl bg-orange-100">
+                    {selectedAnimal.photo_url ? (
+                      <img
+                        src={selectedAnimal.photo_url}
+                        alt={selectedAnimal.name}
+                        className="h-full w-full object-cover"
+                      />
+                    ) : (
+                      <div className="flex h-full w-full items-center justify-center text-2xl">
+                        {selectedAnimal.gender === 'female' ? '🐱' : '🐶'}
+                      </div>
+                    )}
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setSelectedAnimal(null)}
+                    className="absolute -right-1.5 -top-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-white shadow-md ring-1 ring-gray-200 transition hover:bg-rose-50 hover:text-rose-500 hover:ring-rose-200"
+                    aria-label="Прибрати тварину"
+                  >
+                    <X className="h-3 w-3" />
+                  </button>
+                </div>
+                {/* Info */}
+                <div className="min-w-0 flex-1">
+                  <p className="font-extrabold text-gray-950">{selectedAnimal.name}</p>
+                  <p className="mt-0.5 text-sm text-gray-500">
+                    {selectedAnimal.approximate_age_label ? `${selectedAnimal.approximate_age_label} · ` : ''}
+                    {selectedAnimal.gender === 'female' ? 'Дівчинка' : 'Хлопчик'}
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => setIsAnimalModalOpen(true)}
+                    className="mt-1 text-xs font-semibold text-primary underline-offset-2 hover:underline"
+                  >
+                    Змінити
+                  </button>
+                </div>
               </div>
-              <div className="flex flex-wrap gap-2">
-                {selectedAnimal ? (
-                  <Button type="button" variant="outline" size="sm" onClick={() => setSelectedAnimalId('')}>
-                    Прибрати
-                  </Button>
-                ) : null}
+            ) : (
+              <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                  <span className="text-sm font-semibold text-gray-700">Собака для усиновлення</span>
+                  <p className="mt-1 text-sm leading-6 text-gray-500">
+                    Можна обрати собаку з каталогу або залишити поле порожнім.
+                  </p>
+                </div>
                 <Button type="button" variant="outline" size="sm" onClick={() => setIsAnimalModalOpen(true)}>
                   <PawPrint className="h-4 w-4" />
                   Обрати собаку
                 </Button>
               </div>
-            </div>
-            <input type="hidden" name="animal" value={selectedAnimalId} />
+            )}
+            <input type="hidden" name="animal" value={selectedAnimal?.id ?? ''} />
             <input type="hidden" name="animalName" value={selectedAnimal?.name ?? ''} />
           </div>
-        ) : null}
+        )}
 
         <label className="mt-4 block space-y-2">
           <span className="text-sm font-semibold text-gray-700">Повідомлення</span>
           <Textarea
             name="message"
             rows={5}
-            required
+            required={topic !== 'adoption'}
             placeholder="Коротко опишіть, чим можемо допомогти"
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
             className="min-h-0 rounded-2xl border-gray-100 bg-gray-50 py-4 font-medium shadow-none transition hover:border-gray-200 focus:border-orange-300 focus:bg-white focus:ring-0"
           />
         </label>
 
-        <label className="mt-4 block cursor-pointer rounded-3xl border border-dashed border-orange-200 bg-orange-50/45 p-4 transition hover:border-orange-300 hover:bg-orange-50/70">
-          <span className="flex items-start gap-3">
+        {/* File upload */}
+        <div className="mt-4 rounded-3xl border border-dashed border-orange-200 bg-orange-50/45 p-4 transition hover:border-orange-300 hover:bg-orange-50/70">
+          <label className="flex cursor-pointer items-start gap-3">
             <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-white text-primary shadow-sm">
               <Paperclip className="h-5 w-5" />
             </span>
             <span className="min-w-0">
-              <span className="block text-sm font-extrabold text-text-main">Додати файли</span>
-              <span className="mt-1 block text-sm leading-6 text-gray-600">
-                Файли лишаються локальними до відправки. Після натискання кнопки вони завантажаться, а в заявку потраплять їх URL.
+              <span className="block text-sm font-extrabold text-text-main">
+                Додати файли{' '}
+                <span className="font-semibold text-gray-400">(до {MAX_FILES})</span>
+              </span>
+              <span className="mt-0.5 block text-xs text-gray-400">
+                JPG, PNG, GIF, PDF, DOC, DOCX
               </span>
               <input
                 ref={fileInputRef}
                 name="attachments"
                 type="file"
                 multiple
-                accept="image/*,.pdf,.doc,.docx"
+                accept="image/jpeg,image/png,image/gif,.pdf,.doc,.docx"
                 className="mt-3 block w-full text-sm font-semibold text-gray-600 file:mr-4 file:rounded-xl file:border-0 file:bg-white file:px-4 file:py-2.5 file:text-sm file:font-extrabold file:text-primary hover:file:bg-orange-50"
-                onChange={(event) => setSelectedFiles(Array.from(event.target.files ?? []))}
+                onChange={(event) => {
+                  const files = Array.from(event.target.files ?? []).slice(0, MAX_FILES)
+                  setSelectedFiles(files)
+                  if ((event.target.files?.length ?? 0) > MAX_FILES && fileInputRef.current) {
+                    fileInputRef.current.value = ''
+                  }
+                }}
               />
             </span>
-          </span>
-        </label>
+          </label>
 
-        {selectedFiles.length || uploadedAttachments.length ? (
-          <div className="mt-3 space-y-2">
-            {selectedFiles.map((file) => (
-              <p
-                key={`${file.name}-${file.size}`}
-                className="rounded-2xl border border-gray-100 bg-white/78 px-4 py-2 text-sm font-semibold text-gray-600"
-              >
-                {file.name}
-              </p>
-            ))}
-            {uploadedAttachments.map((file) => (
-              <a
-                key={file.r2Key}
-                href={file.publicUrl}
-                target="_blank"
-                rel="noreferrer"
-                className="block rounded-2xl border border-emerald-100 bg-emerald-50/70 px-4 py-2 text-sm font-semibold text-emerald-700"
-              >
-                Завантажено: {file.name}
-              </a>
-            ))}
-          </div>
-        ) : null}
+          {(selectedFiles.length > 0 || uploadedAttachments.length > 0) && (
+            <div className="mt-3 space-y-2">
+              {selectedFiles.map((file, i) => (
+                <div
+                  key={`${file.name}-${file.size}`}
+                  className="flex items-center gap-3 rounded-2xl border border-gray-100 bg-white px-4 py-2"
+                >
+                  <span className="min-w-0 flex-1 truncate text-sm font-semibold text-gray-700">{file.name}</span>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSelectedFiles((prev) => prev.filter((_, idx) => idx !== i))
+                      if (selectedFiles.length === 1 && fileInputRef.current) fileInputRef.current.value = ''
+                    }}
+                    className="shrink-0 text-gray-300 transition hover:text-rose-400"
+                    aria-label="Видалити файл"
+                  >
+                    <X className="h-4 w-4" />
+                  </button>
+                </div>
+              ))}
+              {uploadedAttachments.map((file) => (
+                <a
+                  key={file.r2Key}
+                  href={file.publicUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="flex items-center gap-3 rounded-2xl border border-emerald-100 bg-emerald-50/70 px-4 py-2 text-sm font-semibold text-emerald-700"
+                >
+                  <Check className="h-4 w-4 shrink-0" />
+                  <span className="min-w-0 flex-1 truncate">{file.name}</span>
+                </a>
+              ))}
+              {selectedFiles.length >= MAX_FILES && (
+                <p className="text-xs text-orange-500">Максимум {MAX_FILES} файли</p>
+              )}
+            </div>
+          )}
+        </div>
 
-        <label className="mt-4 flex items-start gap-3 rounded-2xl border border-gray-100 bg-white/78 p-4 text-sm leading-6 text-gray-600">
+        <label className="mt-4 flex cursor-pointer items-start gap-3 rounded-2xl border border-gray-100 bg-white/78 p-4 text-sm leading-6 text-gray-600 transition hover:border-orange-100">
           <input
             name="personalDataConsent"
             type="checkbox"
             required
+            checked={consentGiven}
+            onChange={(e) => setConsentGiven(e.target.checked)}
             className="mt-1 h-4 w-4 shrink-0 rounded border-gray-300 text-primary focus:ring-primary/20"
           />
           <span>
@@ -267,97 +336,23 @@ export default function ContactForm({ animals }: ContactFormProps) {
           type="submit"
           size="lg"
           showIcon={false}
-          disabled={isSubmitting}
+          disabled={isSubmitting || !isFormValid}
           className="mt-6 h-auto min-h-13 w-full rounded-2xl px-5 py-3 sm:w-auto"
         >
           {isSubmitting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
           {isSubmitting ? 'Надсилаємо...' : 'Надіслати повідомлення'}
         </Button>
-
-        <AnimalPickerModal
-          animals={animals}
-          selectedAnimalId={selectedAnimalId}
-          isOpen={isAnimalModalOpen}
-          onClose={() => setIsAnimalModalOpen(false)}
-          onSelect={(animalId) => {
-            setSelectedAnimalId(animalId)
-            setIsAnimalModalOpen(false)
-          }}
-        />
       </div>
+
+      <AnimalPickerModal
+        open={isAnimalModalOpen}
+        onOpenChange={(open) => { if (!open) setIsAnimalModalOpen(false) }}
+        selectedId={selectedAnimal?.id ?? null}
+        onSelect={(animal) => {
+          setSelectedAnimal(animal)
+          setIsAnimalModalOpen(false)
+        }}
+      />
     </form>
-  )
-}
-
-function AnimalPickerModal({
-  animals,
-  selectedAnimalId,
-  isOpen,
-  onClose,
-  onSelect,
-}: {
-  animals: Animal[]
-  selectedAnimalId: string
-  isOpen: boolean
-  onClose: () => void
-  onSelect: (animalId: string) => void
-}) {
-  return (
-    <Dialog
-      open={isOpen}
-      onOpenChange={(open) => {
-        if (!open) onClose()
-      }}
-    >
-      <DialogRawContent className="inset-0 flex items-center justify-center p-4">
-        <div className="max-h-[82vh] w-full max-w-3xl overflow-hidden rounded-3xl bg-white shadow-[0_24px_90px_rgba(15,23,42,0.28)]">
-          <div className="flex items-start justify-between gap-4 border-b border-slate-100 px-5 py-4">
-            <div>
-              <h3 className="text-xl font-extrabold text-text-main">Обрати собаку</h3>
-              <p className="mt-1 text-sm text-slate-500">Показуємо доступних тварин з каталогу сайту.</p>
-            </div>
-            <Button type="button" variant="ghost" size="icon" showIcon={false} onClick={onClose} aria-label="Закрити">
-              <X className="h-5 w-5" />
-            </Button>
-          </div>
-          <div className="grid max-h-[62vh] gap-3 overflow-y-auto p-5 sm:grid-cols-2">
-            {animals.length > 0 ? (
-              animals.map((animal) => {
-                const isSelected = selectedAnimalId === animal.id
-
-                return (
-                  <Button
-                    key={animal.id}
-                    type="button"
-                    variant="secondary"
-                    showIcon={false}
-                    onClick={() => onSelect(animal.id)}
-                    className="h-auto w-full justify-between rounded-2xl p-4 text-left font-normal hover:border-orange-200 hover:bg-orange-50"
-                  >
-                    <span>
-                      <span className="block font-extrabold text-text-main">{animal.name}</span>
-                      <span className="mt-1 block text-sm text-slate-500">
-                        {[animal.age, animal.gender, animal.size].filter(Boolean).join(' · ')}
-                      </span>
-                    </span>
-                    {isSelected ? <Check className="h-5 w-5 text-primary" /> : null}
-                  </Button>
-                )
-              })
-            ) : (
-              <div className="col-span-2 flex flex-col items-center gap-3 py-10 text-center">
-                <span className="flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-100 text-slate-300">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="4" r="2"/><circle cx="18" cy="8" r="2"/><circle cx="20" cy="16" r="2"/><path d="M9 10a5 5 0 0 1 5 5v3.5a3.5 3.5 0 0 1-6.84 1.045Q6.52 17.48 4.46 16.84A3.5 3.5 0 0 1 5.5 10Z"/></svg>
-                </span>
-                <div>
-                  <p className="font-extrabold text-slate-700">Опс, нікого не знайдено</p>
-                  <p className="mt-1 text-sm text-slate-400">Спробуйте інший запит</p>
-                </div>
-              </div>
-            )}
-            </div>
-          </div>
-        </DialogRawContent>
-      </Dialog>
   )
 }
