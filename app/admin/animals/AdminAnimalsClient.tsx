@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import AdminAnimalsFilters from '@/app/admin/animals/AdminAnimalsFilters'
+import { DeleteAnimalButton } from '@/components/admin/DeleteAnimalButton'
 import {
   CheckCircle2,
   CircleOff,
@@ -87,6 +88,10 @@ function AdminAnimalCard({ animal }: { animal: AdminAnimalCardData }) {
   const detailsComplete = isAdminAnimalDetailsComplete(animal)
 
   return (
+    <div className="relative">
+      <div className="absolute right-3 top-3 z-10">
+        <DeleteAnimalButton id={animal.id} name={animal.name} />
+      </div>
     <Link
       href={`/admin/animals/${animal.id}`}
       className="group grid gap-4 rounded-xl border border-slate-200 bg-white p-4 shadow-[0_12px_35px_rgba(15,23,42,0.05)] transition hover:border-primary/30 hover:shadow-[0_12px_35px_rgba(242,116,56,0.08)] md:grid-cols-[180px_minmax(0,1fr)]"
@@ -135,6 +140,7 @@ function AdminAnimalCard({ animal }: { animal: AdminAnimalCardData }) {
       </div>
 
     </Link>
+    </div>
   )
 }
 

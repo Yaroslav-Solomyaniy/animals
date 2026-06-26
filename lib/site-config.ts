@@ -46,7 +46,7 @@ export const SITE_NAV_LINKS = [
   { name: 'Прогулянки', href: SITE_ROUTES.walks },
   { name: 'Послуги', href: SITE_ROUTES.services },
   { name: 'Як можна допомогти', href: SITE_ROUTES.help },
-  { name: 'Новини та звіти', href: SITE_ROUTES.news },
+  { name: 'Новини', href: SITE_ROUTES.news },
   { name: 'Контакти', href: SITE_ROUTES.contacts },
 ] as const
 

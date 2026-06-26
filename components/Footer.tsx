@@ -34,7 +34,7 @@ const quickLinks = [
   { label: 'Як допомогти', href: SITE_ROUTES.help },
   { label: 'Послуги', href: SITE_ROUTES.services },
   { label: 'Контакти', href: SITE_ROUTES.contacts },
-  { label: 'Новини та звіти', href: SITE_ROUTES.news },
+  { label: 'Новини', href: SITE_ROUTES.news },
 ]
 
 type FooterNewsItem = {
@@ -77,7 +77,7 @@ export default function Footer() {
 
   return (
     <footer className="bg-text-main text-white">
-      <Section as="div" contained={false} className="py-9 sm:py-10 lg:py-12">
+      <Section className="py-9 sm:py-10 lg:py-12">
         <div className="grid grid-cols-1 gap-y-10 sm:grid-cols-2 sm:gap-x-8 lg:grid-cols-[minmax(0,1.25fr)_minmax(0,0.8fr)_minmax(0,0.85fr)_minmax(0,1fr)] lg:gap-x-8 xl:grid-cols-[360px_220px_240px_300px] xl:justify-between">
           <section className="min-w-0 overflow-hidden">
             <Link href={SITE_ROUTES.home} className="flex items-start gap-3">
@@ -156,7 +156,7 @@ export default function Footer() {
                 <span className="mt-1 block text-xs font-bold text-orange-200/72">{formatFooterNewsDate(item.published_at)}</span>
               </Link>
             ))}
-            <FooterLink href={SITE_ROUTES.news}>Всі новини та звіти</FooterLink>
+            <FooterLink href={SITE_ROUTES.news}>Всі новини</FooterLink>
           </FooterSection>
         </div>
 
@@ -185,6 +185,7 @@ export default function Footer() {
         </div>
       </Section>
     </footer>
+
   )
 }
 

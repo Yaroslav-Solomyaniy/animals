@@ -6,6 +6,7 @@ import {
   BadgeCheck,
   CalendarHeart,
   Clock3,
+  Footprints,
   Palette,
   PawPrint,
   Ruler,
@@ -18,12 +19,13 @@ import type {LucideIcon} from 'lucide-react'
 import type {ReactNode} from 'react'
 import {motion} from 'motion/react'
 
-import {LinkButton} from '@/components/ui/Button'
+import {Button, LinkButton} from '@/components/ui/Button'
 import {buildDonateHref} from '@/lib/donate-search-params'
 import {buildAnimalHref} from '@/lib/site-config'
 import type {Animal} from '@/types'
 import {cn} from '@/lib/utils'
 import {useFeatureFlags} from '@/components/FeatureFlagsProvider'
+import {WalkOrderDialog} from '@/components/WalkOrderDialog'
 
 type AnimalCardProps = {
   animal: Animal
@@ -115,7 +117,7 @@ export default function AnimalCard({
             Деталі
             <ArrowRight className="h-4 w-4" />
           </LinkButton>
-          {donationsEnabled && (
+          {donationsEnabled ? (
             <LinkButton
               href={treatHref}
               variant="outline"
@@ -126,6 +128,21 @@ export default function AnimalCard({
             >
               <PawPrint className="h-4.5 w-4.5" />
             </LinkButton>
+          ) : (
+            <WalkOrderDialog
+              animal={{ id: animal.id, name: animal.name, imageUrl: animal.imageUrl }}
+              trigger={
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="h-11 w-11 shrink-0 rounded-xl"
+                  aria-label={`Прогулятись з ${animal.name}`}
+                  title="Прогулятись"
+                >
+                  <Footprints className="h-4.5 w-4.5" />
+                </Button>
+              }
+            />
           )}
         </div>
       </div>
@@ -166,7 +183,7 @@ function CareStatus({icon: Icon, isReady, label, value}: {
         <Icon className="h-3.5 w-3.5" />
       </span>
       <span className="min-w-0 flex-1">
-                <span className="block truncate text-[8.5px] leading-none font-black tracking-wide uppercase">{label}</span>
+        <span className="block truncate text-[8.5px] leading-none font-black tracking-wide uppercase">{label}</span>
         <span className="mt-1 block truncate text-[12px] leading-4 font-extrabold">{value}</span>
       </span>
     </div>

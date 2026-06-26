@@ -51,7 +51,7 @@ const socialLinks = [
   {
     icon: Facebook,
     label: 'Facebook',
-    description: 'Новини, звіти та анонси прогулянок',
+    description: 'Новини та анонси прогулянок',
     href: SITE_SOCIAL_LINKS.facebook.href,
     tone: 'bg-sky-50 text-sky-600 group-hover:bg-sky-100',
   },
@@ -96,7 +96,7 @@ export default async function ContactsPage() {
                 </div>
                 <div className="inline-flex items-center gap-2 rounded-full border border-gray-200 bg-white px-4 py-2 text-sm font-bold text-gray-600 shadow-sm">
                   <Clock3 className="h-4 w-4 text-primary" />
-                  Відповідаємо протягом дня
+                  Відповідаємо якнайшвидше
                 </div>
               </div>
             </div>

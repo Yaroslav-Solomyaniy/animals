@@ -36,6 +36,8 @@ export async function createVolunteerRequestAction(
       name: submission.value.name,
       phone: submission.value.phone,
       email: submission.value.email,
+      animal_id: submission.value.animalId ?? null,
+      animal_name: submission.value.animalName ?? null,
       email_status: emailResult.ok ? 'sent' : emailResult.status,
       email_error: emailResult.ok ? null : emailResult.error,
     })

@@ -83,8 +83,7 @@ const JoinMission = () => {
           </div>
 
           <p className="mt-4 rounded-2xl bg-[#F1FFF8] px-4 py-3 text-sm font-bold leading-6 text-secondary sm:py-4">
-            Усиновлення, волонтерство і донати працюють разом, коли кожен крок
-            зрозумілий.
+            Кожна тварина в центрі чекає на свою людину. Ти можеш бути нею.
           </p>
         </div>
       </div>

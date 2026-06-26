@@ -203,12 +203,20 @@ export function OrderDialogContent({
   const [category, setCategory] = useState(service.title)
   const [phone, setPhone] = useState('')
   const [weight, setWeight] = useState('')
-  const [date, setDate] = useState('')
+  const [date, setDate] = useState(() => {
+    const d = new Date()
+    d.setDate(d.getDate() + 1)
+    return d.toISOString().slice(0, 10)
+  })
   const [comment, setComment] = useState('')
   const [status, setStatus] = useState<SubmitStatus>('idle')
 
+  const minDate = date  // min = tomorrow (same as default)
+  const isPhoneValid = phone.replace(/\D/g, '').length >= 10
+  const isFormValid = isPhoneValid
+
   async function handleSubmit() {
-    if (!phone.trim()) {
+    if (!isPhoneValid) {
       setStatus('error')
       return
     }
@@ -269,7 +277,7 @@ export function OrderDialogContent({
 
               <div>
                 <label className="mb-1.5 block text-sm font-bold text-gray-900" htmlFor="order-phone">
-                  Ваш телефон
+                  Ваш телефон <span className="text-rose-500">*</span>
                 </label>
                 <UkrainianPhoneInput
                   id="order-phone"
@@ -302,9 +310,9 @@ export function OrderDialogContent({
 
                 <div>
                   <label className="mb-1.5 block text-sm font-bold text-gray-900" htmlFor="order-date">
-                    Бажана дата <span className="font-medium text-gray-400">(необов&apos;язково)</span>
+                    Бажана дата
                   </label>
-                  <Input id="order-date" type="date" value={date} onChange={(event) => setDate(event.target.value)} />
+                  <Input id="order-date" type="date" value={date} min={minDate} onChange={(event) => setDate(event.target.value)} />
                 </div>
               </div>
 
@@ -327,7 +335,7 @@ export function OrderDialogContent({
                 variant="primary"
                 size="md"
                 className="w-full sm:w-auto"
-                disabled={status === 'loading'}
+                disabled={status === 'loading' || !isFormValid}
                 onClick={handleSubmit}
               >
                 {status === 'loading' ? (
@@ -356,10 +364,11 @@ export function OrderDialogContent({
  */
 export function ServiceOrderDialog({ trigger }: { trigger: ReactNode }) {
   const first = serviceCategories[0]
+  const [openCount, setOpenCount] = useState(0)
   return (
-    <Dialog>
+    <Dialog onOpenChange={(open) => { if (open) setOpenCount((c) => c + 1) }}>
       <DialogTrigger asChild>{trigger}</DialogTrigger>
-      <OrderDialogContent service={first} accent={ACCENTS[first.accent]} icon={first.icon} />
+      <OrderDialogContent key={openCount} service={first} accent={ACCENTS[first.accent]} icon={first.icon} />
     </Dialog>
   )
 }

@@ -1,3 +1,5 @@
+'use client'
+
 import Section from '@/components/ui/Section'
 import {
   HeartHandshake,
@@ -12,6 +14,7 @@ import { LinkButton } from '@/components/ui/Button'
 import { WobbleCard } from '@/components/ui/wobble-card'
 import { cardColors } from '@/contstants/colors'
 import { SITE_ROUTES } from '@/lib/site-config'
+import { useFeatureFlags } from '@/components/FeatureFlagsProvider'
 
 type TrustCard = {
   icon: LucideIcon
@@ -35,7 +38,7 @@ const trustCards: Array<TrustCard> = [
   {
     icon: Sparkles,
     title: 'Місія і бачення',
-    text: 'Рятувати безпритульних тварин, лікувати, створювати комфортні умови та наближати Черкаси до міста, де кожна тварина має дім.',
+    text: 'Рятувати безпритульних тварин, лікувати, створювати комфортні умови та наближувати Черкаси до міста, де кожна тварина має дім.',
     color: 'mint',
     slogan: 'Кожен має право на гідне життя',
     desktopVariant: 'tall',
@@ -61,6 +64,7 @@ const trustCards: Array<TrustCard> = [
 ]
 
 export default function TrustValues() {
+  const { donationsEnabled } = useFeatureFlags()
   return (
     <Section className="bg-white py-12 sm:py-16 md:py-20 lg:py-24">
         <div className="mb-8 max-w-3xl sm:mb-10 md:mb-12 lg:mb-14">
@@ -104,7 +108,7 @@ export default function TrustValues() {
                   </p>
                 </div>
 
-                {isWideDesktop ? (
+                {isWideDesktop && donationsEnabled ? (
                   <LinkButton
                     href={SITE_ROUTES.donate}
                     className="relative z-10 mt-10 hidden w-fit rounded-2xl px-6 py-3.5 lg:inline-flex"

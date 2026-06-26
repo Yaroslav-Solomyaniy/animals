@@ -7,6 +7,8 @@ import { redirect } from 'next/navigation'
 import { z } from 'zod'
 import { animalSchema, type AnimalFormValue } from '@/lib/admin-schemas'
 import { createClient } from '@/lib/supabase/server'
+import { deleteR2Object, getAnimalPhotosBucketConfig } from '@/lib/r2'
+import type { AnimalPhotoRow } from '@/lib/admin-types'
 
 export type AnimalActionResult = SubmissionResult<string[]> | undefined
 
@@ -207,6 +209,46 @@ export async function publishAnimalAction(formData: FormData) {
   return { ok: true as const }
 }
 
+export async function deleteAnimalAction(id: string) {
+  const supabase = await createClient()
+  const authResult = await supabase.auth.getUser()
+
+  if (authResult.error || !authResult.data.user) {
+    return { ok: false as const, error: 'Потрібна авторизація.' }
+  }
+
+  // Fetch animal slug + all photos for R2 cleanup
+  const { data: animal } = await supabase
+    .from('animals')
+    .select('slug')
+    .eq('id', id)
+    .single()
+
+  const { data: photos } = await supabase
+    .from('animal_photos')
+    .select('r2_key')
+    .eq('animal_id', id)
+
+  // Delete photos from R2
+  if (photos?.length) {
+    const bucket = getAnimalPhotosBucketConfig()
+    await Promise.all(
+      (photos as Pick<AnimalPhotoRow, 'r2_key'>[])
+        .filter((p) => p.r2_key)
+        .map((p) => deleteR2Object({ key: p.r2_key!, bucket: bucket.bucket }))
+    )
+  }
+
+  // Delete from Supabase (cascades to animal_photos)
+  const { error } = await supabase.from('animals').delete().eq('id', id)
+  if (error) return { ok: false as const, error: error.message }
+
+  revalidatePath('/admin/animals')
+  revalidatePath('/animals')
+  if (animal?.slug) revalidatePath(`/animals/${animal.slug}`)
+  return { ok: true as const }
+}
+
 function toAnimalPayload(value: AnimalFormValue, slug: string, name = getAnimalDisplayName(value.name)) {
   return {
     slug,
@@ -265,7 +307,7 @@ function slugifyAnimalName(value: string) {
     .toLowerCase()
     .replace(/[а-яіїєґ]/g, (letter) => transliteration[letter] ?? letter)
     .normalize('NFKD')
-    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[̀-ͯ]/g, '')
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-+|-+$/g, '')
 
@@ -273,37 +315,11 @@ function slugifyAnimalName(value: string) {
 }
 
 const transliteration: Record<string, string> = {
-  а: 'a',
-  б: 'b',
-  в: 'v',
-  г: 'h',
-  ґ: 'g',
-  д: 'd',
-  е: 'e',
-  є: 'ie',
-  ж: 'zh',
-  з: 'z',
-  и: 'y',
-  і: 'i',
-  ї: 'i',
-  й: 'i',
-  к: 'k',
-  л: 'l',
-  м: 'm',
-  н: 'n',
-  о: 'o',
-  п: 'p',
-  р: 'r',
-  с: 's',
-  т: 't',
-  у: 'u',
-  ф: 'f',
-  х: 'kh',
-  ц: 'ts',
-  ч: 'ch',
-  ш: 'sh',
-  щ: 'shch',
-  ь: '',
-  ю: 'iu',
-  я: 'ia',
+  'а': 'a', 'б': 'b', 'в': 'v', 'г': 'h', 'ґ': 'g',
+  'д': 'd', 'е': 'e', 'є': 'ie', 'ж': 'zh', 'з': 'z',
+  'и': 'y', 'і': 'i', 'ї': 'i', 'й': 'i', 'к': 'k',
+  'л': 'l', 'м': 'm', 'н': 'n', 'о': 'o', 'п': 'p',
+  'р': 'r', 'с': 's', 'т': 't', 'у': 'u', 'ф': 'f',
+  'х': 'kh', 'ц': 'ts', 'ч': 'ch', 'ш': 'sh', 'щ': 'shch',
+  'ь': '', 'ю': 'iu', 'я': 'ia',
 }

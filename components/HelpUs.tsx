@@ -1,20 +1,13 @@
 'use client'
 import Image from 'next/image'
-import React, { useActionState, useState } from 'react'
+import React, { useState } from 'react'
 import { Button, LinkButton } from '@/components/ui/Button'
-import { AnimatePresence, motion } from 'motion/react'
-import { CheckCircle2, ChevronRight, Footprints, Gift, Heart, MapPin, PhoneCall, X } from 'lucide-react'
-import { getFormProps, getInputProps, useForm } from '@conform-to/react'
-import { parseWithZod } from '@conform-to/zod/v4'
-import { createVolunteerRequestAction } from '@/app/volunteer/actions'
+import { motion } from 'motion/react'
+import { CheckCircle2, ChevronRight, Footprints, Gift, Heart, MapPin, PhoneCall } from 'lucide-react'
 import Section from '@/components/ui/Section'
-import { volunteerFormSchema } from '@/lib/admin-schemas'
-import { Field } from '@/components/admin/forms/shared'
-import { Input } from '@/components/ui/FormControls'
-import UkrainianPhoneInput from '@/components/ui/UkrainianPhoneInput'
 import { buildDonateHref } from '@/lib/donate-search-params'
 import { SITE_CONTACTS, SITE_ROUTES } from '@/lib/site-config'
-import dogImage from '@/public/dog.png'
+import { WalkForm } from '@/components/WalkOrderDialog'
 import { useFeatureFlags } from '@/components/FeatureFlagsProvider'
 
 const helpControlClass = 'h-10 w-full rounded-xl text-sm font-bold normal-case tracking-normal sm:h-12 sm:font-extrabold'
@@ -35,7 +28,7 @@ const HelpUs = () => {
         <CentreNeedList />
         {donationsEnabled && <DonateForm />}
         <div className={donationsEnabled ? 'md:col-span-2 lg:col-span-1' : ''}>
-          <VolunteerForm />
+          <VolunteerCard />
         </div>
       </div>
     </Section>
@@ -97,6 +90,7 @@ const CentreNeedList = () => {
     </motion.div>
   )
 }
+
 const DonateForm = () => {
   const [donationAmount, setDonationAmount] = useState('500')
   const [customDonationAmount, setCustomDonationAmount] = useState('')
@@ -183,151 +177,26 @@ const DonateForm = () => {
 
 function normalizeDonationAmount(value: string) {
   const amount = Number(value)
-
   return Number.isFinite(amount) && amount > 0 ? String(amount) : ''
 }
-const VolunteerForm = () => {
-  const formDefaultValues = { name: '', phone: '', email: '' }
-  const [dismissedModalId, setDismissedModalId] = useState<string | null>(null)
 
-  const [lastResult, formAction, pending] = useActionState(createVolunteerRequestAction, undefined)
-  const [form, fields] = useForm({
-    lastResult,
-    defaultValue: formDefaultValues,
-    onValidate({ formData }) {
-      return parseWithZod(formData, {
-        schema: volunteerFormSchema,
-        disableAutoCoercion: true,
-      })
-    },
-    shouldValidate: 'onBlur',
-    shouldRevalidate: 'onInput',
-  })
-  const isSuccessModalOpen = Boolean(lastResult?.modalId && lastResult.modalId !== dismissedModalId)
-
+const VolunteerCard = () => {
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.95 }}
       whileInView={{ opacity: 1, scale: 1 }}
       viewport={{ once: true }}
       transition={{ delay: 0.2 }}
-      className="group relative flex min-h-0 flex-col overflow-hidden rounded-3xl border border-gray-100 bg-white p-4 shadow-soft transition-all duration-300 hover:-translate-y-1 hover:border-primary/30 sm:rounded-4xl sm:p-6 md:h-full lg:min-h-130 lg:p-8"
+      className="group flex min-h-0 flex-col rounded-3xl border border-gray-100 bg-white p-4 shadow-soft transition-all duration-300 hover:-translate-y-1 hover:border-primary/30 sm:rounded-4xl sm:p-6 md:h-full lg:min-h-130 lg:p-8"
     >
       <div className="mb-6 flex h-14 w-14 items-center justify-center rounded-xl bg-gray-100 text-gray-500 transition-colors duration-300 group-hover:bg-primary group-hover:text-white">
         <Footprints className="h-7 w-7" />
       </div>
       <h3 className="mb-3 text-2xl font-bold text-text-main">Волонтерам</h3>
-      <p className="mb-8 text-sm leading-relaxed text-gray-500">
-        Волонтерські прогулянки проводяться у вихідні. Залиште свої контакти, і ми зв’яжемося з вами для запису.
+      <p className="mb-4 text-sm leading-relaxed text-gray-500">
+        Волонтерські прогулянки проводяться у вихідні. Залиште свої контакти, і ми зв'яжемося з вами для запису.
       </p>
-
-      <form {...getFormProps(form)} action={formAction} className="mt-auto space-y-4">
-        {form.errors?.length ? (
-          <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-bold text-red-700">
-            {form.errors.join(', ')}
-          </div>
-        ) : null}
-        <Field label="ПІБ" errors={fields.name.errors}>
-          <Input {...getInputProps(fields.name, { type: 'text' })} className={helpInputClass} placeholder="Ваше імʼя" />
-        </Field>
-        <Field label="Телефон" errors={fields.phone.errors}>
-          <UkrainianPhoneInput {...getInputProps(fields.phone, { type: 'tel' })} className={helpInputClass} />
-        </Field>
-        <Field label="Електронна пошта" errors={fields.email.errors}>
-          <Input {...getInputProps(fields.email, { type: 'email' })} className={helpInputClass} placeholder="name@example.com" />
-        </Field>
-        <div className="rounded-xl border border-primary/20 bg-orange-50 px-4 py-3 text-xs font-bold text-primary">
-          Доступно у вихідні з 11:00 до 14:00 за попереднім записом.
-        </div>
-        <Button type="submit" variant="outline" className={helpControlClass} disabled={pending}>
-          {pending ? 'Відправка...' : 'Залишити заявку'}
-        </Button>
-      </form>
-      <VolunteerSuccessModal
-        open={isSuccessModalOpen}
-        emailSent={Boolean(lastResult?.emailSent)}
-        message={lastResult?.message}
-        onClose={() => setDismissedModalId(lastResult?.modalId ?? null)}
-      />
+      <WalkForm />
     </motion.div>
-  )
-}
-
-function VolunteerSuccessModal({
-  open,
-  emailSent,
-  message,
-  onClose,
-}: {
-  open: boolean
-  emailSent: boolean
-  message?: string
-  onClose: () => void
-}) {
-  return (
-    <AnimatePresence>
-      {open ? (
-        <motion.div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/55 px-4 py-8 backdrop-blur-sm"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          onMouseDown={onClose}
-        >
-          <motion.div
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="volunteer-success-title"
-            className="relative w-full max-w-2xl overflow-hidden rounded-[28px] border border-orange-100 bg-white shadow-[0_30px_90px_rgba(15,23,42,0.28)]"
-            initial={{ opacity: 0, y: 18, scale: 0.96 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 18, scale: 0.96 }}
-            transition={{ duration: 0.22 }}
-            onMouseDown={(event) => event.stopPropagation()}
-          >
-            <button
-              type="button"
-              aria-label="Закрити"
-              onClick={onClose}
-              className="absolute right-4 top-4 z-10 flex h-10 w-10 items-center justify-center rounded-full border border-white/70 bg-white/90 text-slate-600 shadow-sm transition hover:bg-white hover:text-slate-950"
-            >
-              <X className="h-5 w-5" />
-            </button>
-            <div className="grid md:grid-cols-[0.95fr_1.05fr]">
-              <div className="relative min-h-64 bg-orange-50 md:min-h-full">
-                <Image
-                  src={dogImage}
-                  alt="Собака центру допомоги тваринам"
-                  fill
-                  sizes="(max-width: 768px) 100vw, 320px"
-                  className="object-cover"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/25 to-transparent" />
-              </div>
-              <div className="p-7 sm:p-8">
-                <span className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1.5 text-xs font-extrabold uppercase text-emerald-700">
-                  <CheckCircle2 className="h-4 w-4" />
-                  Success
-                </span>
-                <h3 id="volunteer-success-title" className="mt-5 text-3xl font-extrabold text-text-main">
-                  Заявку прийнято
-                </h3>
-                <p className="mt-4 text-base leading-7 text-slate-600">
-                  {message ?? 'Дякуємо! Ми звʼяжемося з вами для запису на волонтерську прогулянку.'}
-                </p>
-                {!emailSent ? (
-                  <p className="mt-3 rounded-2xl border border-orange-200 bg-orange-50 px-4 py-3 text-sm font-bold text-primary">
-                    Email ще треба перевірити, але заявка вже є в адмінці.
-                  </p>
-                ) : null}
-                <Button type="button" className="mt-6 w-full" onClick={onClose}>
-                  Добре
-                </Button>
-              </div>
-            </div>
-          </motion.div>
-        </motion.div>
-      ) : null}
-    </AnimatePresence>
   )
 }

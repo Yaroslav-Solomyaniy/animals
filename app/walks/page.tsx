@@ -7,6 +7,7 @@ import { SITE_CONTACTS, SITE_ROUTES } from '@/lib/site-config'
 import Section from '@/components/ui/Section'
 import BorderGlow from '@/components/ui/BorderGlow'
 import GoWalks from '@/components/GoWalks'
+import { WalkOrderDialog } from '@/components/WalkOrderDialog'
 
 export const metadata: Metadata = {
   title: 'Прогулянки з тваринами',
@@ -100,14 +101,13 @@ export default async function WalksPage() {
             </p>
 
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-              <LinkButton
-                href={SITE_ROUTES.contactsSchedule}
-                variant="outline"
-                size="lg"
-                className="h-13 w-full rounded-2xl bg-white px-6 sm:w-fit"
-              >
-                Запланувати прогулянку
-              </LinkButton>
+              <WalkOrderDialog
+                trigger={
+                  <button className="inline-flex h-13 w-full items-center justify-center gap-2 rounded-2xl border border-gray-200 bg-white px-6 text-sm font-bold text-text-main transition hover:border-primary/30 hover:text-primary sm:w-fit">
+                    Запланувати прогулянку
+                  </button>
+                }
+              />
               <LinkButton href={SITE_ROUTES.contacts} size="lg" className="h-13 w-full rounded-2xl px-6 sm:w-fit">
                 Поставити запитання
                 <ArrowRight className="h-4 w-4" />

@@ -21,6 +21,10 @@
 }
 
 @layer base {
+  button, [role="button"] {
+    cursor: pointer;
+  }
+
   body:has([data-loader-screen]) {
     overflow: hidden;
     overscroll-behavior: none;

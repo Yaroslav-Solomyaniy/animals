@@ -7,8 +7,11 @@ import { LinkButton } from '@/components/ui/Button'
 import { SITE_CONTACTS, SITE_ROUTES } from '@/lib/site-config'
 import StorybookDecorations from '@/components/ui/StorybookDecorations'
 import WelcomeCarousel from '@/components/WelcomeCarousel'
+import { WalkOrderDialog } from '@/components/WalkOrderDialog'
+import { useFeatureFlags } from '@/components/FeatureFlagsProvider'
 
 export default function HomeScreenCarousel() {
+  const { donationsEnabled } = useFeatureFlags()
   return (
     <section className="contacts-gradient-coral relative px-4 pt-8 pb-16 outline-none focus-visible:ring-4 focus-visible:ring-primary/20 sm:px-6 sm:pt-10 sm:pb-18 lg:px-8 lg:pt-12 lg:pb-14">
       <StorybookDecorations />
@@ -28,7 +31,7 @@ export default function HomeScreenCarousel() {
             </p>
           </div>
 
-          <div className="mt-8 grid grid-cols-2 gap-4">
+          <div className={`mt-8 grid gap-4 ${donationsEnabled ? 'grid-cols-2' : 'grid-cols-1'}`}>
             <LinkButton
               href={SITE_ROUTES.animals}
               size="lg"
@@ -37,15 +40,17 @@ export default function HomeScreenCarousel() {
               <PawPrint className="h-5 w-5" />
               Каталог тварин
             </LinkButton>
-            <LinkButton
-              href={SITE_ROUTES.donate}
-              variant="outline"
-              size="lg"
-              className="h-12 justify-center rounded-xl border-secondary/30 px-5 text-sm text-secondary hover:border-secondary hover:bg-[#f1faf5] hover:text-secondary sm:text-base"
-            >
-              <Heart className="h-5 w-5" />
-              Підтримати центр
-            </LinkButton>
+            {donationsEnabled && (
+              <LinkButton
+                href={SITE_ROUTES.donate}
+                variant="outline"
+                size="lg"
+                className="h-12 justify-center rounded-xl border-secondary/30 px-5 text-sm text-secondary hover:border-secondary hover:bg-[#f1faf5] hover:text-secondary sm:text-base"
+              >
+                <Heart className="h-5 w-5" />
+                Підтримати центр
+              </LinkButton>
+            )}
           </div>
         </div>
         <WelcomeCarousel />
@@ -67,16 +72,24 @@ export default function HomeScreenCarousel() {
               Оберіть друга з каталогу або запитайте нас, кому зараз найбільше потрібна прогулянка.
             </p>
 
-            <LinkButton
-              href={SITE_ROUTES.walks}
-              variant="secondary"
-              size="lg"
-              className="h-12 w-full mt-4 rounded-2xl border-secondary bg-secondary px-5 text-sm text-white hover:border-secondary hover:bg-white hover:text-secondary sm:w-fit"
-            >
-              <PawPrint className="h-5 w-5" />
-              Хочу прогулятись
-              <ArrowRight className="h-4 w-4" />
-            </LinkButton>
+            <div className="mt-4 flex flex-col gap-3 sm:flex-row">
+              <WalkOrderDialog
+                trigger={
+                  <button className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-2xl border border-secondary bg-secondary px-5 text-sm font-bold text-white transition hover:bg-white hover:text-secondary sm:w-fit">
+                    <PawPrint className="h-5 w-5" />
+                    Хочу прогулятись
+                  </button>
+                }
+              />
+              <LinkButton
+                href={SITE_ROUTES.walks}
+                variant="outline"
+                size="lg"
+                className="h-12 w-full justify-center rounded-xl border-secondary/30 px-5 text-sm text-secondary hover:border-secondary hover:bg-[#f1faf5] hover:text-secondary sm:w-fit sm:text-base"
+              >
+                Дізнатись більше
+              </LinkButton>
+            </div>
           </div>
 
           <Image src="/max.png" alt="Собака запрошує на прогулянку" width={450} height={600} />

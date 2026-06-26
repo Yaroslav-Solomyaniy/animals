@@ -1,4 +1,5 @@
 import AnimalWaitCatalog from '@/components/AnimalWaitCatalog'
+import DevTestButtons from '@/components/DevTestButtons'
 import CityProgram from '@/components/CityProgram'
 import TrustValues from '@/components/TrustValues'
 import JoinMission from '@/components/JoinMission'
@@ -19,6 +20,7 @@ export default async function HomePage() {
       <TrustValues />
       <JoinMission />
       <HelpUs />
+      <DevTestButtons />
     </main>
   )
 }

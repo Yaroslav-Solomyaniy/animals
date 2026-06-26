@@ -26,7 +26,7 @@ import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/Button'
 import { Input, Select, Textarea } from '@/components/ui/FormControls'
 import { toDatetimeLocal } from '@/components/admin/forms/shared'
-import { createAnimalDraftAction, publishAnimalAction, updateAnimalDraftAction } from '@/app/admin/animals/actions'
+import { createAnimalDraftAction, deleteAnimalAction, publishAnimalAction, updateAnimalDraftAction } from '@/app/admin/animals/actions'
 import {
   createAnimalPhotoUploadAction,
   deleteAnimalPhotoAction,
@@ -291,6 +291,19 @@ export default function AnimalEditorPage({
     })
   }
 
+  async function handleDelete() {
+    if (!animalId) return
+    if (!confirm(`Видалити «${animalName || 'тварину'}»? Всі фото також будуть видалені з R2. Цю дію не можна скасувати.`)) return
+    startTransition(async () => {
+      const r = await deleteAnimalAction(animalId)
+      if (!r.ok) {
+        setErrorMsg(r.error)
+        return
+      }
+      router.push('/admin/animals')
+    })
+  }
+
   const navSections = [
     { id: 'identification', label: 'Ідентифікація', icon: <Hash className="h-3.5 w-3.5" />, done: Boolean(details.name.trim()) },
     {
@@ -396,6 +409,18 @@ export default function AnimalEditorPage({
               <Globe className="h-3 w-3" />
               Переглянути на сайті ↗
             </Link>
+          ) : null}
+
+          {isEditing ? (
+            <button
+              type="button"
+              onClick={handleDelete}
+              disabled={isPending}
+              title="Видалити тварину"
+              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-400 transition hover:border-rose-200 hover:bg-rose-50 hover:text-rose-500 disabled:opacity-40"
+            >
+              <Trash2 className="h-4 w-4" />
+            </button>
           ) : null}
         </div>
       </header>
@@ -981,6 +1006,18 @@ function getTodayDatetimeLocal() {
   return local.toISOString().slice(0, 16)
 }
 
+function isAnimalDetailsComplete(d: AnimalDetails) {
+  return Boolean(d.approximate_age_label.trim() && d.short_description.trim() && d.full_story.trim())
+}
+
+function getStatusLabel(status: AnimalRow['status']) {
+  const labels: Record<AnimalRow['status'], string> = {
+    draft: 'Чернетка', available: 'Опублікована', reserved: 'Резерв', adopted: 'Прилаштована', hidden: 'Прихована',
+  }
+  return labels[status]
+}
+
+
 function getAnimalDetails(a?: AnimalRow): AnimalDetails {
   return {
     name: a?.name ?? '',
@@ -1010,28 +1047,13 @@ function getAnimalFormData(d: AnimalDetails) {
   fd.set('short_description', d.short_description)
   fd.set('full_story', d.full_story)
   fd.set('approximate_age_label', d.approximate_age_label)
-  fd.set('public_badges', '')
   fd.set('adoption_status', d.adoption_status ?? '')
+  fd.set('is_vaccinated', d.is_vaccinated ? 'on' : 'off')
+  fd.set('is_neutered', d.is_neutered ? 'on' : 'off')
   fd.set('published_at', d.published_at)
   fd.set('animal_number', d.animal_number)
   fd.set('color', d.color)
   fd.set('vaccination_count', String(d.vaccination_count))
-  fd.set('character_traits', d.character_traits.join('\n'))
-  if (d.vaccination_count > 0) fd.set('is_vaccinated', 'on')
-  if (d.is_neutered) fd.set('is_neutered', 'on')
+  d.character_traits.forEach((t) => fd.append('character_traits', t))
   return fd
-}
-
-function isAnimalDetailsComplete(d: AnimalDetails) {
-  return Boolean(d.approximate_age_label.trim() && d.short_description.trim() && d.full_story.trim())
-}
-function getStatusLabel(status: AnimalRow['status']) {
-  const labels: Record<AnimalRow['status'], string> = {
-    draft: 'Чернетка',
-    available: 'Опублікована',
-    reserved: 'Резерв',
-    adopted: 'Прилаштована',
-    hidden: 'Прихована',
-  }
-  return labels[status]
 }

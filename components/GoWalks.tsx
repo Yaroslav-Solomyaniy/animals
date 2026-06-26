@@ -1,8 +1,11 @@
+'use client'
+
 import React from 'react'
 import { Clock3 } from 'lucide-react'
 import { SITE_CONTACTS, SITE_ROUTES } from '@/lib/site-config'
 import { LinkButton } from '@/components/ui/Button'
 import Section from '@/components/ui/Section'
+import { WalkOrderDialog } from '@/components/WalkOrderDialog'
 
 const GoWalks = () => {
   return (
@@ -25,14 +28,13 @@ const GoWalks = () => {
           <LinkButton href={SITE_ROUTES.contacts} variant="light" size="lg" className="h-13 w-full rounded-2xl px-6 lg:w-64">
             Контакти центру
           </LinkButton>
-          <LinkButton
-            href={SITE_ROUTES.contacts}
-            variant="outline"
-            size="lg"
-            className="bg-white/10 text-white border-white h-13 w-full rounded-2xl px-6 lg:w-64"
-          >
-            Заповнити форму
-          </LinkButton>
+          <WalkOrderDialog
+            trigger={
+              <button className="inline-flex h-13 w-full items-center justify-center gap-2 rounded-2xl border border-white bg-white/10 px-6 text-sm font-bold text-white transition hover:bg-white/20 lg:w-64">
+                Заповнити форму
+              </button>
+            }
+          />
         </div>
     </Section>
   )

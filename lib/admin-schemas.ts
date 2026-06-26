@@ -28,7 +28,7 @@ const textList = z
   }, z.array(z.string()))
   .default([])
 
-// vaccination_count: integer 0–20
+// vaccination_count: integer 0-20
 const vaccinationCount = z
   .preprocess((value) => {
     if (value === '' || value == null) {return 0}
@@ -38,7 +38,6 @@ const vaccinationCount = z
   .default(0)
 
 // character_traits: predefined list, max 5 items
-// Sent from form as repeated fields named 'character_traits'
 const characterTraits = z
   .preprocess((value) => {
     if (Array.isArray(value)) {return value.filter(Boolean)}
@@ -74,13 +73,19 @@ export const animalSchema = z.object({
 export type AnimalFormValue = z.infer<typeof animalSchema>
 
 export const volunteerFormSchema = z.object({
-  name: z.string('Вкажіть імʼя').trim().min(2, 'Вкажіть імʼя'),
+  name: z.string().trim().min(2, 'Вкажіть імʼя'),
   phone: z
-    .string('Вкажіть номер телефону')
+    .string()
     .trim()
     .regex(/^\+380 \(\d{2}\) \d{3}-\d{2}-\d{2}$/, 'Вкажіть повний український номер'),
   email: z
     .preprocess(emptyStringToNull, z.email('Вкажіть коректний email').nullable().optional())
+    .transform((value) => value ?? null),
+  animalId: z
+    .preprocess(emptyStringToNull, z.string().nullable().optional())
+    .transform((value) => value ?? null),
+  animalName: z
+    .preprocess(emptyStringToNull, z.string().nullable().optional())
     .transform((value) => value ?? null),
 })
 

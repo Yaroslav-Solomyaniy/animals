@@ -66,8 +66,8 @@ const slides: Array<HomeScreenSlide> = [
   {
     id: 'news',
     label: 'Новини',
-    title: 'Новини та звіти',
-    description: 'Важливі оголошення, звіти центру та історії тварин, яким допомагаємо разом.',
+    title: 'Новини',
+    description: 'Важливі оголошення та історії тварин, яким допомагаємо разом.',
     href: SITE_ROUTES.news,
     cta: 'Читати новини',
     image: '/main_slider/5.png',

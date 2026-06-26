@@ -9,6 +9,7 @@ import {
   Camera,
   ChevronLeft,
   ChevronRight,
+  Footprints,
   Heart,
   HeartHandshake,
   Home,
@@ -29,7 +30,8 @@ import {
 import { motion } from 'motion/react'
 
 import type { Animal } from '@/types'
-import { LinkButton } from '@/components/ui/Button'
+import { Button, LinkButton } from '@/components/ui/Button'
+import { WalkOrderDialog } from '@/components/WalkOrderDialog'
 import ImageLightbox from '@/components/news/ImageLightbox'
 import ShareMenu from '@/components/ui/ShareMenu'
 import DonateForm from '@/components/DonateForm'
@@ -153,7 +155,7 @@ export default function AnimalProfileClient({
                   Познайомитись
                 </LinkButton>
 
-                <div className={`grid gap-3 ${donationsEnabled ? 'grid-cols-[1fr_1fr]' : 'grid-cols-1'}`}>
+                <div className="grid grid-cols-[1fr_1fr] gap-3">
                   <ShareMenu
                     path={buildAnimalHref(animal.id)}
                     title={`${displayName} шукає родину`}
@@ -163,11 +165,21 @@ export default function AnimalProfileClient({
                     variant="button"
                     className="[&>button]:h-11 [&>button]:w-full [&>button]:rounded-2xl [&>button]:text-sm"
                   />
-                  {donationsEnabled && (
+                  {donationsEnabled ? (
                     <LinkButton href={donationHref} variant="outline" size="sm" className="h-11 rounded-2xl text-sm">
                       <Heart className="h-4 w-4" />
                       Підтримати
                     </LinkButton>
+                  ) : (
+                    <WalkOrderDialog
+                      animal={{ id: animal.id, name: displayName, imageUrl: animal.imageUrl }}
+                      trigger={
+                        <Button variant="outline" size="sm" className="h-11 w-full rounded-2xl text-sm">
+                          <Footprints className="h-4 w-4" />
+                          Прогулятись
+                        </Button>
+                      }
+                    />
                   )}
                 </div>
                 <LinkButton href={SITE_ROUTES.contacts} variant="ghost" size="sm" className="h-9 w-full rounded-2xl text-xs">

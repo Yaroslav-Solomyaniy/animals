@@ -76,7 +76,7 @@ const supplies = [
 const volunteerRoles = [
   {
     title: 'Прогулянки з собаками',
-    description: `${SITE_CONTACTS.walkSchedule} за попереднім записом.`,
+    description: 'Прогулянки з підопічними центру за попереднім записом.',
     time: SITE_CONTACTS.walkSchedule,
     icon: PawPrint,
     accent: 'bg-orange-50 text-orange-500',
@@ -282,7 +282,7 @@ export default async function HelpForUsPage() {
             <Package className="mx-auto mb-4 h-11 w-11 text-orange-500" />
             <h2 className="text-3xl font-black text-gray-950">Необхідні речі</h2>
             <p className="mt-4 leading-7 text-gray-600">
-              Ці речі потрібні центру постійно. Їх можна передати особисто або погодити доставку телефоном.
+              Центр намагається самостійно забезпечувати себе всім необхідним. Але якщо ви маєте бажання підтримати — ось що справді стане у пригоді.
             </p>
           </div>
 
@@ -303,12 +303,10 @@ export default async function HelpForUsPage() {
             })}
           </div>
 
-          <div className="mt-8 overflow-hidden rounded-3xl">
-            <div className="relative bg-gradient-to-br from-orange-50 to-amber-50 p-6 text-center">
-              <BorderBeam size={200} duration={10} colorFrom="#f27438" colorTo="#fbbf24" borderWidth={1.5} />
-              <p className="font-extrabold text-gray-800">Адреса для передачі допомоги: м. Черкаси, вул. Івана Мазепи, 117</p>
-              <p className="mt-2 text-gray-600">Перед візитом краще зателефонувати, щоб узгодити час.</p>
-            </div>
+          <div className="relative mt-8 overflow-hidden rounded-3xl bg-gradient-to-br from-orange-50 to-amber-50 p-6 text-center">
+            <BorderBeam size={80} duration={10} colorFrom="#f27438" colorTo="#fbbf24" borderWidth={1.5} pathBorderRadius={24} />
+            <p className="font-extrabold text-gray-800">Адреса для передачі допомоги: м. Черкаси, вул. Івана Мазепи, 117</p>
+            <p className="mt-2 text-gray-600">Також можна зателефонувати, щоб додатково узгодити деталі.</p>
           </div>
         </SectionFrame>
       </Section>
@@ -322,7 +320,7 @@ export default async function HelpForUsPage() {
               iconColor: 'text-orange-500',
               iconBg: 'bg-orange-50',
               title: 'Книга хвостиків',
-              description: 'Понад 500 тварин чекають на свою родину. Можливо, твій майбутній друг вже тут.',
+              description: 'Багато тварин чекають на свою родину. Можливо, твій майбутній друг вже тут.',
               href: SITE_ROUTES.animals,
               label: 'Переглянути тварин',
               glow: 'rgba(242,116,56,0.12)',
@@ -385,8 +383,8 @@ export default async function HelpForUsPage() {
               </div>
             )
           })}
-        </div>
-      </Section>
-    </main>
-  )
+          </div>
+        </Section>
+      </main>
+    )
 }
