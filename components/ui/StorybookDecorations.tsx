@@ -61,7 +61,7 @@ export default function StorybookDecorations() {
   return (
     <div
       aria-hidden="true"
-      className="storybook-decorations pointer-events-none absolute inset-0 hidden overflow-hidden lg:block"
+      className="storybook-decorations pointer-events-none absolute inset-0 hidden overflow-hidden min-[1920px]:block"
     >
       {decorations.map((decoration, index) => {
         const Icon = decoration.icon

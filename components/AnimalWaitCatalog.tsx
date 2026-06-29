@@ -21,9 +21,9 @@ export default function AnimalWaitCatalog({ animals }: { animals: Animal[] }) {
   return (
       <section
           id="adopt"
-          className="bg-mauve-50 pt-12 pb-8 sm:pt-16 sm:pb-10 md:pt-20 md:pb-8 lg:pt-24 lg:pb-12"
+          className="overflow-hidden bg-mauve-50 px-8 py-8 sm:py-10 lg:py-16"
       >
-        <div className="mx-auto max-w-336 px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-336">
           <div className="mb-7 grid gap-5 sm:mb-9 md:mb-10 md:grid-cols-[minmax(0,1fr)_auto] md:items-start md:gap-6">
             <div className="min-w-0 max-w-2xl">
               <h2 className="mb-3 text-3xl font-extrabold leading-tight text-text-main sm:text-4xl md:mb-4 md:text-5xl">
@@ -46,9 +46,9 @@ export default function AnimalWaitCatalog({ animals }: { animals: Animal[] }) {
           </div>
 
           <div className="relative">
-            <div className="relative -mx-4 sm:-mx-6 lg:-mx-8">
+            <div className="relative">
               <div ref={emblaRef} className="overflow-hidden py-4">
-                <div className="flex gap-3 sm:gap-4 lg:gap-5 xl:gap-6 px-4 sm:px-6 lg:px-8">
+                <div className="flex gap-3 sm:gap-4 lg:gap-5 xl:gap-6">
                   {animals.map((animal, index) => (
                       <AnimalCard
                           key={animal.id}

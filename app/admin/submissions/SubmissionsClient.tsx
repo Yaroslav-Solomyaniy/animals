@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useTransition } from 'react'
+import React, { useState, useTransition } from 'react'
 import { parseAsInteger, parseAsStringLiteral, useQueryStates } from 'nuqs'
 import { ChevronLeft, ChevronRight, Loader2, Mail, RefreshCw, X } from 'lucide-react'
 import type { AnySubmission } from '@/lib/admin-types'
@@ -134,8 +134,8 @@ export default function SubmissionsClient({ items, counts, type, page, totalPage
                 const rResult = resendResult[s.id]
 
                 return (
-                  <>
-                    <tr key={s.id} className="transition hover:bg-slate-50">
+                  <React.Fragment key={s.id}>
+                    <tr className="transition hover:bg-slate-50">
                       <td className="px-5 py-3.5">
                         <span className={`inline-flex items-center rounded-lg px-2.5 py-1 text-xs font-bold ring-1 ${TYPE_COLORS[s._type]}`}>
                           {TYPE_LABELS[s._type]}
@@ -205,7 +205,7 @@ export default function SubmissionsClient({ items, counts, type, page, totalPage
                         </td>
                       </tr>
                     )}
-                  </>
+                  </React.Fragment>
                 )
               })}
             </tbody>

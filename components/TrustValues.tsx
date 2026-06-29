@@ -66,7 +66,7 @@ const trustCards: Array<TrustCard> = [
 export default function TrustValues() {
   const { donationsEnabled } = useFeatureFlags()
   return (
-    <Section className="bg-white py-12 sm:py-16 md:py-20 lg:py-24">
+    <Section className="bg-white py-8 sm:py-10 lg:py-16">
         <div className="mb-8 max-w-3xl sm:mb-10 md:mb-12 lg:mb-14">
           <p className="mb-3 text-xs font-extrabold uppercase tracking-[0.14em] text-primary sm:text-sm">
             Відкрита допомога

@@ -1,4 +1,4 @@
-import type { NextConfig } from "next";
+import type { NextConfig } from 'next'
 
 const nextConfig: NextConfig = {
   allowedDevOrigins: ['192.168.0.100'],
@@ -7,6 +7,6 @@ const nextConfig: NextConfig = {
       bodySizeLimit: '10mb',
     },
   },
-};
+}
 
-export default nextConfig;
+export default nextConfig

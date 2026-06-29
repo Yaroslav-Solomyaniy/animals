@@ -116,7 +116,7 @@ const cards: Array<Card> = [
 
 export default function CityProgram() {
     return (
-        <Section id="services" className="bg-white py-12 sm:py-16 md:py-20 lg:py-24" innerClassName="grid items-center gap-10 md:gap-12 lg:grid-cols-[0.95fr_1.05fr] lg:gap-x-14 lg:gap-y-0">
+        <Section id="services" className="bg-white py-8 sm:py-10 lg:py-16" innerClassName="grid items-center gap-10 md:gap-12 lg:grid-cols-[0.95fr_1.05fr] lg:gap-x-14 lg:gap-y-0">
                 <div className="relative order-2 lg:order-1 lg:row-span-2 lg:min-h-190">
                     <div
                         className="relative mx-auto h-115 max-w-85.75 sm:h-130 sm:max-w-130 md:h-170 md:max-w-3xl lg:h-190 lg:max-w-180">

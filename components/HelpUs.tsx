@@ -17,7 +17,7 @@ const HelpUs = () => {
   const { donationsEnabled } = useFeatureFlags()
 
   return (
-    <Section id="help" className="contacts-gradient-honey py-16 sm:py-20 lg:py-24">
+    <Section id="help" className="contacts-gradient-honey py-8 sm:py-10 lg:py-16">
       <h2 className="mb-10 text-center text-3xl font-extrabold text-text-main sm:mb-14 sm:text-4xl md:text-5xl lg:mb-20">
         Як ви можете нам допомогти
       </h2>

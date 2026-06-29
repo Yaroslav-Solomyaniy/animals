@@ -190,8 +190,8 @@ const WelcomeCarousel = () => {
             src={activeSlide.image}
             alt={activeSlide.imageAlt}
             fill
-            preload={activeIndex === 0}
-            sizes="(max-width: 1024px) 100vw, 50vw"
+            unoptimized
+            loading="lazy"
             className="object-cover"
           />
         </motion.div>
@@ -250,7 +250,7 @@ const WelcomeCarousel = () => {
                 href={activeSlide.href}
                 variant="ghost"
                 size="sm"
-                className="h-9 rounded-xl px-0 text-primary hover:bg-transparent hover:text-orange-700"
+                className="h-9 rounded-xl px-0 text-sm text-primary hover:bg-transparent hover:text-orange-700"
               >
                 {activeSlide.cta}
                 <ArrowRight className="h-4 w-4" />
