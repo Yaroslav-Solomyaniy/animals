@@ -30,10 +30,15 @@ export async function updateSession(request: NextRequest) {
         }
     )
 
-    const { data } = await supabase.auth.getClaims()
-    const user = data?.claims
+    const isAdminRoute = request.nextUrl.pathname.startsWith('/admin')
 
-    if (!user && request.nextUrl.pathname.startsWith('/admin')) {
+    // getUser() validates JWT server-side (catches deleted users) — only on admin routes
+    // getClaims() is local JWT decode — fast, used everywhere else
+    const user = isAdminRoute
+      ? (await supabase.auth.getUser()).data?.user
+      : (await supabase.auth.getClaims()).data?.claims
+
+    if (!user && isAdminRoute) {
         const url = request.nextUrl.clone()
         url.pathname = '/sign-in'
         return NextResponse.redirect(url)

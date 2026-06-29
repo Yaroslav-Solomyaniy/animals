@@ -184,11 +184,13 @@ export default async function NewsDetailsPage({ params }: NewsPageProps) {
                   <Link
                     key={item.id}
                     href={buildNewsHref(item.slug ?? item.id)}
-                    className="group grid grid-cols-[86px_1fr] gap-3 rounded-2xl border border-white/10 bg-white/[0.06] p-2 transition hover:-translate-y-0.5 hover:border-primary/70 hover:bg-white/[0.10] hover:shadow-[0_18px_45px_rgba(242,116,56,0.18)]"
+                    className={`group gap-3 rounded-2xl border border-white/10 bg-white/[0.06] p-2 transition hover:-translate-y-0.5 hover:border-primary/70 hover:bg-white/[0.10] hover:shadow-[0_18px_45px_rgba(242,116,56,0.18)] ${item.image ? 'grid grid-cols-[86px_1fr]' : 'flex'}`}
                   >
-                    <div className="h-20 w-full overflow-hidden rounded-xl bg-slate-100">
-                      {item.image && <img src={item.image} alt={item.title} className="h-full w-full object-cover" />}
-                    </div>
+                    {item.image && (
+                      <div className="h-20 w-[86px] shrink-0 overflow-hidden rounded-xl">
+                        <img src={item.image} alt={item.title} className="h-full w-full object-cover" />
+                      </div>
+                    )}
                     <span className="min-w-0 py-1">
                       <span className="block text-xs font-extrabold uppercase tracking-[0.12em] text-orange-200 transition group-hover:text-primary">
                         {item.category}

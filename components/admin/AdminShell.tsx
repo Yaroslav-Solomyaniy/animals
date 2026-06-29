@@ -3,12 +3,13 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import type { ReactNode } from 'react'
-import { FilePlus2, HandCoins, Inbox, LayoutDashboard, Newspaper, PanelLeft, PawPrint, Rocket, ScrollText, Settings } from 'lucide-react'
+import { ArrowUpLeft, HandCoins, HardDrive, Inbox, LayoutDashboard, LogOut, Newspaper, PawPrint, ScrollText, Settings, UserCircle, Users } from 'lucide-react'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
-import { LinkButton } from '@/components/ui/Button'
 import { useScrollToTopOnRouteChange } from '@/hooks/useScrollToTopOnRouteChange'
 import { cn } from '@/lib/utils'
+import { getSupabaseBrowserClient } from '@/lib/supabase/client'
+import AdminPreviewBar from '@/components/AdminPreviewBar'
 
 const adminNavigation = [
   { href: '/admin', label: 'Огляд', icon: LayoutDashboard },
@@ -18,16 +19,28 @@ const adminNavigation = [
   { href: '/admin/submissions', label: 'Звернення', icon: Inbox },
   { href: '/admin/donations', label: 'Донати', icon: HandCoins },
   { href: '/admin/settings', label: 'Налаштування', icon: Settings },
+  { href: '/admin/files', label: 'Файли', icon: HardDrive },
+  { href: '/admin/administrators', label: 'Адміністратори', icon: Users },
+  { href: '/admin/profile', label: 'Профіль', icon: UserCircle },
 ]
 
 export default function AdminShell({ children }: { children: ReactNode }) {
   const pathname = usePathname()
+
+  async function signOut() {
+    await getSupabaseBrowserClient().auth.signOut()
+    window.location.href = '/sign-in'
+  }
   useScrollToTopOnRouteChange()
   const isAdminRoute = pathname.startsWith('/admin')
   const isAnimalEditorRoute = pathname.startsWith('/admin/animals/') && pathname !== '/admin/animals/'
   const isNewsEditorRoute = pathname.startsWith('/admin/news/')
   const isReportsEditorRoute = pathname.startsWith('/admin/reports/') && pathname !== '/admin/reports/'
   const isEditorRoute = isAnimalEditorRoute || isNewsEditorRoute || isReportsEditorRoute
+
+  if (pathname === '/sign-in' || pathname === '/sign-in/forgot' || pathname === '/reset-password' || pathname === '/setup-profile') {
+    return <>{children}</>
+  }
 
   if (pathname === '/donate/success') {
     return (
@@ -46,6 +59,7 @@ export default function AdminShell({ children }: { children: ReactNode }) {
         <Header />
         <div className="flex flex-1 flex-col">{children}</div>
         <Footer />
+        <AdminPreviewBar />
       </div>
     )
   }
@@ -56,12 +70,13 @@ export default function AdminShell({ children }: { children: ReactNode }) {
         <div className="flex h-full flex-col p-5">
           <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-[0_18px_50px_rgba(15,23,42,0.06)]">
             <div className="flex items-center gap-3">
-              <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-orange-50 text-primary">
-                <PanelLeft className="h-5 w-5" />
+              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-orange-50 text-primary">
+                <PawPrint className="h-5 w-5" />
               </span>
-              <div>
-                <p className="text-xs font-extrabold uppercase text-primary">Admin</p>
-                <h1 className="text-xl font-extrabold text-slate-950">Shelter CMS</h1>
+              <div className="min-w-0">
+                <p className="text-xs font-extrabold uppercase tracking-wide text-primary">Панель керування</p>
+                <h1 className="text-sm font-black leading-snug text-slate-950">Черкаська служба чистоти</h1>
+                <p className="mt-0.5 text-[11px] font-semibold leading-tight text-slate-400">Центр надання допомоги безпритульним тваринам</p>
               </div>
             </div>
           </div>
@@ -90,60 +105,52 @@ export default function AdminShell({ children }: { children: ReactNode }) {
             })}
           </nav>
 
-          <div className="mt-auto rounded-2xl border border-slate-200 bg-slate-50 p-4">
-            <p className="text-sm font-extrabold text-slate-950">Швидкі дії</p>
-            <div className="mt-3 space-y-2">
-              <QuickLink href="/admin/animals" label="Каталог тварин" />
-              <QuickLink href="/admin/submissions" label="Всі звернення" />
-              <QuickLink href="/admin/news/new" label="Додати новину" />
-              <QuickLink href="/admin/reports/new" label="Додати звіт" />
-            </div>
+          <div className="mt-auto flex flex-col gap-2">
+            <Link
+              href="/"
+              className="flex w-full items-center gap-3 rounded-xl border border-slate-200 px-4 py-3 text-sm font-bold text-slate-500 transition hover:border-slate-300 hover:bg-slate-50 hover:text-slate-950"
+            >
+              <ArrowUpLeft className="h-4 w-4" />
+              Повернутись на сайт
+            </Link>
+            <button
+              type="button"
+              onClick={signOut}
+              className="flex w-full items-center gap-3 rounded-xl border border-slate-200 px-4 py-3 text-sm font-bold text-slate-500 transition hover:border-red-200 hover:bg-red-50 hover:text-red-600"
+            >
+              <LogOut className="h-4 w-4" />
+              Вийти
+            </button>
           </div>
         </div>
       </aside>
 
       <div className="flex min-h-screen min-w-0 flex-1 flex-col">
         {!isEditorRoute && (
-          <header className="sticky top-0 z-40 border-b border-slate-200 bg-white/88 text-slate-950 backdrop-blur-xl">
-            <div className="mx-auto flex max-w-[calc(100rem+4rem)] flex-col gap-4 px-4 py-4 sm:px-6 lg:px-8">
-              <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-                <div>
-                  <p className="inline-flex items-center gap-2 rounded-full border border-orange-200 bg-orange-50 px-3 py-1.5 text-xs font-extrabold uppercase text-primary">
-                    <Rocket className="h-3.5 w-3.5" />
-                    Адмін панель сайту
-                  </p>
-                  <h1 className="mt-3 text-2xl font-extrabold text-slate-950 md:text-3xl">Керування контентом і каталогом</h1>
-                </div>
+          <header className="sticky top-0 z-40 border-b border-slate-200 bg-white/88 backdrop-blur-xl xl:hidden">
+            <nav className="flex flex-wrap gap-2 px-4 py-3 sm:px-6">
+              {adminNavigation.map((item) => {
+                const Icon = item.icon
+                const isActive =
+                  item.href === '/admin' ? pathname === item.href : pathname === item.href || pathname.startsWith(`${item.href}/`)
 
-                <LinkButton href="/" variant="outline" size="sm">
-                  На сайт
-                </LinkButton>
-              </div>
-
-              <nav className="flex flex-wrap gap-2 xl:hidden">
-                {adminNavigation.map((item) => {
-                  const Icon = item.icon
-                  const isActive =
-                    item.href === '/admin' ? pathname === item.href : pathname === item.href || pathname.startsWith(`${item.href}/`)
-
-                  return (
-                    <Link
-                      key={item.href}
-                      href={item.href}
-                      className={cn(
-                        'inline-flex items-center gap-2 rounded-xl border px-4 py-2.5 text-sm font-bold transition-all',
-                        isActive
-                          ? 'border-orange-200 bg-orange-50 text-primary'
-                          : 'border-slate-200 bg-white text-slate-600 hover:border-orange-200 hover:text-primary'
-                      )}
-                    >
-                      <Icon className="h-4 w-4" />
-                      {item.label}
-                    </Link>
-                  )
-                })}
-              </nav>
-            </div>
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className={cn(
+                      'inline-flex items-center gap-2 rounded-xl border px-4 py-2.5 text-sm font-bold transition-all',
+                      isActive
+                        ? 'border-orange-200 bg-orange-50 text-primary'
+                        : 'border-slate-200 bg-white text-slate-600 hover:border-orange-200 hover:text-primary'
+                    )}
+                  >
+                    <Icon className="h-4 w-4" />
+                    {item.label}
+                  </Link>
+                )
+              })}
+            </nav>
           </header>
         )}
 
@@ -160,11 +167,3 @@ export default function AdminShell({ children }: { children: ReactNode }) {
   )
 }
 
-function QuickLink({ href, label }: { href: string; label: string }) {
-  return (
-    <LinkButton href={href} variant="outline" size="sm" className="w-full justify-start rounded-lg shadow-none">
-      <FilePlus2 className="h-4 w-4" />
-      {label}
-    </LinkButton>
-  )
-}

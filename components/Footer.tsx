@@ -6,8 +6,7 @@ import type { ReactNode } from 'react'
 import type { LucideIcon } from 'lucide-react'
 import { ArrowRight, Clock, Facebook, FileText, Globe, Heart, Instagram, Mail, MapPin, Newspaper, Phone, Stethoscope } from 'lucide-react'
 
-import { reports } from '@/lib/news'
-import { buildNewsHref, SITE_CONTACTS, SITE_ROUTES, SITE_SOCIAL_LINKS } from '@/lib/site-config'
+import { buildNewsHref, SITE_CONTACTS, SITE_NAV_LINKS, SITE_ROUTES, SITE_SOCIAL_LINKS } from '@/lib/site-config'
 import { getSupabaseBrowserClient } from '@/lib/supabase/client'
 import Section from '@/components/ui/Section'
 
@@ -29,13 +28,7 @@ const socialLinks = [
   },
 ]
 
-const quickLinks = [
-  { label: 'Тварини', href: SITE_ROUTES.animals },
-  { label: 'Як допомогти', href: SITE_ROUTES.help },
-  { label: 'Послуги', href: SITE_ROUTES.services },
-  { label: 'Контакти', href: SITE_ROUTES.contacts },
-  { label: 'Новини', href: SITE_ROUTES.news },
-]
+const quickLinks = SITE_NAV_LINKS.filter((l) => l.href !== SITE_ROUTES.home)
 
 type FooterNewsItem = {
   id: string
@@ -47,8 +40,6 @@ type FooterNewsItem = {
 export default function Footer() {
   const year = new Date().getFullYear()
   const [latestNews, setLatestNews] = useState<FooterNewsItem[]>([])
-  const latestReport = reports[0]
-
   useEffect(() => {
     let isMounted = true
     const supabase = getSupabaseBrowserClient()
@@ -137,10 +128,9 @@ export default function Footer() {
           <FooterSection title="Навігація" icon={FileText}>
             {quickLinks.map((item) => (
               <FooterLink key={item.href} href={item.href}>
-                {item.label}
+                {item.name}
               </FooterLink>
             ))}
-            {latestReport ? <FooterLink href={SITE_ROUTES.news}>{latestReport.title}</FooterLink> : null}
           </FooterSection>
 
           <FooterSection title="Новини" icon={Newspaper}>

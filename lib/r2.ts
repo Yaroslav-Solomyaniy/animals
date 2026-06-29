@@ -23,6 +23,7 @@ const r2Config = {
   animalPhotosFolder: process.env.CLOUDFLARE_R2_ANIMAL_PHOTOS_FOLDER,
   newsImagesFolder: process.env.CLOUDFLARE_R2_NEWS_IMAGES_FOLDER,
   filesFolder: process.env.CLOUDFLARE_R2_FILES_FOLDER,
+  avatarsFolder: process.env.CLOUDFLARE_R2_AVATARS_FOLDER,
 }
 
 export function getAnimalPhotosBucketConfig(): R2BucketConfig {
@@ -76,6 +77,11 @@ export function getPublicFilesBucketConfig(): R2BucketConfig {
 export function createReportFileKey(reportId: string, fileName: string) {
   const folder = normalizeFolder(r2Config.filesFolder ?? 'files')
   return `${folder}/reports/${reportId}/${randomUUID()}${getFileExtension(fileName)}`
+}
+
+export function createAvatarKey(userId: string, fileName: string) {
+  const folder = normalizeFolder(requiredEnv(r2Config.avatarsFolder, 'CLOUDFLARE_R2_AVATARS_FOLDER'))
+  return `${folder}/${userId}${getFileExtension(fileName)}`
 }
 
 export function createContactAttachmentKey(fileName: string) {
@@ -137,6 +143,101 @@ function createR2PresignedUrl({ key, bucket, method = 'PUT', expiresIn = 300 }: 
 
   return `https://${host}${path}?${canonicalQuery}&X-Amz-Signature=${signature}`
 }
+
+// ─── Server-side authenticated R2 operations ─────────────────────────────────
+
+export type R2Object = {
+  key: string
+  size: number
+  lastModified: Date
+}
+
+export type R2ListResult = {
+  objects: R2Object[]
+  prefixes: string[] // "folders"
+}
+
+export type R2BucketStats = {
+  totalSize: number
+  objectCount: number
+}
+
+async function r2AuthGet(path: string, queryParams: Record<string, string>): Promise<string> {
+  const accountId = requiredEnv(r2Config.accountId, 'CLOUDFLARE_R2_ACCOUNT_ID')
+  const bucket = requiredEnv(r2Config.bucket, 'CLOUDFLARE_R2_BUCKET')
+  const accessKeyId = requiredEnv(r2Config.accessKeyId, 'CLOUDFLARE_R2_ACCESS_KEY_ID')
+  const secretAccessKey = requiredEnv(r2Config.secretAccessKey, 'CLOUDFLARE_R2_SECRET_ACCESS_KEY')
+
+  const host = `${bucket}.${accountId}.r2.cloudflarestorage.com`
+  const now = new Date()
+  const date = formatDate(now)
+  const timestamp = formatTimestamp(now)
+  const credentialScope = `${date}/auto/s3/aws4_request`
+  const emptyHash = 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855'
+
+  const canonicalQuery = canonicalizeQuery(queryParams)
+  const canonicalHeaders = `host:${host}\nx-amz-content-sha256:${emptyHash}\nx-amz-date:${timestamp}\n`
+  const signedHeaders = 'host;x-amz-content-sha256;x-amz-date'
+
+  const canonicalRequest = ['GET', path, canonicalQuery, canonicalHeaders, signedHeaders, emptyHash].join('\n')
+  const stringToSign = ['AWS4-HMAC-SHA256', timestamp, credentialScope, hashHex(canonicalRequest)].join('\n')
+  const signingKey = getSigningKey(secretAccessKey, date)
+  const signature = hmacHex(signingKey, stringToSign)
+
+  const authorization = `AWS4-HMAC-SHA256 Credential=${accessKeyId}/${credentialScope}, SignedHeaders=${signedHeaders}, Signature=${signature}`
+
+  const res = await fetch(`https://${host}${path}?${canonicalQuery}`, {
+    headers: {
+      'Authorization': authorization,
+      'x-amz-content-sha256': emptyHash,
+      'x-amz-date': timestamp,
+    },
+  })
+
+  if (!res.ok) throw new Error(`R2 request failed: ${res.status} ${await res.text()}`)
+  return res.text()
+}
+
+function parseXmlBlocks(xml: string, tag: string): string[] {
+  return [...xml.matchAll(new RegExp(`<${tag}[^>]*>([\\s\\S]*?)</${tag}>`, 'g'))].map(m => m[1])
+}
+
+function parseXmlValue(block: string, tag: string): string {
+  return block.match(new RegExp(`<${tag}[^>]*>([\\s\\S]*?)</${tag}>`))?.[1] ?? ''
+}
+
+export async function listR2Objects(prefix = '', delimiter = '/'): Promise<R2ListResult> {
+  const params: Record<string, string> = { 'list-type': '2' }
+  if (prefix) params.prefix = prefix
+  if (delimiter) params.delimiter = delimiter
+
+  const xml = await r2AuthGet('/', params)
+
+  const objects: R2Object[] = parseXmlBlocks(xml, 'Contents').map(block => ({
+    key: parseXmlValue(block, 'Key'),
+    size: parseInt(parseXmlValue(block, 'Size') || '0', 10),
+    lastModified: new Date(parseXmlValue(block, 'LastModified')),
+  }))
+
+  const prefixes = parseXmlBlocks(xml, 'CommonPrefixes').map(block =>
+    parseXmlValue(block, 'Prefix')
+  )
+
+  return { objects, prefixes }
+}
+
+export async function getR2BucketStats(): Promise<R2BucketStats> {
+  // List all objects without delimiter to get full stats
+  const params: Record<string, string> = { 'list-type': '2', 'max-keys': '1000' }
+  const xml = await r2AuthGet('/', params)
+
+  const objects = parseXmlBlocks(xml, 'Contents')
+  const totalSize = objects.reduce((sum, block) => sum + parseInt(parseXmlValue(block, 'Size') || '0', 10), 0)
+
+  return { totalSize, objectCount: objects.length }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 
 function requiredEnv(value: string | undefined, name: string) {
   if (!value) {throw new Error(`${name} is not configured`)}

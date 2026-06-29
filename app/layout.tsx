@@ -3,6 +3,7 @@ import { Geist } from 'next/font/google'
 import type { ReactNode } from 'react'
 import { NuqsAdapter } from 'nuqs/adapters/next/app'
 import AdminShell from '@/components/admin/AdminShell'
+import AuthHashRedirect from '@/components/AuthHashRedirect'
 import { FeatureFlagsProvider } from '@/components/FeatureFlagsProvider'
 import { getSiteSettings } from '@/lib/site-settings'
 import { cn } from '@/lib/utils'
@@ -33,6 +34,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
       <body className="min-h-full font-sans antialiased wrap-anywhere selection:bg-[rgba(79,184,178,0.24)]">
         <NuqsAdapter defaultOptions={{ clearOnDefault: true, scroll: false, shallow: true }}>
           <FeatureFlagsProvider flags={flags}>
+            <AuthHashRedirect />
             <AdminShell>{children}</AdminShell>
           </FeatureFlagsProvider>
         </NuqsAdapter>
