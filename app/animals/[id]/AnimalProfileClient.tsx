@@ -78,7 +78,7 @@ export default function AnimalProfileClient({
   return (
     <main className="min-h-screen overflow-hidden bg-[#faf7f4] text-gray-950">
       <section className="border-b border-gray-200">
-        <Section as="div" contained={false} className="flex flex-col gap-5 py-5">
+        <Section as="div" contained={false} className="flex flex-col gap-5 py-5 sm:py-6">
           <LinkButton href="#" onClick={(e) => { e.preventDefault(); router.back() }} variant="primary" size="sm" className="w-fit">
             <ArrowLeft className="h-4 w-4" />
             Повернутись назад
@@ -88,26 +88,28 @@ export default function AnimalProfileClient({
             <PhotoJournal animal={animal} images={images} selectedIndex={selectedIndex} onSelect={setSelectedIndex} />
 
             <aside className={cn(surfaceClass, 'flex min-w-0 flex-col p-5 sm:p-6')}>
-              <div className="flex flex-wrap items-center gap-2">
+              <div className="flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-center">
                 <StatusBadge icon={BadgeCheck} label={profile.status} tone={animal.adoptionStatus === 'needs_care' ? 'orange' : 'green'} />
                 <StatusBadge icon={Camera} label={`${images.length} фото`} tone="slate" />
-                <span className="ml-auto inline-flex h-8 items-center rounded-2xl bg-primary px-3 text-[11px] font-black tracking-wider text-white shadow-sm">
+                <span className="inline-flex h-9 w-full items-center justify-center rounded-2xl bg-primary px-3 text-xs font-black tracking-wider text-white shadow-sm sm:ml-auto sm:h-8 sm:w-auto sm:justify-start sm:text-[11px]">
                   #{animal.animalNumber ?? animal.databaseId?.slice(0, 7).toUpperCase()}
                 </span>
               </div>
 
               <div className="mt-5">
-                <div className="flex items-center justify-between gap-2">
-                  <p className="text-xs font-extrabold uppercase tracking-[0.16em] text-primary">Картка знайомства</p>
+                <div className="flex flex-col items-center gap-4 text-center sm:flex-row sm:items-center sm:justify-between sm:text-left">
+                  <p className="order-2 text-sm font-extrabold uppercase tracking-[0.16em] text-primary sm:order-1">Картка знайомства</p>
                   {animal.publishedAt && (
-                    <p className="inline-flex items-center gap-1.5 rounded-lg border border-gray-100 bg-gray-50 px-2.5 py-1.5 text-[11px] font-semibold text-gray-500 shadow-sm">
+                    <p className="order-1 inline-flex w-fit items-center gap-1.5 rounded-lg border border-gray-100 bg-gray-50 px-2.5 py-1.5 text-xs font-semibold text-gray-500 shadow-sm sm:order-2">
                       <CalendarDays className="h-3.5 w-3.5 shrink-0 text-primary" />
                       {new Date(animal.publishedAt).toLocaleDateString('uk-UA', { day: 'numeric', month: 'long', year: 'numeric' })}
                     </p>
                   )}
                 </div>
-                <h1 className="mt-2 break-words text-4xl font-extrabold leading-tight text-gray-950 sm:text-5xl">{displayName}</h1>
-                <p className="mt-4 max-w-2xl break-words text-base font-semibold leading-7 text-gray-600">{profile.intro}</p>
+                <div className="-mx-5 mt-4 bg-orange-50 px-5 py-3 sm:-mx-6 sm:mt-5 sm:px-6">
+                  <h1 className="break-words text-center text-4xl font-extrabold leading-tight text-gray-950 sm:text-left sm:text-5xl">{displayName}</h1>
+                </div>
+                <p className="mt-4 max-w-2xl break-words text-sm leading-6 font-semibold text-gray-600">{profile.intro}</p>
               </div>
 
               <div className="mt-5 space-y-3">
@@ -149,13 +151,13 @@ export default function AnimalProfileClient({
                 <LinkButton
                   href={SITE_ROUTES.contacts}
                   size="lg"
-                  className="h-14 w-full rounded-2xl text-base shadow-[0_18px_42px_rgba(242,116,56,0.22)]"
+                  className="h-14 w-full rounded-2xl text-sm shadow-[0_18px_42px_rgba(242,116,56,0.22)]"
                 >
                   <HeartHandshake className="h-5 w-5" />
                   Познайомитись
                 </LinkButton>
 
-                <div className="grid grid-cols-[1fr_1fr] gap-3">
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                   <ShareMenu
                     path={buildAnimalHref(animal.id)}
                     title={`${displayName} шукає родину`}
@@ -182,7 +184,7 @@ export default function AnimalProfileClient({
                     />
                   )}
                 </div>
-                <LinkButton href={SITE_ROUTES.contacts} variant="ghost" size="sm" className="h-9 w-full rounded-2xl text-xs">
+                <LinkButton href={SITE_ROUTES.contacts} variant="ghost" size="sm" className="h-9 w-full rounded-2xl text-sm">
                   <MessageCircleQuestion className="h-4 w-4" />
                   Запитати деталі
                 </LinkButton>
@@ -192,14 +194,14 @@ export default function AnimalProfileClient({
         </Section>
       </section>
 
-      <Section contained={false} className="grid gap-4 py-8 lg:grid-cols-[1fr_450px]">
+      <Section contained={false} className="grid gap-4 py-5 sm:py-6 lg:py-8 lg:grid-cols-[1fr_450px]">
         <IntroPanel title="Про характер" eyebrow="Коротко без зайвого" text={profile.story} />
         <CharacterTraits traits={animal.character} />
       </Section>
 
 
       <section className="border-y border-gray-200">
-        <Section as="div" contained={false} className="py-8">
+        <Section as="div" contained={false} className="py-5 sm:py-6 lg:py-8">
           <SectionHeading
             eyebrow="План знайомства"
             title="Чотири прості кроки"
@@ -236,7 +238,7 @@ function PhotoJournal({
     <section className={cn(surfaceClass, 'flex h-full max-w-full flex-col overflow-hidden')}>
       <ImageLightbox images={lightboxImages} initialIndex={selectedIndex}>
         {(openLightbox) => (
-          <div className="relative min-h-[420px] flex-1 cursor-zoom-in overflow-hidden" onClick={openLightbox}>
+          <div className="relative min-h-[420px] flex-1 cursor-zoom-in overflow-hidden sm:min-h-[840px] lg:min-h-[420px]" onClick={openLightbox}>
             {images.map((img, i) => (
               <motion.img
                 key={img}
@@ -315,12 +317,13 @@ function SliderButton({
   )
 }
 
-function StatusBadge({ icon: Icon, label, tone }: { icon: LucideIcon; label: string; tone: Tone }) {
+function StatusBadge({ icon: Icon, label, tone, className }: { icon: LucideIcon; label: string; tone: Tone; className?: string }) {
   return (
     <span
       className={cn(
-        'inline-flex min-h-9 max-w-full items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-extrabold',
-        toneClasses(tone)
+        'inline-flex min-h-9 w-full max-w-full items-center justify-center gap-2 rounded-full border px-3 py-1.5 text-xs font-extrabold sm:w-auto sm:justify-start',
+        toneClasses(tone),
+        className
       )}
     >
       <Icon className="h-4 w-4 shrink-0" />
@@ -347,10 +350,10 @@ function SoftInfoPanel({ icon: Icon, title, items, tone }: { icon: LucideIcon; t
         >
           <Icon className="h-5 w-5 text-primary" />
         </motion.span>
-        <h2 className="text-base font-extrabold">{title}</h2>
+        <h2 className="text-sm font-extrabold">{title}</h2>
       </div>
 
-      <div className="mt-4 grid grid-cols-2 gap-2">
+      <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
         {items.map((item) => {
           const ItemIcon = item.icon
 
@@ -361,19 +364,19 @@ function SoftInfoPanel({ icon: Icon, title, items, tone }: { icon: LucideIcon; t
               initial="rest"
               animate="rest"
               className={cn(
-                'group flex min-w-0 items-center gap-3 rounded-2xl px-3.5 py-2.5 shadow-sm transition-colors',
+                'group flex min-w-0 items-center gap-3 rounded-2xl px-3.5 py-3 shadow-sm transition-colors sm:py-2.5',
                 item.tone ? toneClasses(item.tone) : 'bg-white/72'
               )}
             >
               <motion.span
                 variants={{ rest: { scale: 1, color: 'currentColor' }, hovered: { scale: 1.18 } }}
                 transition={{ type: 'spring', stiffness: 400, damping: 18 }}
-                className="flex h-7 w-7 shrink-0 items-center justify-center rounded-xl bg-white/80 shadow-sm group-hover:text-primary"
+                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-white/80 shadow-sm group-hover:text-primary sm:h-7 sm:w-7"
               >
-                <ItemIcon className="h-4 w-4" />
+                <ItemIcon className="h-5 w-5 sm:h-4 sm:w-4" />
               </motion.span>
               <span className="min-w-0">
-                <span className="block text-[10px] font-extrabold uppercase tracking-wide opacity-55">{item.label}</span>
+                <span className="block text-xs font-extrabold uppercase tracking-wide opacity-55 sm:text-[10px]">{item.label}</span>
                 <span className="block truncate text-sm font-extrabold">{item.value}</span>
               </span>
             </motion.div>
@@ -389,7 +392,7 @@ function IntroPanel({ eyebrow, title, text }: { eyebrow: string; title: string; 
     <article className={cn(surfaceClass, 'p-5 sm:p-6')}>
       <p className="text-xs font-extrabold uppercase tracking-[0.16em] text-primary">{eyebrow}</p>
       <h2 className="mt-2 text-2xl font-extrabold leading-tight text-gray-950 sm:text-3xl">{title}</h2>
-      <p className="mt-4 text-base font-semibold leading-7 text-gray-600">{text}</p>
+      <p className="mt-4 text-sm leading-6 font-semibold text-gray-600">{text}</p>
     </article>
   )
 }
@@ -401,8 +404,8 @@ function CharacterTraits({ traits }: { traits: string[] }) {
   return (
     <article className={cn(surfaceClass, 'flex flex-col p-5 sm:p-6')}>
       <p className="text-xs font-extrabold uppercase tracking-[0.16em] text-primary">Характер та звички</p>
-      <h2 className="mt-2 text-2xl font-extrabold leading-tight text-gray-950">Яким він є насправді</h2>
-      <div className="mt-5 flex flex-col gap-2">
+      <h2 className="mt-2 text-2xl font-extrabold leading-tight text-gray-950 sm:text-3xl">Яким він є насправді</h2>
+      <div className="mt-5 flex flex-col gap-4">
         {traits.map((trait, i) => {
           const TraitIcon = icons[i % icons.length]
           return (
@@ -443,7 +446,7 @@ function SectionHeading({ eyebrow, title, text }: { eyebrow: string; title: stri
     <div className="max-w-2xl">
       <p className="text-xs font-extrabold uppercase tracking-[0.16em] text-primary">{eyebrow}</p>
       <h2 className="mt-2 text-2xl font-extrabold leading-tight text-gray-950 sm:text-3xl">{title}</h2>
-      <p className="mt-3 text-sm font-semibold leading-6 text-gray-600">{text}</p>
+      <p className="mt-3 text-sm leading-6 font-semibold text-gray-600">{text}</p>
     </div>
   )
 }
@@ -478,8 +481,8 @@ function AdoptionRoadmap({ steps }: { steps: Array<{ icon: LucideIcon; title: st
               <div className="mt-5 h-px bg-gray-100" />
 
               <div className="mt-4">
-                <p className="text-base font-extrabold text-gray-950">{step.title}</p>
-                <p className="mt-2 text-sm font-semibold leading-6 text-gray-500">{step.text}</p>
+                <p className="text-sm font-extrabold text-gray-950">{step.title}</p>
+                <p className="mt-2 text-sm leading-6 font-semibold text-gray-500">{step.text}</p>
               </div>
             </motion.article>
           )
@@ -504,7 +507,7 @@ function AdoptionRoadmap({ steps }: { steps: Array<{ icon: LucideIcon; title: st
               </span>
               <div className="min-w-0 pt-0.5">
                 <p className="text-sm font-extrabold text-gray-950">{step.title}</p>
-                <p className="mt-1 text-[12px] font-semibold leading-5 text-gray-500">{step.text}</p>
+                <p className="mt-1 text-sm leading-6 font-semibold text-gray-500">{step.text}</p>
               </div>
             </motion.div>
           )

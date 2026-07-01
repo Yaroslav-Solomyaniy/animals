@@ -148,7 +148,7 @@ export default function SubmissionsClient({ items, counts, type, page, totalPage
                       </td>
                       <td className="max-w-xs px-5 py-3.5">
                         <p className="font-semibold text-slate-700">{det.detail}</p>
-                        {det.extraText && <p className="mt-0.5 line-clamp-1 text-xs text-slate-400">{det.extraText}</p>}
+                        {det.extraText && <p className="mt-0.5 truncate text-xs text-slate-400" title={det.extraText}>{det.extraText}</p>}
                         {det.attachments > 0 && <p className="mt-0.5 text-xs text-slate-400">📎 {det.attachments} файл(и)</p>}
                       </td>
                       <td className="px-5 py-3.5">
@@ -156,7 +156,7 @@ export default function SubmissionsClient({ items, counts, type, page, totalPage
                           {EMAIL_STATUS_LABELS[s.email_status]}
                         </span>
                         {s.email_error && (
-                          <p className="mt-1 line-clamp-1 text-[11px] text-rose-500" title={s.email_error}>{s.email_error}</p>
+                          <p className="mt-1 break-words text-[11px] text-rose-500">{s.email_error}</p>
                         )}
                       </td>
                       <td className="whitespace-nowrap px-5 py-3.5 text-xs text-slate-400">

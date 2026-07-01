@@ -192,7 +192,7 @@ export default function SubmitSignUpForm() {
             type="submit"
             size="lg"
             disabled={isLoadingInvite || isSubmitting}
-            className="mt-6 w-full"
+            className="mt-6 w-full text-sm"
           >
             {isLoadingInvite
               ? 'Перевіряємо запрошення...'

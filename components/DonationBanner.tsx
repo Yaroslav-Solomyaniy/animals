@@ -48,11 +48,11 @@ export default function DonationBanner({ donationsEnabled, amounts, description,
   if (allTabs.length === 0) return null
 
   return (
-    <section className="relative mt-14 overflow-hidden rounded-[2rem] border border-orange-100 bg-white shadow-[0_24px_80px_rgba(242,116,56,0.07)]">
+    <section className="relative overflow-hidden rounded-[2rem] border border-orange-100 bg-white shadow-[0_24px_80px_rgba(242,116,56,0.07)]">
 
       {/* ── Tab switcher (only when >1 tab) ── */}
       {allTabs.length > 1 && (
-        <div className="flex items-center gap-2 border-b border-orange-100 px-8 pt-6 sm:px-10 lg:px-12">
+        <div className="flex items-center gap-2 border-b border-orange-100 px-5 pt-6 sm:px-6 lg:px-12">
           {allTabs.map(({ id, label, icon: Icon }) => (
             <button
               key={id}
@@ -76,7 +76,7 @@ export default function DonationBanner({ donationsEnabled, amounts, description,
       {tab === 'donate' && (
         <div className="grid lg:grid-cols-2 lg:items-stretch">
           {/* Left — yellow hero panel */}
-          <div className="relative overflow-hidden bg-[linear-gradient(135deg,#fbbf24_0%,#f97316_100%)] p-8 sm:p-10 lg:p-12">
+          <div className="relative overflow-hidden bg-[linear-gradient(135deg,#fbbf24_0%,#f97316_100%)] p-5 sm:p-6 lg:p-12">
             <div className="pointer-events-none absolute -right-10 -top-10 h-48 w-48 rounded-full bg-white/10 blur-2xl" />
             <div className="pointer-events-none absolute -bottom-8 -left-8 h-40 w-40 rounded-full bg-white/10 blur-2xl" />
             <div className="pointer-events-none absolute right-6 bottom-10 h-24 w-24 rounded-full bg-amber-300/30" />
@@ -109,7 +109,7 @@ export default function DonationBanner({ donationsEnabled, amounts, description,
           </div>
 
           {/* Right — amounts */}
-          <div className="p-8 sm:p-10 lg:p-12">
+          <div className="p-5 sm:p-6 lg:p-12">
             <p className="mb-3 text-xs font-extrabold uppercase tracking-widest text-gray-400">Оберіть суму</p>
             <div className="grid grid-cols-2 gap-3">
               {amounts.map((amount) => (
@@ -140,7 +140,7 @@ export default function DonationBanner({ donationsEnabled, amounts, description,
 
       {/* ── Treat tab ── */}
       {tab === 'treat' && (
-        <div className="p-8 sm:p-10 lg:p-12">
+        <div className="p-5 sm:p-6 lg:p-12">
           <div className="flex flex-wrap items-end justify-between gap-4">
             <div>
               <h3 className="text-2xl font-black text-gray-950 sm:text-3xl">Дайте смаколик конкретній тварині</h3>
@@ -158,7 +158,7 @@ export default function DonationBanner({ donationsEnabled, amounts, description,
 
       {/* ── Reports tab ── */}
       {tab === 'reports' && (
-        <div className="p-8 sm:p-10 lg:p-12">
+        <div className="p-5 sm:p-6 lg:p-12">
           <div className="mb-6 flex items-center gap-4 border-b border-orange-100/70 pb-6">
             <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-orange-50 text-primary">
               <ScrollText className="h-5 w-5" />

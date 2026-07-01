@@ -84,7 +84,7 @@ function Lightbox({
         onClick={e => e.stopPropagation()}
       >
         <div className="min-w-0">
-          <p className="truncate text-sm font-bold text-white">{fileName(item.key)}</p>
+          <p className="truncate text-sm font-bold text-white" title={fileName(item.key)}>{fileName(item.key)}</p>
           <p className="text-xs text-white/40">{formatBytes(item.size)} · {formatDate(item.lastModified)}</p>
         </div>
         <div className="flex shrink-0 items-center gap-2">

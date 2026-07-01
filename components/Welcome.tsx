@@ -3,11 +3,11 @@
 import {ArrowUpRight, Quote} from 'lucide-react'
 import {motion} from 'motion/react'
 
-import {SITE_SOCIAL_LINKS} from '@/lib/site-config'
+import {SITE_NAME_CITY, SITE_NAME_MAIN, SITE_SOCIAL_LINKS} from '@/lib/site-config'
 
 export default function Welcome() {
     return (
-        <section className="relative overflow-hidden bg-transparent px-4 pt-0 pb-12 sm:px-6 sm:pb-14 lg:px-8 lg:pb-16">
+        <section className="relative overflow-hidden bg-transparent px-5 pt-0 pb-5 sm:px-6 sm:pb-6 lg:px-8 lg:pb-16">
             <motion.div
                 initial={{opacity: 0, y: 18}}
                 animate={{opacity: 1, y: 0}}
@@ -28,8 +28,8 @@ export default function Welcome() {
                         </a>
 
                         <h2 className="mt-5 text-[34px] leading-[1.06] font-black text-text-main sm:text-5xl lg:text-[58px]">
-                            Центр надання допомоги безпритульним тваринам{' '}
-                            <span className="text-secondary">м. Черкаси</span>
+                            {SITE_NAME_MAIN}{' '}
+                            <span className="text-secondary">{SITE_NAME_CITY}</span>
                         </h2>
 
                         <p className="mt-5 max-w-2xl text-base leading-7 font-bold text-gray-600 sm:text-lg sm:leading-8">

@@ -1,5 +1,6 @@
 'use client'
 
+import {useCallback, useEffect, useState} from 'react'
 import useEmblaCarousel from 'embla-carousel-react'
 import {ArrowRight, ChevronLeft, ChevronRight} from 'lucide-react'
 import Section from '@/components/ui/Section'
@@ -14,14 +15,30 @@ export default function AnimalWaitCatalog({ animals }: { animals: Animal[] }) {
   const [emblaRef, emblaApi] = useEmblaCarousel({
     align: 'start',
     containScroll: 'trimSnaps',
-    dragFree: true,
+    watchDrag: false,
     loop: false,
   })
+  const [canScrollPrev, setCanScrollPrev] = useState(false)
+  const [canScrollNext, setCanScrollNext] = useState(false)
+
+  const onSelect = useCallback((api: NonNullable<typeof emblaApi>) => {
+    setCanScrollPrev(api.canScrollPrev())
+    setCanScrollNext(api.canScrollNext())
+  }, [])
+
+  useEffect(() => {
+    if (!emblaApi) return
+
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- sync initial button state from embla, its own recommended usage pattern
+    onSelect(emblaApi)
+    emblaApi.on('select', onSelect)
+    emblaApi.on('reInit', onSelect)
+  }, [emblaApi, onSelect])
 
   return (
       <section
           id="adopt"
-          className="overflow-hidden bg-mauve-50 px-8 py-8 sm:py-10 lg:py-16"
+          className="overflow-hidden bg-mauve-50 px-5 py-5 sm:px-6 sm:py-6 lg:px-8 lg:py-16"
       >
         <div className="mx-auto max-w-336">
           <div className="mb-7 grid gap-5 sm:mb-9 md:mb-10 md:grid-cols-[minmax(0,1fr)_auto] md:items-start md:gap-6">
@@ -69,23 +86,23 @@ export default function AnimalWaitCatalog({ animals }: { animals: Animal[] }) {
                 <ArrowRight className="h-4 w-4" />
               </LinkButton>
 
-              <div className="mt-5 grid grid-cols-2 gap-2 md:pointer-events-none md:absolute md:inset-y-0 md:right-2 md:left-2 md:z-20 md:mt-0 md:flex md:items-center md:justify-between">
+              <div className="pointer-events-none absolute inset-y-0 left-2 right-2 z-20 flex items-center justify-between">
                 <button
                     type="button"
                     aria-label="Попередня тварина"
-                    className="pointer-events-auto inline-flex h-11 min-w-0 cursor-pointer items-center justify-center gap-1.5 rounded-xl border border-orange-100 bg-white px-2 text-xs font-extrabold text-gray-700 shadow-sm transition hover:border-primary/35 hover:bg-orange-50 hover:text-primary focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20 active:scale-[0.98] md:h-11 md:w-11 md:rounded-full md:border-white/70 md:bg-white/85 md:p-0 md:opacity-70 md:backdrop-blur md:hover:border-white md:hover:bg-white md:hover:opacity-100"
+                    disabled={!canScrollPrev}
+                    className="pointer-events-auto inline-flex h-11 w-11 shrink-0 cursor-pointer items-center justify-center rounded-full border border-white/70 bg-white/85 text-gray-700 opacity-70 shadow-sm backdrop-blur transition hover:border-white hover:bg-white hover:opacity-100 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20 active:scale-[0.98] disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-30"
                     onClick={() => emblaApi?.scrollPrev()}
                 >
                   <ChevronLeft className="h-4 w-4" />
-                  <span className="md:hidden">Попередня тварина</span>
                 </button>
                 <button
                     type="button"
                     aria-label="Наступна тварина"
-                    className="pointer-events-auto inline-flex h-11 min-w-0 cursor-pointer items-center justify-center gap-1.5 rounded-xl border border-primary/30 bg-primary px-2 text-xs font-extrabold text-white shadow-sm shadow-primary/20 transition hover:border-orange-600 hover:bg-orange-600 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20 active:scale-[0.98] md:h-11 md:w-11 md:rounded-full md:border-white/70 md:bg-white/85 md:p-0 md:text-gray-900 md:opacity-70 md:backdrop-blur md:hover:border-white md:hover:bg-white md:hover:text-primary md:hover:opacity-100"
+                    disabled={!canScrollNext}
+                    className="pointer-events-auto inline-flex h-11 w-11 shrink-0 cursor-pointer items-center justify-center rounded-full border border-white/70 bg-white/85 text-gray-900 opacity-70 shadow-sm backdrop-blur transition hover:border-white hover:bg-white hover:text-primary hover:opacity-100 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20 active:scale-[0.98] disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-30"
                     onClick={() => emblaApi?.scrollNext()}
                 >
-                  <span className="md:hidden">Наступна тварина</span>
                   <ChevronRight className="h-4 w-4" />
                 </button>
               </div>

@@ -128,7 +128,7 @@ export default async function AdminDonationsPage({
                     {d.donor_name || <span className="italic text-slate-400">Анонімно</span>}
                   </span>
                   {d.donor_comment && (
-                    <span className="text-xs text-slate-400 truncate max-w-[180px]">{d.donor_comment}</span>
+                    <span className="text-xs text-slate-400 truncate max-w-[180px]" title={d.donor_comment}>{d.donor_comment}</span>
                   )}
                 </div>,
 

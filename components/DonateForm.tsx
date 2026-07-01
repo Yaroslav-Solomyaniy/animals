@@ -160,7 +160,7 @@ export default function DonateForm({
       <Button
         type="submit"
         size="lg"
-        className="h-14 w-full text-base"
+        className="h-14 w-full text-sm"
         disabled={isPending || !effectiveAmount}
       >
         {isPending ? (

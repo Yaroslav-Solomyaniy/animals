@@ -17,7 +17,7 @@ import {
 
 import SectionFrame from '@/components/ui/SectionFrame'
 import { Button } from '@/components/ui/Button'
-import { Textarea } from '@/components/ui/FormControls'
+import { Input, Textarea } from '@/components/ui/FormControls'
 import { SITE_CONTACTS } from '@/lib/site-config'
 import { createDonationAction } from '@/app/donate/actions'
 
@@ -168,14 +168,14 @@ export function DonateClient({
           <div className="mt-5">
             <label className="block">
               <span className="mb-2 block text-sm font-bold text-gray-500">Інша сума (грн)</span>
-              <input
+              <Input
                 type="text"
                 inputMode="numeric"
                 min="1"
                 value={customAmount}
                 placeholder="Наприклад, 150"
                 onChange={(e) => setCustomAmount(e.target.value.replace(/\D/g, '').slice(0, 7))}
-                className="h-14 w-full rounded-2xl border border-gray-100 bg-white px-5 text-base font-bold text-text-main shadow-sm outline-none transition-all placeholder:text-gray-300 focus:border-primary focus:ring-4 focus:ring-primary/10"
+                className="h-14 rounded-2xl px-5 text-base font-bold"
               />
             </label>
           </div>
@@ -203,7 +203,7 @@ export function DonateClient({
             <Button
               type="button"
               size="lg"
-              className="h-14 text-base"
+              className="h-14 text-sm"
               disabled={isPending || !amount}
               onClick={startPayment}
             >
@@ -216,7 +216,7 @@ export function DonateClient({
               type="button"
               variant="outline"
               size="lg"
-              className="h-14 text-base"
+              className="h-14 text-sm"
               onClick={() => setShowRequisites((v) => !v)}
             >
               <Banknote className="h-5 w-5" />

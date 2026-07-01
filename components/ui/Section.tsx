@@ -21,14 +21,14 @@ export default function Section<T extends ElementType = 'section'>({
 
   if (contained) {
     return (
-      <Tag className={cn('px-8', className)} {...rest}>
+      <Tag className={cn('px-5 sm:px-6 lg:px-8', className)} {...rest}>
         <div className={cn('mx-auto max-w-336', innerClassName)}>{children}</div>
       </Tag>
     )
   }
 
   return (
-    <Tag className={cn('mx-auto max-w-336 px-8', className)} {...rest}>
+    <Tag className={cn('mx-auto max-w-336 px-5 sm:px-6 lg:px-8', className)} {...rest}>
       {children}
     </Tag>
   )

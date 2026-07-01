@@ -155,7 +155,7 @@ export default function ServicesPage() {
           <>
             <Dialog>
               <DialogTrigger asChild>
-                <Button size="lg" icon={SquarePen}>
+                <Button size="lg" icon={SquarePen} className="text-sm">
                   Записатися на послугу
                 </Button>
               </DialogTrigger>
@@ -165,7 +165,7 @@ export default function ServicesPage() {
                 icon={serviceCategories[0].icon}
               />
             </Dialog>
-            <LinkButton href={SITE_CONTACTS.phoneHref} variant="outline" size="lg">
+            <LinkButton href={SITE_CONTACTS.phoneHref} variant="outline" size="lg" className="text-sm">
               <Phone className="h-5 w-5" />
               {SITE_CONTACTS.phoneDisplay}
             </LinkButton>
@@ -241,7 +241,7 @@ export default function ServicesPage() {
         </motion.div>
       </Section>
 
-      <section className="relative px-4 pb-16 pt-14 sm:px-6 lg:px-8">
+      <section className="relative px-5 pb-5 pt-5 sm:px-6 sm:pb-6 sm:pt-6 lg:px-8 lg:pb-16 lg:pt-14">
         <div
           aria-hidden="true"
           className="pointer-events-none absolute left-1/2 top-0 h-[520px] w-[min(92vw,1100px)] -translate-x-1/2 rounded-full bg-[radial-gradient(circle,rgba(242,116,56,0.12)_0%,transparent_68%)] blur-3xl"
@@ -304,12 +304,12 @@ export default function ServicesPage() {
                   aria-hidden="true"
                   className="absolute -inset-8 -z-10 rounded-[36px] bg-[radial-gradient(circle,rgba(242,116,56,0.16)_0%,transparent_70%)] blur-2xl"
                 />
-                <div className="rounded-[32px] border border-gray-200/80 bg-white p-8 shadow-[0_30px_70px_-40px_rgba(15,23,42,0.35)] sm:p-10">
-                  <div className="flex items-end gap-4">
-                    <span className="text-pink-600 bg-clip-text text-[6.5rem] font-black leading-none tabular-nums sm:text-[8.5rem]">
+                <div className="rounded-[32px] border border-gray-200/80 bg-white p-6 shadow-[0_30px_70px_-40px_rgba(15,23,42,0.35)] sm:p-8 lg:p-10">
+                  <div className="flex flex-wrap items-end gap-3 sm:gap-4">
+                    <span className="text-pink-600 bg-clip-text text-6xl font-black leading-none tabular-nums sm:text-7xl lg:text-[8.5rem]">
                       {serviceCategories.length}
                     </span>
-                    <span className="pb-3 text-[42px] font-black leading-tight text-gray-900">
+                    <span className="pb-2 text-2xl font-black leading-tight text-gray-900 sm:pb-3 sm:text-3xl lg:text-[42px]">
                       категорій
                       <br />
                       послуг

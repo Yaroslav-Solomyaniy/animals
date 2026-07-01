@@ -31,7 +31,7 @@ export default async function DonatePage({ searchParams }: DonatePageProps) {
     <main className="storybook-bg min-h-screen text-text-main">
       <StorybookDecorations />
 
-      <Section contained={false} className="relative z-10 py-10 lg:py-14">
+      <Section contained={false} className="relative z-10 py-5 sm:py-6 lg:py-14">
         <LinkButton
           href={SITE_ROUTES.animals}
           variant="light"

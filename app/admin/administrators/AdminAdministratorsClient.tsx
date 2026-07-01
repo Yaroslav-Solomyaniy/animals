@@ -51,7 +51,7 @@ function AdminCard({ user, onDeleted }: { user: User; onDeleted: (id: string) =>
         <p className="truncate text-sm font-extrabold text-slate-950">
           {name ?? <span className="italic text-slate-400">Без імені</span>}
         </p>
-        <p className="truncate text-xs font-semibold text-slate-500">{user.email}</p>
+        <p className="truncate text-xs font-semibold text-slate-500" title={user.email}>{user.email}</p>
         {user.user_metadata?.position && (
           <p className="mt-0.5 text-xs font-semibold text-primary">{user.user_metadata.position as string}</p>
         )}

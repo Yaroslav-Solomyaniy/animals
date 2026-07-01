@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { ArrowUpLeft, Loader2, PawPrint, Send } from 'lucide-react'
 import { getSupabaseBrowserClient } from '@/lib/supabase/client'
 import { Button, LinkButton } from '@/components/ui/Button'
+import { SITE_NAME } from '@/lib/site-config'
 
 export default function SignInPage() {
   const [email, setEmail] = useState('')
@@ -42,7 +43,7 @@ export default function SignInPage() {
           <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-primary text-white shadow-[0_8px_24px_rgba(242,116,56,0.4)]">
             <PawPrint className="h-5 w-5" />
           </span>
-          <span className="text-lg font-black text-white">Центр надання допомоги безпритульним тваринам м.Черкаси</span>
+          <span className="text-lg font-black text-white">{SITE_NAME}</span>
         </div>
 
         <div>
@@ -57,7 +58,7 @@ export default function SignInPage() {
           <p className="mt-5 max-w-[500px] text-lg leading-7 text-white/60">Тварини, новини, звернення, послуги — все в одному місці.</p>
         </div>
 
-        <p className="text-sm text-white/30">© {new Date().getFullYear()} Центр надання допомоги безпритульним тваринам м. Черкаси.</p>
+        <p className="text-sm text-white/30">© {new Date().getFullYear()} {SITE_NAME}.</p>
       </div>
 
       {/* Form — right side */}

@@ -45,7 +45,7 @@ export default async function SubmitSignUpErrorPage({ searchParams }: ErrorPageP
                 {message}
               </p>
               <div className="mt-7">
-                <LinkButton href="/sign-in" size="lg" className="w-full sm:w-auto">
+                <LinkButton href="/sign-in" size="lg" className="w-full text-sm sm:w-auto">
                   Перейти до входу
                 </LinkButton>
               </div>

@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import Image from 'next/image'
 import { ArrowRight, HeartHandshake, Leaf, PawPrint, ShieldCheck, Smile, Sparkles } from 'lucide-react'
-import { LinkButton } from '@/components/ui/Button'
+import { Button, LinkButton } from '@/components/ui/Button'
 import DotGrid from '@/components/ui/DotGrid'
 import { SITE_CONTACTS, SITE_ROUTES } from '@/lib/site-config'
 import Section from '@/components/ui/Section'
@@ -84,31 +84,31 @@ export default async function WalksPage() {
           returnDuration={1.2}
         />
       </div>
-      <Section className="overflow-hidden py-10 sm:py-14 lg:py-18" innerClassName="grid min-w-0 items-center gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:gap-12">
+      <Section className="overflow-hidden py-5 sm:py-6 lg:py-18" innerClassName="grid min-w-0 items-center gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:gap-12">
           <div className="min-w-0">
             <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-orange-200 bg-white px-4 py-2 text-xs font-extrabold uppercase tracking-[0.16em] text-primary shadow-sm">
               <PawPrint className="h-4 w-4" />
               Прогулянки з тваринами
             </div>
 
-            <h1 className="max-w-3xl wrap-break-word text-[38px] font-black leading-[1.05] text-text-main sm:text-6xl lg:text-7xl">
+            <h1 className="max-w-3xl text-[28px] font-black leading-[1.15] text-text-main sm:text-4xl sm:leading-tight lg:text-5xl">
               Прогулянка, яку вони запам’ятають
             </h1>
 
-            <p className="mt-6 max-w-2xl wrap-break-word text-lg leading-8 text-gray-600">
+            <p className="mt-4 max-w-2xl text-sm leading-6 text-gray-600 sm:mt-6 sm:text-lg sm:leading-8">
               Подаруйте хвостику радість, а собі - теплу зустріч і гарний настрій. Оберіть будь-яку тварину, приходьте у час прогулянок і
               проведіть поруч кілька важливих для неї хвилин.
             </p>
 
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+            <div className="mt-6 flex flex-col gap-3 sm:mt-8 sm:flex-row">
               <WalkOrderDialog
                 trigger={
-                  <button className="inline-flex h-13 w-full items-center justify-center gap-2 rounded-2xl border border-gray-200 bg-white px-6 text-sm font-bold text-text-main transition hover:border-primary/30 hover:text-primary sm:w-fit">
+                  <Button variant="secondary" size="lg" showIcon={false} className="w-full rounded-2xl text-sm sm:w-fit">
                     Запланувати прогулянку
-                  </button>
+                  </Button>
                 }
               />
-              <LinkButton href={SITE_ROUTES.contacts} size="lg" className="h-13 w-full rounded-2xl px-6 sm:w-fit">
+              <LinkButton href={SITE_ROUTES.contacts} size="lg" className="h-13 w-full rounded-2xl px-6 text-sm sm:w-fit">
                 Поставити запитання
                 <ArrowRight className="h-4 w-4" />
               </LinkButton>
@@ -145,7 +145,7 @@ export default async function WalksPage() {
           </div>
       </Section>
 
-      <Section className="pb-8 pt-8" innerClassName="grid gap-4 md:grid-cols-3">
+      <Section className="pb-5 pt-5 sm:pb-6 sm:pt-6 lg:pb-8 lg:pt-8" innerClassName="grid gap-4 md:grid-cols-3">
           {benefits.map((benefit) => {
             const Icon = benefit.icon
 
@@ -163,7 +163,7 @@ export default async function WalksPage() {
           })}
       </Section>
 
-      <Section className="py-8" innerClassName="rounded-3xl border border-orange-100 bg-white p-5 shadow-[0_24px_80px_rgba(31,41,55,0.06)] sm:p-8 lg:p-10">
+      <Section className="py-5 sm:py-6 lg:py-8" innerClassName="rounded-3xl border border-orange-100 bg-white p-5 shadow-[0_24px_80px_rgba(31,41,55,0.06)] sm:p-8 lg:p-10">
           <div className="grid gap-8 lg:grid-cols-[0.75fr_1.25fr] lg:items-start">
             <div>
               <p className="text-sm font-extrabold uppercase tracking-[0.16em] text-primary">Як це працює</p>
@@ -193,13 +193,13 @@ export default async function WalksPage() {
           </div>
       </Section>
 
-      <Section className="py-8">
+      <Section className="py-5 sm:py-6 lg:py-8">
           <div className="mb-6 flex flex-col justify-between gap-4 md:flex-row md:items-end">
             <div>
               <p className="text-sm font-extrabold uppercase tracking-[0.16em] text-primary">Оберіть формат</p>
               <h2 className="mt-3 text-3xl font-black leading-tight text-text-main sm:text-4xl">Прогулянка може бути різною</h2>
             </div>
-            <LinkButton href={SITE_ROUTES.contacts} variant="outline" className="w-full rounded-xl bg-white sm:w-fit">
+            <LinkButton href={SITE_ROUTES.contacts} variant="outline" size="lg" className="w-full rounded-2xl bg-white text-sm sm:w-fit">
               Поставити питання
             </LinkButton>
           </div>

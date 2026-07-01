@@ -3,13 +3,13 @@
 import React from 'react'
 import { Clock3 } from 'lucide-react'
 import { SITE_CONTACTS, SITE_ROUTES } from '@/lib/site-config'
-import { LinkButton } from '@/components/ui/Button'
+import { Button, LinkButton } from '@/components/ui/Button'
 import Section from '@/components/ui/Section'
 import { WalkOrderDialog } from '@/components/WalkOrderDialog'
 
 const GoWalks = () => {
   return (
-    <Section className="pb-10 sm:pb-12 lg:pb-16" innerClassName="rounded-3xl border border-orange-100 bg-text-main p-6 text-white shadow-[0_28px_90px_rgba(31,41,55,0.18)] sm:p-8 lg:grid lg:grid-cols-[1fr_auto] lg:items-center lg:gap-8 lg:p-10">
+    <Section className="pb-5 sm:pb-6 lg:pb-16" innerClassName="rounded-3xl border border-orange-100 bg-text-main p-6 text-white shadow-[0_28px_90px_rgba(31,41,55,0.18)] sm:p-8 lg:grid lg:grid-cols-[1fr_auto] lg:items-center lg:gap-8 lg:p-10">
         <div>
           <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-2 text-xs font-extrabold uppercase tracking-[0.16em] text-orange-100">
             <Clock3 className="h-4 w-4" />
@@ -22,17 +22,22 @@ const GoWalks = () => {
         </div>
 
         <div className="mt-7 flex flex-col gap-3 sm:flex-row lg:mt-0 lg:flex-col">
-          <LinkButton href={SITE_CONTACTS.phoneHref} size="lg" className="h-13 w-full rounded-2xl px-6 lg:w-64">
+          <LinkButton href={SITE_CONTACTS.phoneHref} size="lg" className="h-13 w-full rounded-2xl px-6 text-sm lg:w-64">
             Подзвонити
           </LinkButton>
-          <LinkButton href={SITE_ROUTES.contacts} variant="light" size="lg" className="h-13 w-full rounded-2xl px-6 lg:w-64">
+          <LinkButton href={SITE_ROUTES.contacts} variant="light" size="lg" className="h-13 w-full rounded-2xl px-6 text-sm lg:w-64">
             Контакти центру
           </LinkButton>
           <WalkOrderDialog
             trigger={
-              <button className="inline-flex h-13 w-full items-center justify-center gap-2 rounded-2xl border border-white bg-white/10 px-6 text-sm font-bold text-white transition hover:bg-white/20 lg:w-64">
+              <Button
+                variant="light"
+                size="lg"
+                showIcon={false}
+                className="w-full rounded-2xl border-white bg-white/10 text-sm text-white hover:border-white hover:bg-white/20 hover:text-white lg:w-64"
+              >
                 Заповнити форму
-              </button>
+              </Button>
             }
           />
         </div>

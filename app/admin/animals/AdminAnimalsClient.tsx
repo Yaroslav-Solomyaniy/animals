@@ -113,7 +113,7 @@ function AdminAnimalCard({ animal }: { animal: AdminAnimalCardData }) {
           <StatusBadge status={animal.status} />
         </div>
 
-        <h2 className="mt-3 truncate text-2xl font-extrabold text-slate-950">{animal.name}</h2>
+        <h2 className="mt-3 break-words text-2xl font-extrabold text-slate-950">{animal.name}</h2>
         <p className="mt-1 truncate text-xs font-bold text-slate-400">{animal.slug}</p>
         <p className="mt-3 max-w-3xl text-sm leading-6 text-slate-500">
           {animal.short_description || 'Короткий опис ще не додано.'}

@@ -289,7 +289,7 @@ export default function AnimalsFilter() {
     if (filters.vaccination !== 'all') {
       active.push({
         key: 'vaccination',
-        label: vaccinationOptions.find((o) => o.value === filters.vaccination)?.label ?? '',
+        label: `Вакцинація: ${vaccinationOptions.find((o) => o.value === filters.vaccination)?.label ?? ''}`,
         onRemove: () => updateFilter('vaccination', 'all'),
       })
     }
@@ -297,7 +297,7 @@ export default function AnimalsFilter() {
     if (filters.neuter !== 'all') {
       active.push({
         key: 'neuter',
-        label: neuterOptions.find((o) => o.value === filters.neuter)?.label ?? '',
+        label: `Кастрація/стерилізація: ${neuterOptions.find((o) => o.value === filters.neuter)?.label ?? ''}`,
         onRemove: () => updateFilter('neuter', 'all'),
       })
     }
@@ -322,7 +322,7 @@ export default function AnimalsFilter() {
 
   return (
     <div className="flex flex-col gap-5">
-      <div className="flex items-center gap-3">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
         <div className="relative flex-1">
           <Search className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
           <Input
@@ -348,13 +348,13 @@ export default function AnimalsFilter() {
               setFiltersOpen(true)
             }
           }}
-          className="h-14 w-[350px] shrink-0 gap-2 rounded-xl px-4 text-sm font-bold"
+          className="h-14 w-full shrink-0 gap-2 rounded-xl px-4 text-sm font-bold sm:w-auto"
         >
           <SlidersHorizontal className="h-4 w-4" />
           {filtersOpen ? 'Сховати фільтри' : 'Показати фільтри'}
           {!filtersOpen && hasActiveFilters && (
-            <span className="flex h-5 w-5 items-center justify-center rounded-full bg-primary text-[10px] font-black text-white">
-              {activeFilters.filter((f) => f.key !== 'sort').length}
+            <span className="flex h-5 min-w-5 shrink-0 items-center justify-center rounded-full bg-primary px-1 text-[10px] leading-none font-black tabular-nums text-white">
+              {activeFilters.length}
             </span>
           )}
           <ChevronDown className={`h-4 w-4 transition-transform duration-200 ${filtersOpen ? 'rotate-180' : ''}`} />
@@ -499,8 +499,8 @@ export default function AnimalsFilter() {
       </motion.div>
 
       {hasActiveFilters && (
-        <div className="flex flex-wrap items-center justify-between gap-2 border-t border-gray-100 pt-4">
-          <div className="flex flex-wrap items-center gap-2">
+        <div className="flex items-start justify-between gap-3 border-t border-gray-100 pt-4">
+          <div className="flex min-w-0 flex-wrap items-center gap-2">
             <span className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-gray-400">
               <ListFilter className="h-3.5 w-3.5" />
               Активні фільтри:
@@ -517,7 +517,7 @@ export default function AnimalsFilter() {
               </button>
             ))}
           </div>
-          <Button type="button" variant="ghost" size="sm" showIcon={false} onClick={handleResetAll} className="shrink-0 rounded-xl">
+          <Button type="button" variant="ghost" size="sm" showIcon={false} onClick={handleResetAll} className="shrink-0 whitespace-nowrap rounded-xl">
             <X className="h-4 w-4" />
             Скинути всі
           </Button>

@@ -124,14 +124,14 @@ export default function AnimalsHeroFriend() {
         onPointerEnter={() => setIsPaused(true)}
         onPointerLeave={handlePointerLeave}
         style={{ rotateX: prefersReducedMotion ? 0 : tiltX, rotateY: prefersReducedMotion ? 0 : tiltY, transformStyle: 'preserve-3d' }}
-        className="section-frame relative isolate overflow-hidden rounded-[28px] p-6 sm:p-7"
+        className="section-frame relative isolate overflow-hidden rounded-[28px] p-5 sm:p-6 lg:p-7"
       >
         <motion.span aria-hidden="true" style={{ background: spotlight }} className="pointer-events-none absolute inset-0" />
         <PawPrint aria-hidden="true" className="storybook-float pointer-events-none absolute -top-8 -right-8 h-36 w-36 text-primary/6" />
 
-        <div className="relative flex items-center justify-between gap-4" style={{ transform: 'translateZ(24px)' }}>
-          <span className="inline-flex items-center gap-2 rounded-full bg-orange-50 px-8 py-4 border text-xs font-extrabold tracking-wider text-primary uppercase">
-            <Sparkles className="storybook-spark h-3.5 w-3.5" />
+        <div className="relative flex flex-wrap items-center justify-between gap-3" style={{ transform: 'translateZ(24px)' }}>
+          <span className="inline-flex items-center gap-2 rounded-full border bg-orange-50 px-4 py-2.5 text-xs font-extrabold tracking-wider text-primary uppercase sm:px-6 sm:py-3">
+            <Sparkles className="storybook-spark h-3.5 w-3.5 shrink-0" />
             тут на тебе вже чекає друг
           </span>
           <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-white text-primary ring-1 ring-orange-100">
@@ -140,7 +140,7 @@ export default function AnimalsHeroFriend() {
         </div>
 
         {/* Spotlight benefit */}
-        <div className="relative mt-10 py-10 px-5" style={{ transform: 'translateZ(18px)' }}>
+        <div className="relative mt-6 py-6 px-2 sm:mt-10 sm:py-10 sm:px-5" style={{ transform: 'translateZ(18px)' }}>
           <AnimatePresence mode="wait">
             <motion.div
               key={active.id}
@@ -148,18 +148,18 @@ export default function AnimalsHeroFriend() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.35, ease: 'easeOut' }}
-              className="flex items-start gap-4"
+              className="flex items-start gap-3 sm:gap-4"
             >
               <motion.span
                 initial={{ scale: 0.6, rotate: -12, opacity: 0 }}
                 animate={{ scale: 1, rotate: 0, opacity: 1 }}
                 transition={{ type: 'spring', stiffness: 320, damping: 18 }}
-                className={`flex h-16 w-16 shrink-0 items-center justify-center rounded-3xl ring-1 ${active.accent}`}
+                className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-3xl ring-1 sm:h-16 sm:w-16 ${active.accent}`}
               >
-                <ActiveIcon className="h-8 w-8" />
+                <ActiveIcon className="h-6 w-6 sm:h-8 sm:w-8" />
               </motion.span>
               <div className="min-w-0 pt-1">
-                <h3 className="text-2xl leading-tight font-black text-text-main sm:text-[27px]">{active.title}</h3>
+                <h3 className="text-xl leading-tight font-black text-text-main sm:text-2xl lg:text-[27px]">{active.title}</h3>
                 <p className="mt-2 max-w-md text-sm leading-6 font-bold text-gray-600 sm:text-base">{active.text}</p>
               </div>
             </motion.div>
@@ -168,7 +168,7 @@ export default function AnimalsHeroFriend() {
 
         {/* Benefit tabs */}
         <div
-          className="relative flex items-start justify-between gap-2 border-t border-gray-100 pt-5 sm:gap-4"
+          className="relative grid grid-cols-2 gap-3 border-t border-gray-100 pt-5 sm:flex sm:items-start sm:justify-between sm:gap-4"
           style={{ transform: 'translateZ(12px)' }}
         >
           {benefits.map((benefit, i) => {
@@ -183,7 +183,7 @@ export default function AnimalsHeroFriend() {
                 onMouseEnter={() => setHoveredIndex(i)}
                 onMouseLeave={() => setHoveredIndex(null)}
                 aria-pressed={isActive}
-                className="group flex flex-1 flex-col items-center gap-2 rounded-2xl outline-none focus-visible:ring-4 focus-visible:ring-primary/20"
+                className="group flex flex-col items-center gap-2 rounded-2xl outline-none focus-visible:ring-4 focus-visible:ring-primary/20 sm:flex-1"
               >
                 <motion.span
                   whileHover={{ scale: 1.08, rotate: -6 }}

@@ -47,7 +47,7 @@ export const AnimalsCatalogClient: FC<Props> = ({ animals, foundCount, paginatio
       </PageHero>
 
       {/* Catalog */}
-      <Section id="animals-catalog" className="relative z-20 scroll-mt-24 pb-16">
+      <Section id="animals-catalog" className="relative z-20 scroll-mt-24 pb-5 sm:pb-6 lg:pb-16">
         {/* Filters */}
         <SectionFrame className="rounded-[28px] border-gray-100 p-4 sm:p-5">
           <AnimalsFilter />
@@ -126,9 +126,9 @@ function EmptyState({ onReset }: { onReset: () => void }) {
       <div className="storybook-wiggle mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-orange-50 text-primary">
         <Search className="h-7 w-7" />
       </div>
-      <h3 className="mt-5 text-2xl font-extrabold text-text-main">Цю сторінку ще треба знайти</h3>
-      <p className="mx-auto mt-2 max-w-xl text-gray-500">Спробуйте змінити розмір, стать або статус готовності.</p>
-      <Button type="button" onClick={onReset} className="mt-6">Показати всіх</Button>
+      <h3 className="mt-5 text-2xl font-extrabold text-text-main">На жаль, нічого не знайдено</h3>
+      <p className="mx-auto mt-2 max-w-xl text-gray-500">За такими фільтрами тварин немає. Спробуйте змінити розмір, стать або статус готовності.</p>
+      <Button type="button" onClick={onReset} className="mt-6">Скинути фільтри</Button>
     </SectionFrame>
   )
 }

@@ -6,13 +6,14 @@ import AdminShell from '@/components/admin/AdminShell'
 import AuthHashRedirect from '@/components/AuthHashRedirect'
 import { FeatureFlagsProvider } from '@/components/FeatureFlagsProvider'
 import { getSiteSettings } from '@/lib/site-settings'
+import { SITE_NAME } from '@/lib/site-config'
 import { cn } from '@/lib/utils'
 import './globals.css'
 
 const geist = Geist({ subsets: ['latin'], variable: '--font-sans' })
 
 export const metadata: Metadata = {
-  title: 'Міський центр допомоги тваринам м. Черкаси | Допомога та новий дім для тварин',
+  title: `${SITE_NAME} | Допомога та новий дім для тварин`,
   description:
     'Офіційний сайт центру допомоги тваринам у Черкасах. Інформація про адопцію, допомогу тваринам, підтримку ініціатив, волонтерство та відповідальне поводження з тваринами.',
   icons: [

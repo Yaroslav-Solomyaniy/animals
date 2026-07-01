@@ -46,6 +46,24 @@
   h5,
   h6 {
     @apply font-bold tracking-tight;
+    text-wrap: balance;
+    overflow-wrap: normal;
+    word-break: normal;
+    hyphens: none;
+  }
+
+  p {
+    text-wrap: pretty;
+    overflow-wrap: normal;
+    word-break: normal;
+    hyphens: none;
+  }
+
+  button,
+  [role='button'],
+  .btn-primary,
+  .btn-outline {
+    text-wrap: nowrap;
   }
 }
 

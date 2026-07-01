@@ -6,7 +6,7 @@ import type { ReactNode } from 'react'
 import type { LucideIcon } from 'lucide-react'
 import { ArrowRight, Clock, Facebook, FileText, Globe, Heart, Instagram, Mail, MapPin, Newspaper, Phone, Stethoscope } from 'lucide-react'
 
-import { buildNewsHref, SITE_CONTACTS, SITE_NAV_LINKS, SITE_ROUTES, SITE_SOCIAL_LINKS } from '@/lib/site-config'
+import { buildNewsHref, SITE_CONTACTS, SITE_NAME, SITE_NAV_LINKS, SITE_ROUTES, SITE_SOCIAL_LINKS } from '@/lib/site-config'
 import { getSupabaseBrowserClient } from '@/lib/supabase/client'
 import Section from '@/components/ui/Section'
 
@@ -68,7 +68,7 @@ export default function Footer() {
 
   return (
     <footer className="bg-text-main text-white">
-      <Section className="py-8 sm:py-10 lg:py-16">
+      <Section className="py-5 sm:py-6 lg:py-16">
         <div className="grid grid-cols-1 gap-y-10 sm:grid-cols-2 sm:gap-x-8 lg:grid-cols-[minmax(0,1.25fr)_minmax(0,0.8fr)_minmax(0,0.85fr)_minmax(0,1fr)] lg:gap-x-8 xl:grid-cols-[360px_220px_240px_300px] xl:justify-between">
           <section className="min-w-0 overflow-hidden">
             <Link href={SITE_ROUTES.home} className="flex items-start gap-3">
@@ -76,7 +76,7 @@ export default function Footer() {
                 <Heart className="h-5 w-5" />
               </span>
               <span>
-                <span className="block text-base font-black leading-snug">Центр допомоги тваринам</span>
+                <span className="block text-base font-black leading-snug">{SITE_NAME}</span>
                 <span className="mt-1 block text-sm leading-6 text-white/54">
                   {SITE_CONTACTS.city}, {SITE_CONTACTS.street}
                 </span>
@@ -140,7 +140,7 @@ export default function Footer() {
                 href={buildNewsHref(item.slug ?? item.id)}
                 className="group block border-b border-white/8 pb-3 last:border-b-0 last:pb-0"
               >
-                <span className="line-clamp-2 text-sm font-bold leading-5 text-white/78 transition group-hover:text-white">
+                <span className="text-sm font-bold leading-5 text-white/78 transition group-hover:text-white">
                   {item.title}
                 </span>
                 <span className="mt-1 block text-xs font-bold text-orange-200/72">{formatFooterNewsDate(item.published_at)}</span>
@@ -169,8 +169,8 @@ export default function Footer() {
           </span>
         </Link>
 
-        <div className="mt-9 flex flex-col items-center justify-center gap-3 text-center text-xs font-semibold leading-5 text-white/38 lg:flex-row lg:justify-between lg:text-left">
-          <p className="max-w-4xl">© {year} Центр надання допомоги безпритульним тваринам м. Черкаси.</p>
+        <div className="mt-9 flex flex-col items-start justify-center gap-3 text-left text-xs font-semibold leading-5 text-white/38 lg:flex-row lg:justify-between">
+          <p className="max-w-4xl">© {year} {SITE_NAME}.</p>
           <p className="shrink-0">Розробка та дизайн by Yaroslav Solomianyi.</p>
         </div>
       </Section>
@@ -240,7 +240,7 @@ function FooterContact({
   const content = (
     <>
       <Icon className="h-4 w-4 shrink-0 text-orange-200/82" />
-      <span className="min-w-0 truncate">{children}</span>
+      <span className="min-w-0 break-words">{children}</span>
     </>
   )
 

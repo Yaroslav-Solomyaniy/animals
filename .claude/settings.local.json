@@ -58,7 +58,8 @@
       "Bash(\"/c/Program Files/Google/Chrome/Application/chrome.exe\" --headless=new --disable-gpu --hide-scrollbars --window-size=1440,3600 --virtual-time-budget=8000 --screenshot=\"C:\\\\Users\\\\Yaroslav\\\\Desktop\\\\animals\\\\tmp_services.png\" \"http://localhost:3000/services\")",
       "Bash(\"/c/Program Files/Google/Chrome/Application/chrome.exe\" --headless --disable-gpu --hide-scrollbars --window-size=1440,2000 --virtual-time-budget=9000 --screenshot=\"C:\\\\Users\\\\Yaroslav\\\\Desktop\\\\animals\\\\tmp_full.png\" \"http://localhost:3000/services\")",
       "Bash(python -c \"from PIL import Image; im=Image.open\\(r'C:\\\\Users\\\\Yaroslav\\\\Desktop\\\\animals\\\\tmp_full.png'\\); print\\(im.size\\)\")",
-      "Bash(\"/c/Program Files/Google/Chrome/Application/chrome.exe\" --headless=new --disable-gpu --hide-scrollbars --window-size=1440,6200 --virtual-time-budget=9000 --screenshot=\"C:\\\\Users\\\\Yaroslav\\\\Desktop\\\\animals\\\\tmp_tall.png\" \"http://localhost:3000/services\")"
+      "Bash(\"/c/Program Files/Google/Chrome/Application/chrome.exe\" --headless=new --disable-gpu --hide-scrollbars --window-size=1440,6200 --virtual-time-budget=9000 --screenshot=\"C:\\\\Users\\\\Yaroslav\\\\Desktop\\\\animals\\\\tmp_tall.png\" \"http://localhost:3000/services\")",
+      "Bash(npx --no-install playwright --version)"
     ]
   },
   "enableAllProjectMcpServers": true,

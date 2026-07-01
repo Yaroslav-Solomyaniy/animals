@@ -10,6 +10,10 @@ export const SITE_ROUTES = {
   donate: '/donate',
 } as const
 
+export const SITE_NAME_MAIN = 'Центр допомоги тваринам'
+export const SITE_NAME_CITY = 'м.Черкаси'
+export const SITE_NAME = `${SITE_NAME_MAIN} ${SITE_NAME_CITY}`
+
 export const SITE_CONTACTS = {
   phoneDisplay: '+38 (093) 296-60-97',
   phoneHref: 'tel:+380932966097',

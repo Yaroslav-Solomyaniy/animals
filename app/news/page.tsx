@@ -14,7 +14,7 @@ export default async function NewsPage({
   return (
     <main className="min-h-screen text-gray-950">
       <StorybookDecorations />
-      <Section className="pt-14" innerClassName="relative overflow-hidden rounded-[44px] bg-[linear-gradient(135deg,#f27438_0%,#e76f51_58%,#2d6a4f_150%)] text-white shadow-[0_30px_110px_rgba(242,116,56,0.22)]">
+      <Section className="pt-5 sm:pt-6 lg:pt-14" innerClassName="relative overflow-hidden rounded-[44px] bg-[linear-gradient(135deg,#f27438_0%,#e76f51_58%,#2d6a4f_150%)] text-white shadow-[0_30px_110px_rgba(242,116,56,0.22)]">
         <div className="absolute -bottom-18 right-0 h-56 w-[74%] rounded-tl-[120px] bg-secondary/88" />
         <div className="absolute right-[7%] top-16 hidden h-60 w-[34rem] rounded-[999px] bg-secondary/84 lg:block" />
         <div className="absolute right-[25%] top-12 hidden h-36 w-36 rounded-full bg-secondary/84 lg:block" />
@@ -54,7 +54,7 @@ export default async function NewsPage({
       </Section>
 
       {/* News grid */}
-      <Section className="pt-14 pb-14">
+      <Section className="pt-5 pb-5 sm:pt-6 sm:pb-6 lg:pt-14 lg:pb-14">
         <SectionFrame className="p-4 sm:p-6 lg:p-8">
           <div className="mb-6 flex items-end justify-between gap-4 border-b border-orange-100/70 pb-6">
             <div>

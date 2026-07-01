@@ -58,7 +58,7 @@ export default async function NewsDetailsPage({ params }: NewsPageProps) {
     <main className="storybook-bg min-h-screen text-gray-950">
       <StorybookDecorations />
 
-      <section className="px-4 pb-8 pt-6 sm:px-6 lg:px-8" style={{ position: 'relative', zIndex: 10 }}>
+      <section className="px-5 pb-5 pt-5 sm:px-6 sm:pb-6 sm:pt-6 lg:px-8 lg:pb-8 lg:pt-6" style={{ position: 'relative', zIndex: 10 }}>
         <div className="mx-auto mb-4 max-w-336">
           <BackLink />
         </div>
@@ -126,7 +126,7 @@ export default async function NewsDetailsPage({ params }: NewsPageProps) {
         </article>
       </section>
 
-      <section className="px-4 py-8 sm:px-6 lg:px-8" style={{ zIndex: 0 }}>
+      <section className="px-5 py-5 sm:px-6 sm:py-6 lg:px-8 lg:py-8" style={{ zIndex: 0 }}>
         <div className="mx-auto grid max-w-336 gap-7 lg:grid-cols-[minmax(0,1fr)_380px] lg:items-start">
           <SectionFrame className="overflow-hidden rounded-[32px] p-0 transition hover:border-orange-200 hover:shadow-[0_28px_80px_rgba(242,116,56,0.16)]">
             <div className="border-b border-orange-100 bg-orange-50/60 px-6 py-5 sm:px-8">
@@ -423,7 +423,7 @@ function NewsBlock({ block }: { block: NewsContentBlock }) {
               variant={button.variant === 'outline' ? 'outline' : 'primary'}
               size="lg"
               showIcon={false}
-              className="flex-1 justify-center"
+              className="flex-1 justify-center text-sm"
             >
               {button.label}
             </LinkButton>

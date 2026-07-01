@@ -18,6 +18,7 @@ import {
   Users,
   WalletIcon,
 } from 'lucide-react'
+import Image from 'next/image'
 import PageHero from '@/components/ui/PageHero'
 import SectionFrame from '@/components/ui/SectionFrame'
 import StorybookDecorations from '@/components/ui/StorybookDecorations'
@@ -37,28 +38,16 @@ const helpWays = [
     icon: WalletIcon,
     title: 'Фінансова допомога',
     text: 'Донати закривають корм, лікування, вакцинацію, стерилізацію та щоденний догляд.',
-    bg: 'bg-orange-50',
-    border: 'border-orange-200',
-    bar: 'bg-gradient-to-r from-orange-400 to-amber-300',
-    iconColor: 'text-orange-500',
   },
   {
     icon: Users,
     title: 'Волонтерство',
     text: 'Вигул, соціалізація, фото, допомога на подіях і підтримка тварин поруч.',
-    bg: 'bg-sky-50',
-    border: 'border-sky-200',
-    bar: 'bg-gradient-to-r from-sky-400 to-blue-300',
-    iconColor: 'text-sky-500',
   },
   {
     icon: Package,
     title: 'Матеріальна допомога',
     text: 'Корм, підстилки, іграшки, амуніція, засоби гігієни та ветеринарні препарати.',
-    bg: 'bg-emerald-50',
-    border: 'border-emerald-200',
-    bar: 'bg-gradient-to-r from-emerald-400 to-teal-300',
-    iconColor: 'text-emerald-500',
   },
 ]
 
@@ -143,19 +132,26 @@ export default async function HelpForUsPage() {
         description="Кожен внесок допомагає тваринам отримувати необхідний догляд, лікування, харчування та шанс знайти нову родину. Ви можете підтримати центр фінансово, стати волонтером або передати необхідні речі для щоденної турботи."
         icon={Heart}
       >
-        <div className="overflow-hidden rounded-3xl border border-orange-100 bg-white p-3 shadow-[0_28px_80px_rgba(15,23,42,0.08)]">
-          <div className="relative min-h-105 overflow-hidden rounded-[26px] border border-orange-100 bg-gray-950">
-            <img src={helpDogsImage.src} alt="Допомога тваринам" className="absolute inset-0 h-full w-full object-cover" />
-            <div className="absolute inset-0 bg-linear-to-t from-gray-950/70 via-gray-950/10 to-transparent" />
+        <div className="relative overflow-hidden rounded-[34px] border-8 border-white bg-gray-100 shadow-[0_32px_90px_rgba(31,41,55,0.16)]">
+          <div className="relative aspect-16/10 min-h-75 sm:min-h-90 lg:min-h-110">
+            <Image
+              src={helpDogsImage}
+              alt="Допомога тваринам"
+              fill
+              priority
+              sizes="(max-width: 1024px) 100vw, 620px"
+              className="object-cover object-center"
+            />
+            <div className="pointer-events-none absolute inset-0 bg-linear-to-t from-gray-950/70 via-gray-950/10 to-transparent" />
             <div className="absolute right-5 bottom-5 left-5">
-              <p className="max-w-sm text-3xl font-black leading-tight text-white drop-shadow">Вони потребують, ми допомагаємо</p>
+              <p className="max-w-sm text-2xl font-black leading-tight text-white drop-shadow sm:text-3xl">Вони потребують, ми допомагаємо</p>
             </div>
           </div>
         </div>
       </PageHero>
 
-      <Section className="mt-14">
-        {/* ── 3 Help Ways ── */}
+      {/* ── 3 Help Ways ── */}
+      <Section className="pb-10 sm:pb-12 lg:pb-16">
         <div className={`grid gap-5 ${settings.donationsEnabled ? 'md:grid-cols-3' : 'md:grid-cols-2'}`}>
           {helpWays
             .filter((w) => w.title !== 'Фінансова допомога' || settings.donationsEnabled)
@@ -164,27 +160,28 @@ export default async function HelpForUsPage() {
               return (
                 <article
                   key={way.title}
-                  className={`group relative overflow-hidden rounded-4xl border ${way.bg} ${way.border} p-8 transition duration-300 hover:-translate-y-1.5 hover:shadow-[0_24px_64px_rgba(15,23,42,0.10)]`}
+                  tabIndex={0}
+                  className="group relative overflow-hidden rounded-4xl border border-orange-200 bg-white p-8 shadow-[0_24px_64px_rgba(15,23,42,0.10)] outline-none transition duration-300 lg:border-gray-200 lg:shadow-sm lg:hover:-translate-y-1.5 lg:hover:border-orange-200 lg:hover:shadow-[0_24px_64px_rgba(15,23,42,0.10)] lg:focus-visible:-translate-y-1.5 lg:focus-visible:border-orange-200 lg:focus-visible:shadow-[0_24px_64px_rgba(15,23,42,0.10)] focus-visible:ring-4 focus-visible:ring-primary/20"
                 >
                   {/* Top accent bar */}
-                  <div className={`absolute inset-x-0 top-0 h-[3px] ${way.bar}`} />
+                  <div className="absolute inset-x-0 top-0 h-[3px] bg-primary transition-colors duration-300 lg:bg-gray-200 lg:group-hover:bg-primary lg:group-focus-visible:bg-primary" />
 
-                  <Icon className={`mb-6 h-11 w-11 ${way.iconColor}`} />
+                  <Icon className="mb-6 h-11 w-11 text-primary transition-colors duration-300 lg:text-gray-400 lg:group-hover:text-primary lg:group-focus-visible:text-primary" />
 
                   <h2 className="text-2xl font-black text-gray-950">{way.title}</h2>
                   <p className="mt-3 leading-7 text-gray-600">{way.text}</p>
 
                   {/* Bottom accent line */}
-                  <div
-                    className={`mt-8 h-[3px] w-10 rounded-full ${way.bar} opacity-70 transition-all duration-300 group-hover:w-16 group-hover:opacity-100`}
-                  />
+                  <div className="mt-8 h-[3px] w-16 rounded-full bg-primary opacity-100 transition-all duration-300 lg:w-10 lg:bg-gray-200 lg:opacity-70 lg:group-hover:w-16 lg:group-hover:bg-primary lg:group-hover:opacity-100 lg:group-focus-visible:w-16 lg:group-focus-visible:bg-primary lg:group-focus-visible:opacity-100" />
                 </article>
               )
             })}
         </div>
+      </Section>
 
-        {/* ── Financial Support + Reports ── */}
-        {(settings.donationsEnabled || (settings.reportsBlockEnabled && reports.length > 0)) && (
+      {/* ── Financial Support + Reports ── */}
+      {(settings.donationsEnabled || (settings.reportsBlockEnabled && reports.length > 0)) && (
+        <Section className="pb-10 sm:pb-12 lg:pb-16">
           <DonationBanner
             donationsEnabled={settings.donationsEnabled}
             amounts={settings.donationAmounts}
@@ -197,10 +194,12 @@ export default async function HelpForUsPage() {
             }))}
             reports={settings.reportsBlockEnabled ? reports : []}
           />
-        )}
+        </Section>
+      )}
 
-        {/* ── Volunteer Section ── */}
-        <SectionFrame as="section" className="mt-14 grid gap-8 p-4 sm:p-6 lg:grid-cols-[1fr_0.9fr] lg:p-8">
+      {/* ── Volunteer Section ── */}
+      <Section className="pb-10 sm:pb-12 lg:pb-16">
+        <div className="grid gap-5 lg:grid-cols-[1fr_0.9fr] lg:gap-8">
           {/* Volunteer roles */}
           <div className="rounded-[36px] border border-gray-100 bg-white p-6 sm:p-8">
             <div className="mb-8 max-w-2xl">
@@ -237,8 +236,8 @@ export default async function HelpForUsPage() {
 
           {/* How to join — timeline */}
           <div className="overflow-hidden rounded-[36px] border border-orange-100 bg-orange-50/70">
-            <div className="relative h-52">
-              <img src="/dogs.png" alt="Собаки" className="h-full w-full object-cover" />
+            <div className="relative aspect-[2000/694] min-h-52">
+              <Image src="/dogs.png" alt="Собаки" fill sizes="(max-width: 1024px) 100vw, 500px" className="object-cover object-top" />
               <div className="absolute inset-0 bg-gradient-to-t from-orange-950/30 to-transparent" />
             </div>
             <div className="p-6 sm:p-8">
@@ -268,18 +267,20 @@ export default async function HelpForUsPage() {
                 })}
               </ol>
 
-              <LinkButton href={SITE_ROUTES.contacts} size="lg" className="mt-8 w-full">
+              <LinkButton href={SITE_ROUTES.contacts} size="lg" className="mt-8 w-full text-sm">
                 Перейти до контактів
               </LinkButton>
             </div>
           </div>
-        </SectionFrame>
+        </div>
+      </Section>
 
-        {/* ── Supplies ── */}
-        <SectionFrame as="section" className="mt-14 p-6 sm:p-8">
+      {/* ── Supplies ── */}
+      <Section className="pb-10 sm:pb-12 lg:pb-16">
+        <SectionFrame as="section" className="p-6 sm:p-8">
           <div id="necessary-things" className="scroll-mt-24" />
-          <div className="mx-auto mb-8 max-w-3xl text-center">
-            <Package className="mx-auto mb-4 h-11 w-11 text-orange-500" />
+          <div className="mb-8 max-w-3xl">
+            <Package className="mb-4 h-11 w-11 text-orange-500" />
             <h2 className="text-3xl font-black text-gray-950">Необхідні речі</h2>
             <p className="mt-4 leading-7 text-gray-600">
               Центр намагається самостійно забезпечувати себе всім необхідним. Але якщо ви маєте бажання підтримати — ось що справді стане у пригоді.
@@ -312,7 +313,7 @@ export default async function HelpForUsPage() {
       </Section>
 
       {/* CTA */}
-      <Section className="py-14">
+      <Section className="pb-14 sm:pb-16 lg:pb-20">
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
           {[
             {
@@ -376,7 +377,7 @@ export default async function HelpForUsPage() {
                 <h3 className="relative text-2xl font-black text-gray-950">{item.title}</h3>
                 <p className="relative mt-3 leading-7 text-gray-500">{item.description}</p>
                 <div className="relative mt-auto pt-8">
-                  <LinkButton href={item.href} size="lg" className="w-full">
+                  <LinkButton href={item.href} size="lg" className="w-full text-sm">
                     {item.label}
                   </LinkButton>
                 </div>

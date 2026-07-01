@@ -47,7 +47,7 @@ export default async function AdminReportsPage() {
                     <div>
                       <p className="font-extrabold text-slate-950">{report.title}</p>
                       {report.description && (
-                        <p className="max-w-xs truncate text-xs text-slate-500">{report.description}</p>
+                        <p className="max-w-xs truncate text-xs text-slate-500" title={report.description}>{report.description}</p>
                       )}
                     </div>
                   </div>,

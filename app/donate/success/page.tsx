@@ -2,10 +2,11 @@ import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 import { PawPrint, Sparkles, Star } from 'lucide-react'
 import type { Metadata } from 'next'
+import { SITE_NAME } from '@/lib/site-config'
 import SuccessCard from './SuccessCard'
 
 export const metadata: Metadata = {
-  title: 'Дякуємо за підтримку! | Центр допомоги тваринам',
+  title: `Дякуємо за підтримку! | ${SITE_NAME}`,
 }
 
 export default async function DonateSuccessPage() {
@@ -39,7 +40,7 @@ export default async function DonateSuccessPage() {
         <Sparkles className="absolute right-[30%] bottom-[25%] h-5 w-5 text-rose-300/45" />
       </div>
 
-      <div className="relative z-10 flex min-h-screen flex-col items-center justify-center px-4 py-24">
+      <div className="relative z-10 flex min-h-screen flex-col items-center justify-center px-5 py-24 sm:px-6 lg:px-8">
         <SuccessCard />
       </div>
     </main>

@@ -22,10 +22,10 @@ export default function PageHero({
   spacing = 'default',
 }: PageHeroProps) {
   const isCentered = align === 'center'
-  const sectionSpacing = spacing === 'compact' ? 'py-10 sm:py-14 lg:py-20' : 'py-16 lg:py-24'
+  const sectionSpacing = spacing === 'compact' ? 'py-5 sm:py-6 lg:py-20' : 'py-5 sm:py-6 lg:py-24'
 
   return (
-    <section className={`relative isolate overflow-hidden border-b border-gray-100/70 px-4 sm:px-6 lg:px-8 ${sectionSpacing}`}>
+    <section className={`relative isolate overflow-hidden border-b border-gray-100/70 px-5 sm:px-6 lg:px-8 ${sectionSpacing}`}>
       <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(255,250,245,0.58),rgba(249,250,251,0.28))]" />
       <HeroTile className="left-6 top-10 hidden h-16 w-16 rotate-[-8deg] rounded-2xl border-orange-100 bg-white/75 sm:block" />
       <HeroTile className="right-10 top-20 hidden h-12 w-12 rotate-10 rounded-xl border-emerald-100 bg-white/75 lg:block [animation-delay:900ms]" />
@@ -35,10 +35,10 @@ export default function PageHero({
       <div
         className={[
           'relative mx-auto max-w-336',
-          isCentered ? 'text-center' : 'grid items-center gap-14 lg:grid-cols-[0.92fr_1.08fr]',
+          isCentered ? 'text-center' : 'grid min-w-0 items-center gap-14 lg:grid-cols-[0.92fr_1.08fr]',
         ].join(' ')}
       >
-        <div className={isCentered ? 'mx-auto max-w-4xl' : 'max-w-3xl'}>
+        <div className={isCentered ? 'mx-auto max-w-4xl' : 'min-w-0 max-w-3xl'}>
           <span className="mb-5 inline-flex items-center gap-2 rounded-full border border-orange-100 bg-white px-4 py-2 text-sm font-semibold text-orange-600 shadow-[0_12px_40px_rgba(249,115,22,0.08)]">
             <Icon className="h-4 w-4" />
             {eyebrow}
@@ -50,7 +50,7 @@ export default function PageHero({
           {actions && <div className="mt-8 flex flex-col gap-3 sm:flex-row">{actions}</div>}
         </div>
 
-        {children && !isCentered && <div className="relative">{children}</div>}
+        {children && !isCentered && <div className="relative min-w-0">{children}</div>}
       </div>
     </section>
   )

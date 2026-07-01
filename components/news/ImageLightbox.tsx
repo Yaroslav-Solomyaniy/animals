@@ -58,19 +58,20 @@ export default function ImageLightbox({images,
             label="Закрити перегляд фото"
             variant="ghost"
             onClick={close}
-            className="absolute right-4 top-4 border-white/30 bg-white/12 text-white backdrop-blur hover:bg-white hover:text-gray-950"
+            className="absolute right-3 top-3 z-20 border-white/30 bg-white/12 text-white backdrop-blur hover:bg-white hover:text-gray-950 sm:right-4 sm:top-4"
           >
             <X className="h-5 w-5" />
           </IconButton>
 
           {hasManyImages && (
             <>
+              {/* Side arrows: only where there's enough room next to the image not to cover it. */}
               <IconButton
                 type="button"
                 label="Попереднє фото"
                 variant="ghost"
                 onClick={(e) => { e.stopPropagation(); goPrev() }}
-                className="absolute left-4 top-1/2 -translate-y-1/2 border-white/30 bg-white/12 text-white backdrop-blur hover:bg-white hover:text-gray-950"
+                className="absolute left-4 top-1/2 z-20 hidden -translate-y-1/2 border-white/30 bg-white/12 text-white backdrop-blur hover:bg-white hover:text-gray-950 sm:flex"
               >
                 <ArrowLeft className="h-5 w-5" />
               </IconButton>
@@ -79,7 +80,7 @@ export default function ImageLightbox({images,
                 label="Наступне фото"
                 variant="ghost"
                 onClick={(e) => { e.stopPropagation(); goNext() }}
-                className="absolute right-4 top-1/2 -translate-y-1/2 border-white/30 bg-white/12 text-white backdrop-blur hover:bg-white hover:text-gray-950"
+                className="absolute right-4 top-1/2 z-20 hidden -translate-y-1/2 border-white/30 bg-white/12 text-white backdrop-blur hover:bg-white hover:text-gray-950 sm:flex"
               >
                 <ArrowRight className="h-5 w-5" />
               </IconButton>
@@ -87,18 +88,50 @@ export default function ImageLightbox({images,
           )}
 
           {activeImage && (
-            <div className="relative max-h-[92vh] max-w-[92vw]" onClick={(e) => e.stopPropagation()}>
+            <div className="relative max-h-[80vh] max-w-[92vw] sm:max-h-[92vh]" onClick={(e) => e.stopPropagation()}>
               <img
                 src={activeImage.src}
                 alt={activeImage.alt}
-                className="max-h-[92vh] max-w-[92vw] rounded-2xl object-contain shadow-[0_30px_120px_rgba(0,0,0,0.48)]"
+                className="max-h-[80vh] max-w-[92vw] rounded-2xl object-contain shadow-[0_30px_120px_rgba(0,0,0,0.48)] sm:max-h-[92vh]"
               />
-              {hasManyImages && activeIndex !== null && (
-                <span className="absolute bottom-4 left-1/2 -translate-x-1/2 rounded-full bg-gray-950/70 px-4 py-2 text-sm font-black text-white backdrop-blur">
-                  {activeIndex + 1} / {images.length}
-                </span>
-              )}
             </div>
+          )}
+
+          {/* Mobile: no room beside the image for side arrows, so prev/next move into a bottom bar with the counter. */}
+          {hasManyImages && activeIndex !== null && (
+            <div
+              className="absolute bottom-4 left-1/2 z-20 flex -translate-x-1/2 items-center gap-3 sm:hidden"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <IconButton
+                type="button"
+                label="Попереднє фото"
+                variant="ghost"
+                className="h-10 w-10 border-white/30 bg-white/12 text-white backdrop-blur hover:bg-white hover:text-gray-950"
+                onClick={goPrev}
+              >
+                <ArrowLeft className="h-4 w-4" />
+              </IconButton>
+              <span className="rounded-full bg-gray-950/70 px-4 py-2 text-sm font-black whitespace-nowrap text-white backdrop-blur">
+                {activeIndex + 1} / {images.length}
+              </span>
+              <IconButton
+                type="button"
+                label="Наступне фото"
+                variant="ghost"
+                className="h-10 w-10 border-white/30 bg-white/12 text-white backdrop-blur hover:bg-white hover:text-gray-950"
+                onClick={goNext}
+              >
+                <ArrowRight className="h-4 w-4" />
+              </IconButton>
+            </div>
+          )}
+
+          {/* Tablet/desktop: counter stays under the image, arrows are already at the sides. */}
+          {hasManyImages && activeIndex !== null && activeImage && (
+            <span className="absolute bottom-4 left-1/2 z-20 hidden -translate-x-1/2 rounded-full bg-gray-950/70 px-4 py-2 text-sm font-black whitespace-nowrap text-white backdrop-blur sm:block">
+              {activeIndex + 1} / {images.length}
+            </span>
           )}
         </DialogRawContent>
       </Dialog>

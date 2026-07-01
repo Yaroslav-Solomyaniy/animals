@@ -3,7 +3,7 @@
 import { motion } from 'motion/react'
 import { Bone, Heart, Home, PawPrint, ShieldCheck } from 'lucide-react'
 import { LinkButton } from '@/components/ui/Button'
-import { SITE_ROUTES } from '@/lib/site-config'
+import { SITE_NAME, SITE_ROUTES } from '@/lib/site-config'
 
 export default function SuccessCard() {
   return (
@@ -73,11 +73,11 @@ export default function SuccessCard() {
 
         {/* Buttons */}
         <div className="flex flex-col gap-2.5 sm:flex-row">
-          <LinkButton href={SITE_ROUTES.animals} size="lg" className="flex-1 justify-center">
+          <LinkButton href={SITE_ROUTES.animals} size="lg" className="flex-1 justify-center text-sm">
             <PawPrint className="h-5 w-5" />
             До каталогу тварин
           </LinkButton>
-          <LinkButton href={SITE_ROUTES.home} variant="outline" size="lg" className="flex-1 justify-center">
+          <LinkButton href={SITE_ROUTES.home} variant="outline" size="lg" className="flex-1 justify-center text-sm">
             <Heart className="h-5 w-5" />
             На головну
           </LinkButton>
@@ -86,7 +86,7 @@ export default function SuccessCard() {
         {/* Footer */}
         <div className="mt-6 border-t border-gray-100 pt-5 text-center">
           <img src="/dog2.png" alt="" aria-hidden className="mx-auto mb-3 h-16 w-16 object-contain" />
-          <p className="text-base font-semibold text-gray-800">Центр надання допомоги тваринам м. Черкаси</p>
+          <p className="text-base font-semibold text-gray-800">{SITE_NAME}</p>
           <p className="mt-1 text-sm text-gray-500">Рятуємо, лікуємо, соціалізуємо та допомагаємо знайти новий дім для тварин Черкас.</p>
         </div>
       </div>

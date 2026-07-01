@@ -87,7 +87,7 @@ export default function ContactForm() {
           {status?.ok ? (
             <div key="success" className="flex flex-col items-center gap-6">
               <SuccessApplication />
-              <Button type="button" variant="outline" size="lg" className="rounded-2xl" onClick={resetForm}>
+              <Button type="button" variant="outline" size="lg" className="rounded-2xl text-sm" onClick={resetForm}>
                 Подати нове звернення
               </Button>
             </div>
@@ -292,7 +292,7 @@ export default function ContactForm() {
                 size="lg"
                 showIcon={false}
                 disabled={isSubmitting || !isFormValid}
-                className="mt-6 h-auto min-h-13 w-full rounded-2xl px-5 py-3 sm:w-auto"
+                className="mt-6 h-auto min-h-13 w-full rounded-2xl px-5 py-3 text-sm sm:w-auto"
               >
                 {isSubmitting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
                 {isSubmitting ? 'Надсилаємо...' : 'Надіслати повідомлення'}

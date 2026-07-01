@@ -83,7 +83,7 @@ export default function AnimalCard({
             <CalendarHeart className="h-3.5 w-3.5 text-orange-200" />
             Анкета тварини
           </p>
-          <h3 className="truncate text-3xl leading-none font-black text-white sm:text-[34px]">
+          <h3 className="break-words text-3xl leading-none font-black text-white sm:text-[34px]">
             {animal.name}
           </h3>
         </div>

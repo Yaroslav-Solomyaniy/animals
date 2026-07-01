@@ -73,7 +73,7 @@ export default async function ContactsPage() {
     <main className="text-text-main relative">
       <DiagonalGrid className="opacity-40 fixed" />
       <StorybookDecorations />
-      <Section className="relative isolate overflow-hidden py-10 sm:py-12 lg:py-16" innerClassName="relative">
+      <Section className="relative isolate overflow-hidden py-5 sm:py-6 lg:py-16" innerClassName="relative">
           <div className="grid gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:gap-14">
             <div>
               <p className="inline-flex items-center gap-2 rounded-full border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-gray-600 shadow-sm">
@@ -164,7 +164,7 @@ export default async function ContactsPage() {
           </div>
       </Section>
 
-      <Section className="pb-10 sm:pb-12 lg:pb-16">
+      <Section className="pb-5 sm:pb-6 lg:pb-16">
           <SectionFrame className={`p-3 sm:p-5 xl:p-6 ${contactGradientClassNames.sunrise}`}>
             <BorderGlow
               className="w-full"
@@ -181,7 +181,7 @@ export default async function ContactsPage() {
 
       <GoWalks />
 
-      <Section className="pb-10 sm:pb-12 lg:pb-16">
+      <Section className="pb-5 sm:pb-6 lg:pb-16">
           <SectionFrame className="grid overflow-hidden border border-gray-100 bg-white p-0 shadow-soft lg:grid-cols-[1fr_1.3fr]">
             <div className="flex flex-col p-6 sm:p-8 lg:p-10">
               <p className="text-sm font-semibold uppercase tracking-[0.18em] text-orange-600">Соціальні мережі</p>

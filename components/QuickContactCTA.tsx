@@ -7,7 +7,7 @@ import Section from '@/components/ui/Section'
 
 const QuickContactCTA = () => {
   return (
-    <Section id="quick_contacts" className="pb-12 sm:pb-16 lg:pb-24">
+    <Section id="quick_contacts" className="pb-5 sm:pb-6 lg:pb-24">
         <div className="grid gap-4 md:gap-5 lg:grid-cols-[0.85fr_1.15fr] lg:gap-6">
           <div className="grid gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-1">
             <LinkButton

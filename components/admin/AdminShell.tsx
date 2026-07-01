@@ -9,6 +9,7 @@ import Footer from '@/components/Footer'
 import { useScrollToTopOnRouteChange } from '@/hooks/useScrollToTopOnRouteChange'
 import { cn } from '@/lib/utils'
 import { getSupabaseBrowserClient } from '@/lib/supabase/client'
+import { SITE_NAME } from '@/lib/site-config'
 import AdminPreviewBar from '@/components/AdminPreviewBar'
 
 const adminNavigation = [
@@ -76,7 +77,7 @@ export default function AdminShell({ children }: { children: ReactNode }) {
               <div className="min-w-0">
                 <p className="text-xs font-extrabold uppercase tracking-wide text-primary">Панель керування</p>
                 <h1 className="text-sm font-black leading-snug text-slate-950">Черкаська служба чистоти</h1>
-                <p className="mt-0.5 text-[11px] font-semibold leading-tight text-slate-400">Центр надання допомоги безпритульним тваринам</p>
+                <p className="mt-0.5 text-[11px] font-semibold leading-tight text-slate-400">{SITE_NAME}</p>
               </div>
             </div>
           </div>
@@ -128,7 +129,7 @@ export default function AdminShell({ children }: { children: ReactNode }) {
       <div className="flex min-h-screen min-w-0 flex-1 flex-col">
         {!isEditorRoute && (
           <header className="sticky top-0 z-40 border-b border-slate-200 bg-white/88 backdrop-blur-xl xl:hidden">
-            <nav className="flex flex-wrap gap-2 px-4 py-3 sm:px-6">
+            <nav className="flex flex-wrap gap-2 px-5 py-3 sm:px-6">
               {adminNavigation.map((item) => {
                 const Icon = item.icon
                 const isActive =
@@ -156,8 +157,8 @@ export default function AdminShell({ children }: { children: ReactNode }) {
 
         <main className="flex-1 bg-[#f6f8fb] text-slate-950">
           <div className={cn(
-            'mx-auto max-w-[calc(100rem+4rem)] px-4 sm:px-6 lg:px-8',
-            isEditorRoute ? 'p-0' : 'py-8'
+            'mx-auto max-w-[calc(100rem+4rem)] px-5 sm:px-6 lg:px-8',
+            isEditorRoute ? 'p-0' : 'py-5 sm:py-6 lg:py-8'
           )}>
             {children}
           </div>

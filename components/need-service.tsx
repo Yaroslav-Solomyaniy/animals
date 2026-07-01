@@ -6,7 +6,7 @@ import { ServiceOrderDialog } from '@/components/ServiceOrderDialog'
 
 const NeedService = () => {
   return (
-    <section className="relative overflow-hidden bg-[linear-gradient(135deg,#be4b42_0%,#d96f49_42%,#9f4b6b_78%,#249c9a_142%)] px-8 py-8 text-white shadow-[0_26px_90px_rgba(190,75,66,0.16)] sm:py-10 lg:py-16">
+    <section className="relative overflow-hidden bg-[linear-gradient(135deg,#be4b42_0%,#d96f49_42%,#9f4b6b_78%,#249c9a_142%)] px-5 py-5 text-white shadow-[0_26px_90px_rgba(190,75,66,0.16)] sm:px-6 sm:py-6 lg:px-8 lg:py-16">
       <span
         aria-hidden="true"
         className="absolute inset-y-0 right-0 hidden w-[46%] bg-white/8 [clip-path:polygon(18%_0,100%_0,100%_100%,0_100%)] lg:block"
@@ -35,7 +35,7 @@ const NeedService = () => {
             </div>
           </div>
 
-          <div className="rounded-4xl border border-white/16 bg-white p-4 text-gray-950 shadow-[0_28px_90px_rgba(15,23,42,0.22)]">
+          <div className="overflow-hidden rounded-4xl border border-white/16 bg-white p-0 text-gray-950 shadow-[0_28px_90px_rgba(15,23,42,0.22)] md:p-4">
             <div className="rounded-[26px] bg-gray-50 p-4 text-gray-950">
               <div className="mb-4 flex items-center justify-between gap-4 px-1">
                 <p className="text-sm font-black uppercase tracking-[0.16em] text-gray-500">Швидкий контакт</p>
